@@ -1,351 +1,212 @@
-const app = document.getElementById("app");
+const telaInicial = document.getElementById("telaInicial");
+const telaJogo = document.getElementById("telaJogo");
+const telaFinal = document.getElementById("telaFinal");
+
+const btnIniciar = document.getElementById("btnIniciar");
+const btnMorse = document.getElementById("btnMorse");
+const btnLimpar = document.getElementById("btnLimpar");
+const btnEnviar = document.getElementById("btnEnviar");
+const btnReiniciar = document.getElementById("btnReiniciar");
+const btnJogarNovamente = document.getElementById("btnJogarNovamente");
+
+const textoMissao = document.getElementById("textoMissao");
+const codigoDigitado = document.getElementById("codigoDigitado");
+const feedback = document.getElementById("feedback");
+const pontuacaoEl = document.getElementById("pontuacao");
+const contadorMissaoEl = document.getElementById("contadorMissao");
+const acertosEl = document.getElementById("acertos");
+const resultadoFinal = document.getElementById("resultadoFinal");
 
 const missoes = [
-  { alvo: "A", codigo: ".-" },
-  { alvo: "B", codigo: "-..." },
-  { alvo: "C", codigo: "-.-." },
-  { alvo: "D", codigo: "-.." },
-  { alvo: "E", codigo: "." },
-  { alvo: "F", codigo: "..-." },
-  { alvo: "G", codigo: "--." },
-  { alvo: "H", codigo: "...." },
-  { alvo: "I", codigo: ".." },
-  { alvo: "J", codigo: ".---" },
-  { alvo: "K", codigo: "-.-" },
-  { alvo: "L", codigo: ".-.." },
-  { alvo: "M", codigo: "--" },
-  { alvo: "N", codigo: "-." },
-  { alvo: "O", codigo: "---" },
-  { alvo: "P", codigo: ".--." },
-  { alvo: "Q", codigo: "--.-" },
-  { alvo: "R", codigo: ".-." },
-  { alvo: "S", codigo: "..." },
-  { alvo: "T", codigo: "-" },
-  { alvo: "U", codigo: "..-" },
-  { alvo: "V", codigo: "...-" },
-  { alvo: "W", codigo: ".--" },
-  { alvo: "X", codigo: "-..-" },
-  { alvo: "Y", codigo: "-.--" },
-  { alvo: "Z", codigo: "--.." }
+  { alvo: "A", codigo: ".-", tipo: "Letra" },
+  { alvo: "E", codigo: ".", tipo: "Letra" },
+  { alvo: "T", codigo: "-", tipo: "Letra" },
+  { alvo: "I", codigo: "..", tipo: "Letra" },
+  { alvo: "M", codigo: "--", tipo: "Letra" },
+  { alvo: "N", codigo: "-.", tipo: "Letra" },
+  { alvo: "D", codigo: "-..", tipo: "Letra" },
+  { alvo: "O", codigo: "---", tipo: "Letra" },
+  { alvo: "S", codigo: "...", tipo: "Letra" },
+  { alvo: "R", codigo: ".-.", tipo: "Letra" }
 ];
 
 let indiceMissao = 0;
-let codigoDigitado = "";
-let pontos = 0;
-let erros = 0;
-let combo = 0;
-let inicioToque = 0;
-let intervaloTransmissao = null;
+let codigoAtual = "";
+let pontuacao = 0;
+let acertos = 0;
 
-let audioCtx = null;
-let oscilador = null;
-let ganho = null;
+let pressionando = false;
+let inicioPressionamento = 0;
 
-function patenteAtual() {
-  if (pontos >= 2500) return "1º Sgt";
-  if (pontos >= 1800) return "2º Sgt";
-  if (pontos >= 1200) return "3º Sgt";
-  if (pontos >= 700) return "Cabo";
-  if (pontos >= 300) return "Soldado";
-  return "Recruta";
-}
+const LIMITE_TOQUE_LONGO = 280;
 
-function mostrarInicio() {
-  app.innerHTML = `
-    <section class="tela">
-      <div class="logo">📻</div>
-      <h1>Operador Morse</h1>
-      <p class="subtitulo">MISSÃO RESGATE</p>
+btnIniciar.addEventListener("click", iniciarJogo);
+btnLimpar.addEventListener("click", limparCodigo);
+btnEnviar.addEventListener("click", confirmarEnvio);
+btnReiniciar.addEventListener("click", reiniciarJogo);
+btnJogarNovamente.addEventListener("click", reiniciarJogo);
 
-      <div class="card">
-        <h2>🎯 Fase Fácil</h2>
-        <p>Transmita o alfabeto completo com o código visível.</p>
-      </div>
+btnMorse.addEventListener("pointerdown", iniciarPressionamento);
+btnMorse.addEventListener("pointerup", finalizarPressionamento);
+btnMorse.addEventListener("pointerleave", cancelarSeNecessario);
+btnMorse.addEventListener("pointercancel", cancelarSeNecessario);
 
-      <div class="card">
-        <h2>🏆 Ranking</h2>
-        <p>Conclua as letras, some pontos e salve seu nome no Top 5.</p>
-      </div>
+document.addEventListener("keydown", (evento) => {
+  if (evento.code !== "Space") return;
+  if (!telaJogo.classList.contains("ativa")) return;
+  if (pressionando) return;
 
-      <button onclick="iniciarJogo()">INICIAR MISSÃO</button>
-      <button onclick="mostrarRanking()">VER RANKING</button>
-    </section>
-  `;
-}
+  evento.preventDefault();
+  iniciarPressionamento();
+});
+
+document.addEventListener("keyup", (evento) => {
+  if (evento.code !== "Space") return;
+  if (!telaJogo.classList.contains("ativa")) return;
+
+  evento.preventDefault();
+  finalizarPressionamento();
+});
 
 function iniciarJogo() {
   indiceMissao = 0;
-  codigoDigitado = "";
-  pontos = 0;
-  erros = 0;
-  combo = 0;
-  mostrarMissao();
+  codigoAtual = "";
+  pontuacao = 0;
+  acertos = 0;
+
+  mostrarTela(telaJogo);
+  carregarMissao();
+  atualizarPlacar();
 }
 
-function mostrarMissao() {
+function reiniciarJogo() {
+  iniciarJogo();
+}
+
+function mostrarTela(tela) {
+  telaInicial.classList.remove("ativa");
+  telaJogo.classList.remove("ativa");
+  telaFinal.classList.remove("ativa");
+
+  tela.classList.add("ativa");
+}
+
+function carregarMissao() {
   const missao = missoes[indiceMissao];
 
-  app.innerHTML = `
-    <section class="tela">
-      <h1>Missão ${indiceMissao + 1}: Transmita a letra</h1>
+  textoMissao.textContent = `Envie a letra ${missao.alvo}`;
+  contadorMissaoEl.textContent = `${indiceMissao + 1}/${missoes.length}`;
 
-      <div class="painel-status">
-        <span>⭐ Pontos: ${pontos}</span>
-        <span>🎖️ ${patenteAtual()}</span>
-        <span>🔥 Combo: x${combo}</span>
-      </div>
+  codigoAtual = "";
+  atualizarCodigoNaTela();
 
-      <div class="card centro card-letra">
-        <div class="alvo">${missao.alvo}</div>
-        <div class="codigo-alvo">${missao.codigo}</div>
-        <p id="feedbackMissao">Toque curto = ponto. Toque longo = traço.</p>
-      </div>
-
-      <div class="area-transmissao" id="areaTransmissao">
-        <strong id="textoTransmissao">PRONTO PARA TRANSMITIR</strong>
-        <small>Use a chave circular</small>
-
-        <button
-          class="chave-morse"
-          id="chaveMorse"
-          onmousedown="iniciarToque(event)"
-          onmouseup="finalizarToque(event)"
-          onmouseleave="cancelarToque()"
-          ontouchstart="iniciarToque(event)"
-          ontouchend="finalizarToque(event)"
-        >
-          📡
-        </button>
-
-        <div class="barra-transmissao">
-          <div class="barra-progresso" id="barraProgresso"></div>
-        </div>
-      </div>
-
-      <button onclick="mostrarInicio()">SAIR</button>
-    </section>
-  `;
+  feedback.textContent = "";
+  feedback.className = "feedback";
 }
 
-function iniciarToque(event) {
-  if (event) event.preventDefault();
+function iniciarPressionamento() {
+  pressionando = true;
+  inicioPressionamento = Date.now();
 
-  inicioToque = Date.now();
-  iniciarSomMorse();
-
-  const area = document.getElementById("areaTransmissao");
-  const chave = document.getElementById("chaveMorse");
-  const texto = document.getElementById("textoTransmissao");
-  const barra = document.getElementById("barraProgresso");
-
-  if (!area || !chave || !texto || !barra) return;
-
-  area.classList.add("transmitindo");
-  chave.classList.add("pressionada");
-  texto.textContent = "TRANSMITINDO...";
-  barra.style.width = "0%";
-
-  clearInterval(intervaloTransmissao);
-
-  intervaloTransmissao = setInterval(() => {
-    const duracao = Date.now() - inicioToque;
-    const largura = Math.min((duracao / 600) * 100, 100);
-    barra.style.width = largura + "%";
-  }, 30);
+  btnMorse.classList.add("pressionado");
 }
 
-function finalizarToque(event) {
-  if (event) event.preventDefault();
-  if (!inicioToque) return;
+function finalizarPressionamento() {
+  if (!pressionando) return;
 
-  const duracao = Date.now() - inicioToque;
+  const duracao = Date.now() - inicioPressionamento;
 
-  pararSomMorse();
-  pararIndicadorTransmissao();
-
-  if (duracao < 180) {
-    adicionarCodigo(".");
+  if (duracao >= LIMITE_TOQUE_LONGO) {
+    adicionarSimbolo("-");
   } else {
-    adicionarCodigo("-");
+    adicionarSimbolo(".");
   }
 
-  inicioToque = 0;
+  pressionando = false;
+  btnMorse.classList.remove("pressionado");
 }
 
-function cancelarToque() {
-  pararSomMorse();
-  pararIndicadorTransmissao();
-  inicioToque = 0;
+function cancelarSeNecessario() {
+  if (!pressionando) return;
+
+  pressionando = false;
+  btnMorse.classList.remove("pressionado");
 }
 
-function pararIndicadorTransmissao() {
-  clearInterval(intervaloTransmissao);
+function adicionarSimbolo(simbolo) {
+  codigoAtual += simbolo;
+  atualizarCodigoNaTela();
 
-  const area = document.getElementById("areaTransmissao");
-  const chave = document.getElementById("chaveMorse");
-  const texto = document.getElementById("textoTransmissao");
-  const barra = document.getElementById("barraProgresso");
-
-  if (area) area.classList.remove("transmitindo");
-  if (chave) chave.classList.remove("pressionada");
-  if (texto) texto.textContent = "PRONTO PARA TRANSMITIR";
-  if (barra) barra.style.width = "0%";
+  feedback.textContent = "";
+  feedback.className = "feedback";
 }
 
-function iniciarSomMorse() {
-  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-
-  oscilador = audioCtx.createOscillator();
-  ganho = audioCtx.createGain();
-
-  oscilador.type = "sine";
-  oscilador.frequency.value = 700;
-  ganho.gain.value = 0.25;
-
-  oscilador.connect(ganho);
-  ganho.connect(audioCtx.destination);
-
-  oscilador.start();
+function atualizarCodigoNaTela() {
+  codigoDigitado.textContent = codigoAtual || "—";
 }
 
-function pararSomMorse() {
-  if (oscilador) {
-    oscilador.stop();
-    oscilador.disconnect();
-    oscilador = null;
-  }
+function limparCodigo() {
+  codigoAtual = "";
+  atualizarCodigoNaTela();
 
-  if (ganho) {
-    ganho.disconnect();
-    ganho = null;
-  }
+  feedback.textContent = "Código limpo. Transmita novamente.";
+  feedback.className = "feedback";
 }
 
-function adicionarCodigo(simbolo) {
-  codigoDigitado += simbolo;
-  verificarAutomaticamente();
-}
-
-function verificarAutomaticamente() {
+function confirmarEnvio() {
   const missao = missoes[indiceMissao];
 
-  if (codigoDigitado.length < missao.codigo.length) return;
+  if (!codigoAtual) {
+    feedback.textContent = "Transmita pelo menos um ponto ou traço antes de confirmar.";
+    feedback.className = "feedback erro";
+    return;
+  }
 
-  if (codigoDigitado === missao.codigo) {
-    acertouMissao();
+  if (codigoAtual === missao.codigo) {
+    pontuacao += 10;
+    acertos += 1;
+
+    feedback.textContent = `Correto! ${missao.alvo} em Morse é ${missao.codigo}.`;
+    feedback.className = "feedback sucesso";
+
+    atualizarPlacar();
+
+    setTimeout(proximaMissao, 900);
   } else {
-    errouMissao();
+    pontuacao = Math.max(0, pontuacao - 2);
+
+    feedback.textContent = `Não foi dessa vez. Você enviou ${codigoAtual}, mas ${missao.alvo} é ${missao.codigo}.`;
+    feedback.className = "feedback erro";
+
+    atualizarPlacar();
+
+    setTimeout(() => {
+      codigoAtual = "";
+      atualizarCodigoNaTela();
+    }, 900);
   }
 }
 
-function acertouMissao() {
-  combo++;
-  const ganho = 100 + combo * 20;
-  pontos += ganho;
+function proximaMissao() {
+  indiceMissao += 1;
 
-  mostrarFeedback(`✅ Correto! +${ganho} pontos`, true);
+  if (indiceMissao >= missoes.length) {
+    finalizarJogo();
+    return;
+  }
 
-  setTimeout(() => {
-    indiceMissao++;
-
-    if (indiceMissao >= missoes.length) {
-      mostrarFimDeJogo();
-    } else {
-      codigoDigitado = "";
-      mostrarMissao();
-    }
-  }, 650);
+  carregarMissao();
 }
 
-function errouMissao() {
-  erros++;
-  combo = 0;
-
-  mostrarFeedback("❌ Incorreto. Repita a letra.", false);
-
-  setTimeout(() => {
-    codigoDigitado = "";
-    mostrarFeedback("Toque curto = ponto. Toque longo = traço.", null);
-  }, 850);
+function atualizarPlacar() {
+  pontuacaoEl.textContent = pontuacao;
+  acertosEl.textContent = acertos;
 }
 
-function mostrarFeedback(mensagem, sucesso) {
-  const feedback = document.getElementById("feedbackMissao");
-  if (!feedback) return;
+function finalizarJogo() {
+  mostrarTela(telaFinal);
 
-  feedback.textContent = mensagem;
-  feedback.classList.remove("feedback-ok", "feedback-erro");
-
-  if (sucesso === true) feedback.classList.add("feedback-ok");
-  if (sucesso === false) feedback.classList.add("feedback-erro");
+  resultadoFinal.textContent =
+    `Você acertou ${acertos} de ${missoes.length} missões e fez ${pontuacao} pontos. ` +
+    `Treinamento concluído. O rádio está operacional.`;
 }
-
-function mostrarFimDeJogo() {
-  const estrelas = erros === 0 ? "⭐⭐⭐" : erros <= 3 ? "⭐⭐" : "⭐";
-
-  app.innerHTML = `
-    <section class="tela">
-      <div class="logo">🏁</div>
-      <h1>Alfabeto concluído!</h1>
-      <p class="subtitulo">${estrelas}</p>
-
-      <div class="card centro">
-        <h2>Resultado</h2>
-        <p>Pontuação final: <strong>${pontos}</strong></p>
-        <p>Patente alcançada: <strong>${patenteAtual()}</strong></p>
-        <p>Erros: <strong>${erros}</strong></p>
-      </div>
-
-      <button onclick="salvarPontuacao()">SALVAR NO RANKING</button>
-      <button onclick="iniciarJogo()">JOGAR NOVAMENTE</button>
-      <button onclick="mostrarInicio()">INÍCIO</button>
-    </section>
-  `;
-}
-
-function salvarPontuacao() {
-  const nome = prompt("Digite seu nome para o ranking:");
-  if (!nome) return;
-
-  const ranking = JSON.parse(localStorage.getItem("rankingMorse")) || [];
-
-  ranking.push({
-    nome,
-    pontos,
-    patente: patenteAtual(),
-    data: new Date().toLocaleDateString("pt-BR")
-  });
-
-  ranking.sort((a, b) => b.pontos - a.pontos);
-  localStorage.setItem("rankingMorse", JSON.stringify(ranking.slice(0, 5)));
-
-  mostrarRanking();
-}
-
-function mostrarRanking() {
-  const ranking = JSON.parse(localStorage.getItem("rankingMorse")) || [];
-
-  let conteudo = ranking.length
-    ? ranking.map((jogador, index) => `
-        <div class="card">
-          <h2>${index + 1}. ${jogador.nome}</h2>
-          <p>${jogador.patente} - ${jogador.pontos} pontos</p>
-          <p>${jogador.data}</p>
-        </div>
-      `).join("")
-    : `<div class="card"><p>Ainda não há pontuações salvas.</p></div>`;
-
-  app.innerHTML = `
-    <section class="tela">
-      <div class="logo">🏆</div>
-      <h1>Ranking Top 5</h1>
-      <p class="subtitulo">OPERADORES DE ELITE</p>
-
-      ${conteudo}
-
-      <button onclick="mostrarInicio()">VOLTAR</button>
-    </section>
-  `;
-}
-
-mostrarInicio();

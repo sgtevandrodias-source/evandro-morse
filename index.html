@@ -1,13 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Operador Morse</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="app"></div>
+  <main class="app">
+    <section id="telaInicial" class="tela ativa">
+      <div class="card hero">
+        <div class="badge">Missão de Comunicação</div>
+
+        <h1>Operador Morse</h1>
+
+        <p>
+          Use toques curtos e longos para transmitir códigos em Morse.
+          Cada missão mostrará uma letra. Sua tarefa é enviar o código correto.
+        </p>
+
+        <div class="instrucoes">
+          <div>
+            <strong>Toque curto</strong>
+            <span>Ponto &nbsp;.</span>
+          </div>
+
+          <div>
+            <strong>Toque longo</strong>
+            <span>Traço &nbsp;-</span>
+          </div>
+
+          <div>
+            <strong>No computador</strong>
+            <span>Use a barra de espaço</span>
+          </div>
+        </div>
+
+        <button id="btnIniciar" class="btn principal">
+          Iniciar missão
+        </button>
+      </div>
+    </section>
+
+    <section id="telaJogo" class="tela">
+      <header class="topo">
+        <div>
+          <span class="label">Operador</span>
+          <strong id="nomeOperador">Recruta</strong>
+        </div>
+
+        <div>
+          <span class="label">Pontuação</span>
+          <strong id="pontuacao">0</strong>
+        </div>
+      </header>
+
+      <section class="card missao">
+        <span class="badge">Missão atual</span>
+
+        <h2 id="textoMissao">Envie a letra A</h2>
+
+        <p id="dicaMissao">
+          Pressione o botão de transmissão. Toque rápido para ponto, segure para traço.
+        </p>
+
+        <div class="painel-codigo">
+          <span>Código enviado:</span>
+          <strong id="codigoDigitado">—</strong>
+        </div>
+
+        <button id="btnMorse" class="botao-morse">
+          TRANSMITIR
+        </button>
+
+        <div class="acoes">
+          <button id="btnLimpar" class="btn secundario">
+            Limpar
+          </button>
+
+          <button id="btnEnviar" class="btn principal">
+            Confirmar envio
+          </button>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+      </section>
+
+      <section class="card progresso">
+        <div>
+          <span class="label">Fase</span>
+          <strong id="faseAtual">Letras</strong>
+        </div>
+
+        <div>
+          <span class="label">Missão</span>
+          <strong id="contadorMissao">1/10</strong>
+        </div>
+
+        <div>
+          <span class="label">Acertos</span>
+          <strong id="acertos">0</strong>
+        </div>
+      </section>
+
+      <button id="btnReiniciar" class="btn discreto">
+        Reiniciar treinamento
+      </button>
+    </section>
+
+    <section id="telaFinal" class="tela">
+      <div class="card hero">
+        <div class="badge">Treinamento concluído</div>
+
+        <h1>Missão finalizada</h1>
+
+        <p id="resultadoFinal"></p>
+
+        <button id="btnJogarNovamente" class="btn principal">
+          Jogar novamente
+        </button>
+      </div>
+    </section>
+  </main>
+
   <script src="script.js"></script>
 </body>
 </html>
