@@ -196,3 +196,12 @@ button {
     max-width: 110px;
   }
 }
+.feedback-ok {
+  color: #d9ffd9;
+  font-weight: bold;
+}
+
+.feedback-erro {
+  color: #ffd6d6;
+  font-weight: bold;
+}

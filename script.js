@@ -4,8 +4,11 @@ const missoes = [
   { alvo: "A", codigo: ".-", tipo: "Letra" },
   { alvo: "B", codigo: "-...", tipo: "Letra" },
   { alvo: "C", codigo: "-.-.", tipo: "Letra" },
-  { alvo: "SOS", codigo: "... --- ...", tipo: "Palavra" },
-  { alvo: "RESGATE", codigo: ".-. . ... --. .- - .", tipo: "Palavra" }
+  { alvo: "D", codigo: "-..", tipo: "Letra" },
+  { alvo: "E", codigo: ".", tipo: "Letra" },
+  { alvo: "F", codigo: "..-.", tipo: "Letra" },
+  { alvo: "G", codigo: "--.", tipo: "Letra" },
+  { alvo: "H", codigo: "....", tipo: "Letra" }
 ];
 
 let indiceMissao = 0;
@@ -76,14 +79,14 @@ function mostrarMissao() {
       <div class="card centro">
         <h2>Transmita:</h2>
         <div class="alvo">${missao.alvo}</div>
-        <p>Toque curto = ponto. Toque longo = traço.</p>
+        <p id="feedbackMissao">Toque curto = ponto. Toque longo = traço.</p>
       </div>
 
       <div class="visor" id="visor">...</div>
 
       <div class="area-transmissao" id="areaTransmissao">
         <strong id="textoTransmissao">PRONTO PARA TRANSMITIR</strong>
-        <small>Use apenas a chave circular abaixo</small>
+        <small>Use a chave circular</small>
 
         <button
           class="chave-morse"
@@ -102,9 +105,6 @@ function mostrarMissao() {
         </div>
       </div>
 
-      <button onclick="adicionarCodigo(' ')">ESPAÇO ENTRE LETRAS</button>
-      <button onclick="verificarCodigo()">VERIFICAR</button>
-      <button onclick="limparCodigo()">LIMPAR</button>
       <button onclick="mostrarInicio()">SAIR</button>
     </section>
   `;
@@ -207,27 +207,33 @@ function pararSomMorse() {
 function adicionarCodigo(simbolo) {
   codigoDigitado += simbolo;
   atualizarVisor();
+  verificarAutomaticamente();
 }
 
 function atualizarVisor() {
   document.getElementById("visor").textContent = codigoDigitado || "...";
 }
 
-function limparCodigo() {
-  codigoDigitado = "";
-  atualizarVisor();
-}
-
-function verificarCodigo() {
+function verificarAutomaticamente() {
   const missao = missoes[indiceMissao];
 
-  if (codigoDigitado.trim() === missao.codigo) {
-    combo++;
-    const ganho = 100 + combo * 20;
-    pontos += ganho;
+  if (codigoDigitado.length < missao.codigo.length) return;
 
-    alert(`Correto! +${ganho} pontos. Combo x${combo}`);
+  if (codigoDigitado === missao.codigo) {
+    acertouMissao();
+  } else {
+    errouMissao();
+  }
+}
 
+function acertouMissao() {
+  combo++;
+  const ganho = 100 + combo * 20;
+  pontos += ganho;
+
+  mostrarFeedback(`✅ Correto! +${ganho} pontos`, true);
+
+  setTimeout(() => {
     indiceMissao++;
 
     if (indiceMissao >= missoes.length) {
@@ -236,11 +242,32 @@ function verificarCodigo() {
       codigoDigitado = "";
       mostrarMissao();
     }
-  } else {
-    erros++;
-    combo = 0;
-    alert("Código incorreto. Tente novamente.");
-  }
+  }, 700);
+}
+
+function errouMissao() {
+  erros++;
+  combo = 0;
+
+  mostrarFeedback("❌ Incorreto. Tente novamente.", false);
+
+  setTimeout(() => {
+    codigoDigitado = "";
+    atualizarVisor();
+    mostrarFeedback("Toque curto = ponto. Toque longo = traço.", null);
+  }, 900);
+}
+
+function mostrarFeedback(mensagem, sucesso) {
+  const feedback = document.getElementById("feedbackMissao");
+  if (!feedback) return;
+
+  feedback.textContent = mensagem;
+
+  feedback.classList.remove("feedback-ok", "feedback-erro");
+
+  if (sucesso === true) feedback.classList.add("feedback-ok");
+  if (sucesso === false) feedback.classList.add("feedback-erro");
 }
 
 function mostrarFimDeJogo() {
