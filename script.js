@@ -16,19 +16,100 @@ const pontuacaoEl = document.getElementById("pontuacao");
 const contadorMissaoEl = document.getElementById("contadorMissao");
 const acertosEl = document.getElementById("acertos");
 const resultadoFinal = document.getElementById("resultadoFinal");
+const faseAtualEl = document.getElementById("faseAtual");
+
+/* =========================
+   TABELA MORSE
+========================= */
+
+const TABELA_MORSE = {
+  A: ".-",
+  B: "-...",
+  C: "-.-.",
+  D: "-..",
+  E: ".",
+  F: "..-.",
+  G: "--.",
+  H: "....",
+  I: "..",
+  J: ".---",
+  K: "-.-",
+  L: ".-..",
+  M: "--",
+  N: "-.",
+  O: "---",
+  P: ".--.",
+  Q: "--.-",
+  R: ".-.",
+  S: "...",
+  T: "-",
+  U: "..-",
+  V: "...-",
+  W: ".--",
+  X: "-..-",
+  Y: "-.--",
+  Z: "--..",
+
+  0: "-----",
+  1: ".----",
+  2: "..---",
+  3: "...--",
+  4: "....-",
+  5: ".....",
+  6: "-....",
+  7: "--...",
+  8: "---..",
+  9: "----."
+};
+
+function textoParaMorse(texto) {
+  return texto
+    .toUpperCase()
+    .split("")
+    .map((caractere) => {
+      if (caractere === " ") return "/";
+      return TABELA_MORSE[caractere] || "";
+    })
+    .filter(Boolean)
+    .join(" ");
+}
+
+/* =========================
+   MISSÕES
+========================= */
 
 const missoes = [
-  { alvo: "A", codigo: ".-", tipo: "Letra" },
-  { alvo: "E", codigo: ".", tipo: "Letra" },
-  { alvo: "T", codigo: "-", tipo: "Letra" },
-  { alvo: "I", codigo: "..", tipo: "Letra" },
-  { alvo: "M", codigo: "--", tipo: "Letra" },
-  { alvo: "N", codigo: "-.", tipo: "Letra" },
-  { alvo: "D", codigo: "-..", tipo: "Letra" },
-  { alvo: "O", codigo: "---", tipo: "Letra" },
-  { alvo: "S", codigo: "...", tipo: "Letra" },
-  { alvo: "R", codigo: ".-.", tipo: "Letra" }
+  // Letras mais simples
+  { alvo: "E", codigo: textoParaMorse("E"), tipo: "Letras básicas" },
+  { alvo: "T", codigo: textoParaMorse("T"), tipo: "Letras básicas" },
+  { alvo: "A", codigo: textoParaMorse("A"), tipo: "Letras básicas" },
+  { alvo: "N", codigo: textoParaMorse("N"), tipo: "Letras básicas" },
+  { alvo: "M", codigo: textoParaMorse("M"), tipo: "Letras básicas" },
+  { alvo: "I", codigo: textoParaMorse("I"), tipo: "Letras básicas" },
+  { alvo: "S", codigo: textoParaMorse("S"), tipo: "Letras básicas" },
+  { alvo: "O", codigo: textoParaMorse("O"), tipo: "Letras básicas" },
+
+  // Letras intermediárias
+  { alvo: "R", codigo: textoParaMorse("R"), tipo: "Letras intermediárias" },
+  { alvo: "K", codigo: textoParaMorse("K"), tipo: "Letras intermediárias" },
+  { alvo: "D", codigo: textoParaMorse("D"), tipo: "Letras intermediárias" },
+  { alvo: "U", codigo: textoParaMorse("U"), tipo: "Letras intermediárias" },
+  { alvo: "C", codigo: textoParaMorse("C"), tipo: "Letras intermediárias" },
+  { alvo: "P", codigo: textoParaMorse("P"), tipo: "Letras intermediárias" },
+
+  // Números
+  { alvo: "1", codigo: textoParaMorse("1"), tipo: "Números" },
+  { alvo: "2", codigo: textoParaMorse("2"), tipo: "Números" },
+  { alvo: "3", codigo: textoParaMorse("3"), tipo: "Números" },
+  { alvo: "5", codigo: textoParaMorse("5"), tipo: "Números" },
+  { alvo: "7", codigo: textoParaMorse("7"), tipo: "Números" },
+  { alvo: "9", codigo: textoParaMorse("9"), tipo: "Números" },
+  { alvo: "0", codigo: textoParaMorse("0"), tipo: "Números" }
 ];
+
+/* =========================
+   ESTADO DO JOGO
+========================= */
 
 let indiceMissao = 0;
 let codigoAtual = "";
@@ -71,6 +152,10 @@ const FREQUENCIA_SIDETONE = 650;
 // Volume do sidetone.
 const VOLUME_MORSE = 0.22;
 
+/* =========================
+   EVENTOS
+========================= */
+
 btnIniciar.addEventListener("click", iniciarJogo);
 btnLimpar.addEventListener("click", limparCodigo);
 btnEnviar.addEventListener("click", confirmarEnvio);
@@ -99,6 +184,10 @@ document.addEventListener("keyup", (evento) => {
   finalizarPressionamento();
 });
 
+/* =========================
+   CONTROLE DO JOGO
+========================= */
+
 function iniciarJogo() {
   prepararAudio();
 
@@ -106,6 +195,7 @@ function iniciarJogo() {
   codigoAtual = "";
   pontuacao = 0;
   acertos = 0;
+  pressionando = false;
 
   mostrarTela(telaJogo);
   carregarMissao();
@@ -137,8 +227,12 @@ function mostrarTela(tela) {
 function carregarMissao() {
   const missao = missoes[indiceMissao];
 
-  textoMissao.textContent = `Envie a letra ${missao.alvo}`;
+  textoMissao.textContent = `Envie: ${missao.alvo}`;
   contadorMissaoEl.textContent = `${indiceMissao + 1}/${missoes.length}`;
+
+  if (faseAtualEl) {
+    faseAtualEl.textContent = missao.tipo;
+  }
 
   codigoAtual = "";
   atualizarCodigoNaTela();
@@ -174,7 +268,6 @@ function finalizarPressionamento() {
   const simbolo = duracao < LIMITE_PONTO_TRACO ? "." : "-";
 
   adicionarSimbolo(simbolo);
-
   mostrarFeedbackManipulacao(simbolo, duracao);
 }
 
