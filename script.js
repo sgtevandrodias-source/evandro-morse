@@ -101,8 +101,6 @@ function mostrarMissao() {
         <p id="feedbackMissao">Toque curto = ponto. Toque longo = traço.</p>
       </div>
 
-      <div class="visor oculto" id="visor"></div>
-
       <div class="area-transmissao" id="areaTransmissao">
         <strong id="textoTransmissao">PRONTO PARA TRANSMITIR</strong>
         <small>Use a chave circular</small>
@@ -230,13 +228,8 @@ function adicionarCodigo(simbolo) {
 }
 
 function atualizarVisor() {
-  const visor = document.getElementById("visor");
-  if (!visor) return;
-
-  visor.textContent = codigoDigitado;
-  visor.classList.toggle("oculto", codigoDigitado.length === 0);
+  return;
 }
-
 function verificarAutomaticamente() {
   const missao = missoes[indiceMissao];
 
