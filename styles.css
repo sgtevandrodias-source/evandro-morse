@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #556b2f, #26351b);
+  color: white;
+}
+
+.tela {
+  min-height: 100vh;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.logo {
+  margin-top: 40px;
+  font-size: 64px;
+}
+
+h1 {
+  margin: 10px 0 4px;
+  font-size: 34px;
+}
+
+.subtitulo {
+  letter-spacing: 4px;
+  opacity: 0.9;
+  margin-bottom: 50px;
+}
+
+.card {
+  width: 100%;
+  max-width: 480px;
+  padding: 22px;
+  margin: 10px 0;
+  border: 1px solid rgba(255,255,255,0.45);
+  border-radius: 20px;
+  text-align: left;
+  background: rgba(255,255,255,0.10);
+}
+
+.card h2 {
+  margin: 0 0 8px;
+}
+
+.card p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+button {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 28px;
+  padding: 18px;
+  border-radius: 999px;
+  border: 2px solid white;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.centro {
+  text-align: center;
+}
+
+.alvo {
+  font-size: 90px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.visor {
+  width: 100%;
+  max-width: 480px;
+  padding: 20px;
+  margin: 18px 0;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+  font-size: 36px;
+  letter-spacing: 10px;
+}
+
+.painel-status {
+  width: 100%;
+  max-width: 480px;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.painel-status span {
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.area-transmissao {
+  width: 100%;
+  max-width: 480px;
+  min-height: 160px;
+  margin: 16px 0;
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.12);
+  border: 2px dashed rgba(255,255,255,0.75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  user-select: none;
+  touch-action: manipulation;
+  transition: 0.15s ease;
+}
+
+.area-transmissao:active {
+  transform: scale(0.98);
+  background: rgba(255,255,255,0.22);
+}
+
+.area-transmissao.transmitindo {
+  background: rgba(255,255,255,0.25);
+  border-style: solid;
+  transform: scale(0.99);
+  box-shadow: 0 0 24px rgba(255,255,255,0.25);
+}
+
+.icone-chave {
+  font-size: 42px;
+}
+
+.area-transmissao small {
+  opacity: 0.85;
+}
+
+.barra-transmissao {
+  width: 100%;
+  height: 12px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.barra-progresso {
+  width: 0%;
+  height: 100%;
+  background: white;
+  border-radius: 999px;
+  transition: width 0.03s linear;
+}
