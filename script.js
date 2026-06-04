@@ -1,14 +1,32 @@
 const app = document.getElementById("app");
 
 const missoes = [
-  { alvo: "A", codigo: ".-", tipo: "Letra" },
-  { alvo: "B", codigo: "-...", tipo: "Letra" },
-  { alvo: "C", codigo: "-.-.", tipo: "Letra" },
-  { alvo: "D", codigo: "-..", tipo: "Letra" },
-  { alvo: "E", codigo: ".", tipo: "Letra" },
-  { alvo: "F", codigo: "..-.", tipo: "Letra" },
-  { alvo: "G", codigo: "--.", tipo: "Letra" },
-  { alvo: "H", codigo: "....", tipo: "Letra" }
+  { alvo: "A", codigo: ".-" },
+  { alvo: "B", codigo: "-..." },
+  { alvo: "C", codigo: "-.-." },
+  { alvo: "D", codigo: "-.." },
+  { alvo: "E", codigo: "." },
+  { alvo: "F", codigo: "..-." },
+  { alvo: "G", codigo: "--." },
+  { alvo: "H", codigo: "...." },
+  { alvo: "I", codigo: ".." },
+  { alvo: "J", codigo: ".---" },
+  { alvo: "K", codigo: "-.-" },
+  { alvo: "L", codigo: ".-.." },
+  { alvo: "M", codigo: "--" },
+  { alvo: "N", codigo: "-." },
+  { alvo: "O", codigo: "---" },
+  { alvo: "P", codigo: ".--." },
+  { alvo: "Q", codigo: "--.-" },
+  { alvo: "R", codigo: ".-." },
+  { alvo: "S", codigo: "..." },
+  { alvo: "T", codigo: "-" },
+  { alvo: "U", codigo: "..-" },
+  { alvo: "V", codigo: "...-" },
+  { alvo: "W", codigo: ".--" },
+  { alvo: "X", codigo: "-..-" },
+  { alvo: "Y", codigo: "-.--" },
+  { alvo: "Z", codigo: "--.." }
 ];
 
 let indiceMissao = 0;
@@ -24,8 +42,10 @@ let oscilador = null;
 let ganho = null;
 
 function patenteAtual() {
-  if (pontos >= 1500) return "3º Sgt";
-  if (pontos >= 900) return "Cabo";
+  if (pontos >= 2500) return "1º Sgt";
+  if (pontos >= 1800) return "2º Sgt";
+  if (pontos >= 1200) return "3º Sgt";
+  if (pontos >= 700) return "Cabo";
   if (pontos >= 300) return "Soldado";
   return "Recruta";
 }
@@ -38,13 +58,13 @@ function mostrarInicio() {
       <p class="subtitulo">MISSÃO RESGATE</p>
 
       <div class="card">
-        <h2>🎖️ Patentes</h2>
-        <p>Suba de Recruta a Sargento conforme ganha pontos.</p>
+        <h2>🎯 Fase Fácil</h2>
+        <p>Transmita o alfabeto completo com o código visível.</p>
       </div>
 
       <div class="card">
         <h2>🏆 Ranking</h2>
-        <p>Ao final, salve seu nome no Top 5 local.</p>
+        <p>Conclua as letras, some pontos e salve seu nome no Top 5.</p>
       </div>
 
       <button onclick="iniciarJogo()">INICIAR MISSÃO</button>
@@ -67,8 +87,7 @@ function mostrarMissao() {
 
   app.innerHTML = `
     <section class="tela">
-      <h1>Missão ${indiceMissao + 1}</h1>
-      <p class="subtitulo">${missao.tipo.toUpperCase()}</p>
+      <h1>Missão ${indiceMissao + 1}: Transmita a letra</h1>
 
       <div class="painel-status">
         <span>⭐ Pontos: ${pontos}</span>
@@ -76,13 +95,13 @@ function mostrarMissao() {
         <span>🔥 Combo: x${combo}</span>
       </div>
 
-      <div class="card centro">
-        <h2>Transmita:</h2>
+      <div class="card centro card-letra">
         <div class="alvo">${missao.alvo}</div>
+        <div class="codigo-alvo">${missao.codigo}</div>
         <p id="feedbackMissao">Toque curto = ponto. Toque longo = traço.</p>
       </div>
 
-      <div class="visor" id="visor">...</div>
+      <div class="visor oculto" id="visor"></div>
 
       <div class="area-transmissao" id="areaTransmissao">
         <strong id="textoTransmissao">PRONTO PARA TRANSMITIR</strong>
@@ -211,7 +230,11 @@ function adicionarCodigo(simbolo) {
 }
 
 function atualizarVisor() {
-  document.getElementById("visor").textContent = codigoDigitado || "...";
+  const visor = document.getElementById("visor");
+  if (!visor) return;
+
+  visor.textContent = codigoDigitado;
+  visor.classList.toggle("oculto", codigoDigitado.length === 0);
 }
 
 function verificarAutomaticamente() {
@@ -242,20 +265,20 @@ function acertouMissao() {
       codigoDigitado = "";
       mostrarMissao();
     }
-  }, 700);
+  }, 650);
 }
 
 function errouMissao() {
   erros++;
   combo = 0;
 
-  mostrarFeedback("❌ Incorreto. Tente novamente.", false);
+  mostrarFeedback("❌ Incorreto. Repita a letra.", false);
 
   setTimeout(() => {
     codigoDigitado = "";
     atualizarVisor();
     mostrarFeedback("Toque curto = ponto. Toque longo = traço.", null);
-  }, 900);
+  }, 850);
 }
 
 function mostrarFeedback(mensagem, sucesso) {
@@ -263,7 +286,6 @@ function mostrarFeedback(mensagem, sucesso) {
   if (!feedback) return;
 
   feedback.textContent = mensagem;
-
   feedback.classList.remove("feedback-ok", "feedback-erro");
 
   if (sucesso === true) feedback.classList.add("feedback-ok");
@@ -271,12 +293,12 @@ function mostrarFeedback(mensagem, sucesso) {
 }
 
 function mostrarFimDeJogo() {
-  const estrelas = erros === 0 ? "⭐⭐⭐" : erros <= 2 ? "⭐⭐" : "⭐";
+  const estrelas = erros === 0 ? "⭐⭐⭐" : erros <= 3 ? "⭐⭐" : "⭐";
 
   app.innerHTML = `
     <section class="tela">
       <div class="logo">🏁</div>
-      <h1>Missão concluída!</h1>
+      <h1>Alfabeto concluído!</h1>
       <p class="subtitulo">${estrelas}</p>
 
       <div class="card centro">

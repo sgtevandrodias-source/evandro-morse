@@ -205,3 +205,18 @@ button {
   color: #ffd6d6;
   font-weight: bold;
 }
+.card-letra {
+  text-align: center;
+}
+
+.codigo-alvo {
+  font-size: 34px;
+  font-weight: bold;
+  letter-spacing: 8px;
+  margin: -8px 0 18px;
+  opacity: 0.95;
+}
+
+.oculto {
+  display: none;
+}
