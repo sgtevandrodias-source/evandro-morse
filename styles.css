@@ -11,7 +11,7 @@ body {
 
 .tela {
   min-height: 100vh;
-  padding: 40px 24px;
+  padding: 32px 24px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +19,7 @@ body {
 }
 
 .logo {
-  margin-top: 40px;
+  margin-top: 30px;
   font-size: 64px;
 }
 
@@ -31,7 +31,7 @@ h1 {
 .subtitulo {
   letter-spacing: 4px;
   opacity: 0.9;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .card {
@@ -57,7 +57,7 @@ h1 {
 button {
   width: 100%;
   max-width: 480px;
-  margin-top: 28px;
+  margin-top: 20px;
   padding: 18px;
   border-radius: 999px;
   border: 2px solid white;
@@ -88,6 +88,7 @@ button {
   border: 1px solid rgba(255,255,255,0.4);
   font-size: 36px;
   letter-spacing: 10px;
+  overflow-wrap: anywhere;
 }
 
 .painel-status {
@@ -108,40 +109,51 @@ button {
 .area-transmissao {
   width: 100%;
   max-width: 480px;
-  min-height: 160px;
-  margin: 16px 0;
-  padding: 24px;
+  margin: 14px 0;
+  padding: 18px;
   border-radius: 24px;
-  background: rgba(255,255,255,0.12);
-  border: 2px dashed rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.45);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
   user-select: none;
-  touch-action: manipulation;
-  transition: 0.15s ease;
-}
-
-.area-transmissao:active {
-  transform: scale(0.98);
-  background: rgba(255,255,255,0.22);
 }
 
 .area-transmissao.transmitindo {
-  background: rgba(255,255,255,0.25);
-  border-style: solid;
-  transform: scale(0.99);
-  box-shadow: 0 0 24px rgba(255,255,255,0.25);
-}
-
-.icone-chave {
-  font-size: 42px;
+  background: rgba(255,255,255,0.18);
+  box-shadow: 0 0 24px rgba(255,255,255,0.20);
 }
 
 .area-transmissao small {
   opacity: 0.85;
+}
+
+.chave-morse {
+  width: 120px;
+  height: 120px;
+  max-width: 120px;
+  margin: 8px 0 4px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid white;
+  background: rgba(0,0,0,0.22);
+  color: white;
+  font-size: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+  box-shadow: inset 0 -8px 0 rgba(0,0,0,0.25), 0 8px 18px rgba(0,0,0,0.25);
+}
+
+.chave-morse.pressionada {
+  transform: scale(0.93);
+  background: rgba(255,255,255,0.22);
+  box-shadow: inset 0 5px 0 rgba(0,0,0,0.28), 0 0 18px rgba(255,255,255,0.35);
 }
 
 .barra-transmissao {
@@ -159,4 +171,28 @@ button {
   background: white;
   border-radius: 999px;
   transition: width 0.03s linear;
+}
+
+@media (max-width: 480px) {
+  .tela {
+    padding: 24px 18px 60px;
+  }
+
+  .subtitulo {
+    margin-bottom: 28px;
+  }
+
+  .alvo {
+    font-size: 72px;
+  }
+
+  .visor {
+    font-size: 30px;
+  }
+
+  .chave-morse {
+    width: 110px;
+    height: 110px;
+    max-width: 110px;
+  }
 }

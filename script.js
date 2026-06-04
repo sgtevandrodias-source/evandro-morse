@@ -16,6 +16,10 @@ let combo = 0;
 let inicioToque = 0;
 let intervaloTransmissao = null;
 
+let audioCtx = null;
+let oscilador = null;
+let ganho = null;
+
 function patenteAtual() {
   if (pontos >= 1500) return "3º Sgt";
   if (pontos >= 900) return "Cabo";
@@ -72,23 +76,26 @@ function mostrarMissao() {
       <div class="card centro">
         <h2>Transmita:</h2>
         <div class="alvo">${missao.alvo}</div>
-        <p>Use a chave virtual. Toque curto gera ponto. Toque longo gera traço.</p>
+        <p>Toque curto = ponto. Toque longo = traço.</p>
       </div>
 
       <div class="visor" id="visor">...</div>
 
-      <div 
-        class="area-transmissao"
-        id="areaTransmissao"
-        onmousedown="iniciarToque(event)"
-        onmouseup="finalizarToque(event)"
-        onmouseleave="cancelarToque()"
-        ontouchstart="iniciarToque(event)"
-        ontouchend="finalizarToque(event)"
-      >
-        <div class="icone-chave" id="iconeChave">📡</div>
+      <div class="area-transmissao" id="areaTransmissao">
         <strong id="textoTransmissao">PRONTO PARA TRANSMITIR</strong>
-        <small>Toque curto = ponto • toque longo = traço</small>
+        <small>Use apenas a chave circular abaixo</small>
+
+        <button
+          class="chave-morse"
+          id="chaveMorse"
+          onmousedown="iniciarToque(event)"
+          onmouseup="finalizarToque(event)"
+          onmouseleave="cancelarToque()"
+          ontouchstart="iniciarToque(event)"
+          ontouchend="finalizarToque(event)"
+        >
+          📡
+        </button>
 
         <div class="barra-transmissao">
           <div class="barra-progresso" id="barraProgresso"></div>
@@ -108,13 +115,16 @@ function iniciarToque(event) {
 
   inicioToque = Date.now();
   iniciarSomMorse();
+
   const area = document.getElementById("areaTransmissao");
+  const chave = document.getElementById("chaveMorse");
   const texto = document.getElementById("textoTransmissao");
   const barra = document.getElementById("barraProgresso");
 
-  if (!area || !texto || !barra) return;
+  if (!area || !chave || !texto || !barra) return;
 
   area.classList.add("transmitindo");
+  chave.classList.add("pressionada");
   texto.textContent = "TRANSMITINDO...";
   barra.style.width = "0%";
 
@@ -129,12 +139,11 @@ function iniciarToque(event) {
 
 function finalizarToque(event) {
   if (event) event.preventDefault();
-
   if (!inicioToque) return;
 
   const duracao = Date.now() - inicioToque;
-  pararSomMorse();
 
+  pararSomMorse();
   pararIndicadorTransmissao();
 
   if (duracao < 180) {
@@ -147,6 +156,7 @@ function finalizarToque(event) {
 }
 
 function cancelarToque() {
+  pararSomMorse();
   pararIndicadorTransmissao();
   inicioToque = 0;
 }
@@ -155,17 +165,15 @@ function pararIndicadorTransmissao() {
   clearInterval(intervaloTransmissao);
 
   const area = document.getElementById("areaTransmissao");
+  const chave = document.getElementById("chaveMorse");
   const texto = document.getElementById("textoTransmissao");
   const barra = document.getElementById("barraProgresso");
 
   if (area) area.classList.remove("transmitindo");
+  if (chave) chave.classList.remove("pressionada");
   if (texto) texto.textContent = "PRONTO PARA TRANSMITIR";
   if (barra) barra.style.width = "0%";
 }
-
-let audioCtx = null;
-let oscilador = null;
-let ganho = null;
 
 function iniciarSomMorse() {
   audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
@@ -175,7 +183,6 @@ function iniciarSomMorse() {
 
   oscilador.type = "sine";
   oscilador.frequency.value = 700;
-
   ganho.gain.value = 0.25;
 
   oscilador.connect(ganho);
@@ -196,6 +203,7 @@ function pararSomMorse() {
     ganho = null;
   }
 }
+
 function adicionarCodigo(simbolo) {
   codigoDigitado += simbolo;
   atualizarVisor();
@@ -260,7 +268,6 @@ function mostrarFimDeJogo() {
 
 function salvarPontuacao() {
   const nome = prompt("Digite seu nome para o ranking:");
-
   if (!nome) return;
 
   const ranking = JSON.parse(localStorage.getItem("rankingMorse")) || [];
@@ -273,7 +280,6 @@ function salvarPontuacao() {
   });
 
   ranking.sort((a, b) => b.pontos - a.pontos);
-
   localStorage.setItem("rankingMorse", JSON.stringify(ranking.slice(0, 5)));
 
   mostrarRanking();
