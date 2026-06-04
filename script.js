@@ -39,8 +39,37 @@ let pressionando = false;
 let inicioPressionamento = 0;
 
 let audioContext = null;
+let osciladorMorse = null;
+let ganhoMorse = null;
+let filtroMorse = null;
 
-const LIMITE_TOQUE_LONGO = 280;
+/*
+  Configuração Morse realista
+
+  Fórmula tradicional:
+  unidade em ms = 1200 / WPM
+
+  Em 12 palavras por minuto:
+  unidade = 1200 / 12 = 100 ms
+
+  ponto  = 1 unidade = 100 ms
+  traço  = 3 unidades = 300 ms
+*/
+const WPM = 12;
+const UNIDADE_MORSE = 1200 / WPM;
+
+const DURACAO_PONTO_IDEAL = UNIDADE_MORSE;
+const DURACAO_TRACO_IDEAL = UNIDADE_MORSE * 3;
+
+// Limite para decidir se o operador fez ponto ou traço.
+// Entre 1 e 3 unidades, usamos 2 unidades como fronteira.
+const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
+
+// Frequência clássica agradável para sidetone Morse.
+const FREQUENCIA_SIDETONE = 650;
+
+// Volume do sidetone.
+const VOLUME_MORSE = 0.22;
 
 btnIniciar.addEventListener("click", iniciarJogo);
 btnLimpar.addEventListener("click", limparCodigo);
@@ -50,8 +79,8 @@ btnJogarNovamente.addEventListener("click", reiniciarJogo);
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
-btnMorse.addEventListener("pointerleave", cancelarSeNecessario);
-btnMorse.addEventListener("pointercancel", cancelarSeNecessario);
+btnMorse.addEventListener("pointerleave", finalizarPressionamento);
+btnMorse.addEventListener("pointercancel", cancelarPressionamento);
 
 document.addEventListener("keydown", (evento) => {
   if (evento.code !== "Space") return;
@@ -84,7 +113,17 @@ function iniciarJogo() {
 }
 
 function reiniciarJogo() {
-  iniciarJogo();
+  pararTomMorse();
+
+  indiceMissao = 0;
+  codigoAtual = "";
+  pontuacao = 0;
+  acertos = 0;
+  pressionando = false;
+
+  mostrarTela(telaJogo);
+  carregarMissao();
+  atualizarPlacar();
 }
 
 function mostrarTela(tela) {
@@ -111,53 +150,69 @@ function carregarMissao() {
 function iniciarPressionamento() {
   prepararAudio();
 
+  if (pressionando) return;
+
   pressionando = true;
-  inicioPressionamento = Date.now();
+  inicioPressionamento = performance.now();
 
   btnMorse.classList.add("pressionado");
+
+  iniciarTomMorse();
 }
 
 function finalizarPressionamento() {
   if (!pressionando) return;
 
-  const duracao = Date.now() - inicioPressionamento;
-
-  if (duracao >= LIMITE_TOQUE_LONGO) {
-    adicionarSimbolo("-");
-    tocarBeep(520, 260);
-  } else {
-    adicionarSimbolo(".");
-    tocarBeep(720, 100);
-  }
+  const fimPressionamento = performance.now();
+  const duracao = fimPressionamento - inicioPressionamento;
 
   pressionando = false;
   btnMorse.classList.remove("pressionado");
+
+  pararTomMorse();
+
+  const simbolo = duracao < LIMITE_PONTO_TRACO ? "." : "-";
+
+  adicionarSimbolo(simbolo);
+
+  mostrarFeedbackManipulacao(simbolo, duracao);
 }
 
-function cancelarSeNecessario() {
+function cancelarPressionamento() {
   if (!pressionando) return;
 
   pressionando = false;
   btnMorse.classList.remove("pressionado");
+
+  pararTomMorse();
 }
 
 function adicionarSimbolo(simbolo) {
   codigoAtual += simbolo;
   atualizarCodigoNaTela();
-
-  feedback.textContent = "";
-  feedback.className = "feedback";
 }
 
 function atualizarCodigoNaTela() {
   codigoDigitado.textContent = codigoAtual || "—";
 }
 
+function mostrarFeedbackManipulacao(simbolo, duracao) {
+  const duracaoArredondada = Math.round(duracao);
+
+  if (simbolo === ".") {
+    feedback.textContent = `Ponto transmitido (${duracaoArredondada} ms).`;
+  } else {
+    feedback.textContent = `Traço transmitido (${duracaoArredondada} ms).`;
+  }
+
+  feedback.className = "feedback";
+}
+
 function limparCodigo() {
   codigoAtual = "";
   atualizarCodigoNaTela();
 
-  tocarBeep(380, 80);
+  tocarCliqueLimpar();
 
   feedback.textContent = "Código limpo. Transmita novamente.";
   feedback.className = "feedback";
@@ -199,7 +254,7 @@ function confirmarEnvio() {
     setTimeout(() => {
       codigoAtual = "";
       atualizarCodigoNaTela();
-    }, 900);
+    }, 1000);
   }
 }
 
@@ -230,7 +285,7 @@ function finalizarJogo() {
 }
 
 /* =========================
-   ÁREA DE SONS DO JOGO
+   ÁREA DE ÁUDIO MORSE REALISTA
 ========================= */
 
 function prepararAudio() {
@@ -243,16 +298,88 @@ function prepararAudio() {
   }
 }
 
-function tocarBeep(frequencia = 700, duracao = 120, volume = 0.18) {
+function iniciarTomMorse() {
+  prepararAudio();
+
+  pararTomMorse();
+
+  osciladorMorse = audioContext.createOscillator();
+  ganhoMorse = audioContext.createGain();
+  filtroMorse = audioContext.createBiquadFilter();
+
+  /*
+    square deixa o som mais parecido com sidetone telegráfico,
+    menos "piano eletrônico" e mais rádio.
+  */
+  osciladorMorse.type = "square";
+  osciladorMorse.frequency.setValueAtTime(
+    FREQUENCIA_SIDETONE,
+    audioContext.currentTime
+  );
+
+  /*
+    Filtro suaviza o square para não ficar agressivo demais.
+  */
+  filtroMorse.type = "lowpass";
+  filtroMorse.frequency.setValueAtTime(1500, audioContext.currentTime);
+
+  /*
+    Ataque rápido, mas não instantâneo.
+    Isso evita estalo seco no início da manipulação.
+  */
+  ganhoMorse.gain.setValueAtTime(0.001, audioContext.currentTime);
+  ganhoMorse.gain.exponentialRampToValueAtTime(
+    VOLUME_MORSE,
+    audioContext.currentTime + 0.012
+  );
+
+  osciladorMorse.connect(filtroMorse);
+  filtroMorse.connect(ganhoMorse);
+  ganhoMorse.connect(audioContext.destination);
+
+  osciladorMorse.start();
+}
+
+function pararTomMorse() {
+  if (!osciladorMorse || !ganhoMorse) return;
+
+  const agora = audioContext.currentTime;
+
+  try {
+    ganhoMorse.gain.cancelScheduledValues(agora);
+    ganhoMorse.gain.setValueAtTime(ganhoMorse.gain.value || VOLUME_MORSE, agora);
+
+    /*
+      Soltura rápida, mas com pequena rampa.
+      Isso simula melhor a chave e evita clique digital artificial.
+    */
+    ganhoMorse.gain.exponentialRampToValueAtTime(0.001, agora + 0.018);
+
+    osciladorMorse.stop(agora + 0.025);
+  } catch (erro) {
+    // Evita travar caso o navegador já tenha parado o oscilador.
+  }
+
+  osciladorMorse = null;
+  ganhoMorse = null;
+  filtroMorse = null;
+}
+
+function tocarTomCurto(frequencia, duracao, volume = 0.14, tipo = "sine") {
   prepararAudio();
 
   const oscilador = audioContext.createOscillator();
   const ganho = audioContext.createGain();
 
-  oscilador.type = "sine";
+  oscilador.type = tipo;
   oscilador.frequency.setValueAtTime(frequencia, audioContext.currentTime);
 
-  ganho.gain.setValueAtTime(volume, audioContext.currentTime);
+  ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
+  ganho.gain.exponentialRampToValueAtTime(
+    volume,
+    audioContext.currentTime + 0.01
+  );
+
   ganho.gain.exponentialRampToValueAtTime(
     0.001,
     audioContext.currentTime + duracao / 1000
@@ -262,33 +389,47 @@ function tocarBeep(frequencia = 700, duracao = 120, volume = 0.18) {
   ganho.connect(audioContext.destination);
 
   oscilador.start();
-  oscilador.stop(audioContext.currentTime + duracao / 1000);
+  oscilador.stop(audioContext.currentTime + duracao / 1000 + 0.02);
+}
+
+function tocarCliqueLimpar() {
+  tocarTomCurto(420, 70, 0.08, "square");
 }
 
 function tocarAcerto() {
-  tocarBeep(660, 90, 0.16);
+  /*
+    Acerto discreto para não quebrar muito a experiência Morse.
+  */
+  tocarTomCurto(760, 80, 0.09, "sine");
 
   setTimeout(() => {
-    tocarBeep(880, 130, 0.16);
-  }, 100);
+    tocarTomCurto(980, 100, 0.09, "sine");
+  }, 90);
 }
 
 function tocarErro() {
-  tocarBeep(220, 180, 0.2);
+  /*
+    Erro curto e grave.
+  */
+  tocarTomCurto(240, 120, 0.11, "sawtooth");
 
   setTimeout(() => {
-    tocarBeep(160, 220, 0.18);
-  }, 160);
+    tocarTomCurto(180, 160, 0.1, "sawtooth");
+  }, 120);
 }
 
 function tocarFinalizacao() {
-  tocarBeep(520, 100, 0.16);
+  /*
+    Finalização como pequena sequência telegráfica,
+    sem virar música de videogame.
+  */
+  tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_PONTO_IDEAL, 0.12, "square");
 
   setTimeout(() => {
-    tocarBeep(660, 100, 0.16);
-  }, 110);
+    tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_PONTO_IDEAL, 0.12, "square");
+  }, UNIDADE_MORSE * 2);
 
   setTimeout(() => {
-    tocarBeep(880, 180, 0.16);
-  }, 230);
+    tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_TRACO_IDEAL, 0.12, "square");
+  }, UNIDADE_MORSE * 4);
 }
