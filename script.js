@@ -223,13 +223,9 @@ function pararSomMorse() {
 
 function adicionarCodigo(simbolo) {
   codigoDigitado += simbolo;
-  atualizarVisor();
   verificarAutomaticamente();
 }
 
-function atualizarVisor() {
-  return;
-}
 function verificarAutomaticamente() {
   const missao = missoes[indiceMissao];
 
@@ -269,7 +265,6 @@ function errouMissao() {
 
   setTimeout(() => {
     codigoDigitado = "";
-    atualizarVisor();
     mostrarFeedback("Toque curto = ponto. Toque longo = traço.", null);
   }, 850);
 }
