@@ -107,7 +107,7 @@ function iniciarToque(event) {
   if (event) event.preventDefault();
 
   inicioToque = Date.now();
-
+  iniciarSomMorse();
   const area = document.getElementById("areaTransmissao");
   const texto = document.getElementById("textoTransmissao");
   const barra = document.getElementById("barraProgresso");
@@ -133,15 +133,14 @@ function finalizarToque(event) {
   if (!inicioToque) return;
 
   const duracao = Date.now() - inicioToque;
+  pararSomMorse();
 
   pararIndicadorTransmissao();
 
-  if (duracao < 300) {
+  if (duracao < 180) {
     adicionarCodigo(".");
-    tocarMorse(220);
   } else {
     adicionarCodigo("-");
-    tocarMorse(520);
   }
 
   inicioToque = 0;
@@ -164,27 +163,39 @@ function pararIndicadorTransmissao() {
   if (barra) barra.style.width = "0%";
 }
 
-function tocarMorse(duracao) {
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const oscilador = audioCtx.createOscillator();
-  const ganho = audioCtx.createGain();
+let audioCtx = null;
+let oscilador = null;
+let ganho = null;
+
+function iniciarSomMorse() {
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+
+  oscilador = audioCtx.createOscillator();
+  ganho = audioCtx.createGain();
 
   oscilador.type = "sine";
   oscilador.frequency.value = 700;
 
+  ganho.gain.value = 0.25;
+
   oscilador.connect(ganho);
   ganho.connect(audioCtx.destination);
 
-  ganho.gain.setValueAtTime(0.25, audioCtx.currentTime);
-
   oscilador.start();
-
-  setTimeout(() => {
-    oscilador.stop();
-    audioCtx.close();
-  }, duracao);
 }
 
+function pararSomMorse() {
+  if (oscilador) {
+    oscilador.stop();
+    oscilador.disconnect();
+    oscilador = null;
+  }
+
+  if (ganho) {
+    ganho.disconnect();
+    ganho = null;
+  }
+}
 function adicionarCodigo(simbolo) {
   codigoDigitado += simbolo;
   atualizarVisor();
