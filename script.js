@@ -38,6 +38,8 @@ let acertos = 0;
 let pressionando = false;
 let inicioPressionamento = 0;
 
+let audioContext = null;
+
 const LIMITE_TOQUE_LONGO = 280;
 
 btnIniciar.addEventListener("click", iniciarJogo);
@@ -69,6 +71,8 @@ document.addEventListener("keyup", (evento) => {
 });
 
 function iniciarJogo() {
+  prepararAudio();
+
   indiceMissao = 0;
   codigoAtual = "";
   pontuacao = 0;
@@ -105,6 +109,8 @@ function carregarMissao() {
 }
 
 function iniciarPressionamento() {
+  prepararAudio();
+
   pressionando = true;
   inicioPressionamento = Date.now();
 
@@ -118,8 +124,10 @@ function finalizarPressionamento() {
 
   if (duracao >= LIMITE_TOQUE_LONGO) {
     adicionarSimbolo("-");
+    tocarBeep(520, 260);
   } else {
     adicionarSimbolo(".");
+    tocarBeep(720, 100);
   }
 
   pressionando = false;
@@ -149,6 +157,8 @@ function limparCodigo() {
   codigoAtual = "";
   atualizarCodigoNaTela();
 
+  tocarBeep(380, 80);
+
   feedback.textContent = "Código limpo. Transmita novamente.";
   feedback.className = "feedback";
 }
@@ -157,6 +167,8 @@ function confirmarEnvio() {
   const missao = missoes[indiceMissao];
 
   if (!codigoAtual) {
+    tocarErro();
+
     feedback.textContent = "Transmita pelo menos um ponto ou traço antes de confirmar.";
     feedback.className = "feedback erro";
     return;
@@ -166,6 +178,8 @@ function confirmarEnvio() {
     pontuacao += 10;
     acertos += 1;
 
+    tocarAcerto();
+
     feedback.textContent = `Correto! ${missao.alvo} em Morse é ${missao.codigo}.`;
     feedback.className = "feedback sucesso";
 
@@ -174,6 +188,8 @@ function confirmarEnvio() {
     setTimeout(proximaMissao, 900);
   } else {
     pontuacao = Math.max(0, pontuacao - 2);
+
+    tocarErro();
 
     feedback.textContent = `Não foi dessa vez. Você enviou ${codigoAtual}, mas ${missao.alvo} é ${missao.codigo}.`;
     feedback.className = "feedback erro";
@@ -206,7 +222,73 @@ function atualizarPlacar() {
 function finalizarJogo() {
   mostrarTela(telaFinal);
 
+  tocarFinalizacao();
+
   resultadoFinal.textContent =
     `Você acertou ${acertos} de ${missoes.length} missões e fez ${pontuacao} pontos. ` +
     `Treinamento concluído. O rádio está operacional.`;
+}
+
+/* =========================
+   ÁREA DE SONS DO JOGO
+========================= */
+
+function prepararAudio() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+}
+
+function tocarBeep(frequencia = 700, duracao = 120, volume = 0.18) {
+  prepararAudio();
+
+  const oscilador = audioContext.createOscillator();
+  const ganho = audioContext.createGain();
+
+  oscilador.type = "sine";
+  oscilador.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+
+  ganho.gain.setValueAtTime(volume, audioContext.currentTime);
+  ganho.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioContext.currentTime + duracao / 1000
+  );
+
+  oscilador.connect(ganho);
+  ganho.connect(audioContext.destination);
+
+  oscilador.start();
+  oscilador.stop(audioContext.currentTime + duracao / 1000);
+}
+
+function tocarAcerto() {
+  tocarBeep(660, 90, 0.16);
+
+  setTimeout(() => {
+    tocarBeep(880, 130, 0.16);
+  }, 100);
+}
+
+function tocarErro() {
+  tocarBeep(220, 180, 0.2);
+
+  setTimeout(() => {
+    tocarBeep(160, 220, 0.18);
+  }, 160);
+}
+
+function tocarFinalizacao() {
+  tocarBeep(520, 100, 0.16);
+
+  setTimeout(() => {
+    tocarBeep(660, 100, 0.16);
+  }, 110);
+
+  setTimeout(() => {
+    tocarBeep(880, 180, 0.16);
+  }, 230);
 }
