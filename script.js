@@ -51,6 +51,9 @@ const listaRanking = document.getElementById("listaRanking");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
 
+const cardModoIntermediario = document.getElementById("cardModoIntermediario");
+const cardModoAvancado = document.getElementById("cardModoAvancado");
+
 /* =========================
    TABELA MORSE
 ========================= */
@@ -286,10 +289,6 @@ let filtroMorse = null;
 
 let ultimoResultado = null;
 
-/*
-  Configuração Morse realista.
-  12 WPM = unidade de 100 ms.
-*/
 const WPM = 12;
 const UNIDADE_MORSE = 1200 / WPM;
 const DURACAO_PONTO_IDEAL = UNIDADE_MORSE;
@@ -327,6 +326,14 @@ function chaveInicianteConcluido() {
   return `operadorMorseInicianteConcluido_${getChaveOperador()}`;
 }
 
+function chaveIntermediarioConcluido() {
+  return `operadorMorseIntermediarioConcluido_${getChaveOperador()}`;
+}
+
+function chaveAvancadoConcluido() {
+  return `operadorMorseAvancadoConcluido_${getChaveOperador()}`;
+}
+
 /* =========================
    EVENTOS
 ========================= */
@@ -351,6 +358,14 @@ btnRankingFinal.addEventListener("click", abrirRanking);
 btnVoltarCampanhaRanking.addEventListener("click", entrarCampanha);
 btnVoltarInicio.addEventListener("click", voltarInicio);
 btnLimparRanking.addEventListener("click", limparRanking);
+
+if (cardModoIntermediario) {
+  cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
+}
+
+if (cardModoAvancado) {
+  cardModoAvancado.addEventListener("click", abrirModoAvancado);
+}
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
@@ -435,14 +450,90 @@ function salvarNomeOperador() {
 }
 
 /* =========================
+   MODOS
+========================= */
+
+function modoInicianteConcluido() {
+  return localStorage.getItem(chaveInicianteConcluido()) === "sim";
+}
+
+function modoIntermediarioConcluido() {
+  return localStorage.getItem(chaveIntermediarioConcluido()) === "sim";
+}
+
+function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
+  const card = document.getElementById(idCard);
+  if (!card) return;
+
+  const badge = card.querySelector(".badge");
+  const status = card.querySelector(".modo-status span");
+
+  card.classList.toggle("bloqueado", !liberado);
+  card.classList.toggle("ativo", liberado);
+
+  if (badge) {
+    badge.textContent = textoBadge;
+    badge.className = liberado ? "badge sucesso" : "badge alerta";
+  }
+
+  if (status) {
+    status.textContent = textoStatus;
+  }
+}
+
+function abrirModoIntermediario() {
+  salvarNomeOperador();
+
+  if (!modoInicianteConcluido()) {
+    alert("Conclua o modo Iniciante para liberar o Intermediário.");
+    return;
+  }
+
+  alert(
+    "Modo Intermediário liberado.\n\n" +
+    "Próxima etapa: implementar separação automática por tempo, sem botões de espaço."
+  );
+}
+
+function abrirModoAvancado() {
+  salvarNomeOperador();
+
+  if (!modoIntermediarioConcluido()) {
+    alert("Conclua o modo Intermediário para liberar o Avançado.");
+    return;
+  }
+
+  alert(
+    "Modo Avançado liberado.\n\n" +
+    "Próxima etapa: missões operacionais com tempo limite e menor apoio visual."
+  );
+}
+
+/* =========================
    MAPA DA CAMPANHA
 ========================= */
 
 function renderizarCampanha() {
   const nivelLiberado = obterNivelLiberado();
   const operador = getNomeOperadorAtual();
+  const inicianteConcluido = modoInicianteConcluido();
+  const intermediarioConcluido = modoIntermediarioConcluido();
 
   statusIniciante.textContent = `${operador}: nível liberado ${nivelLiberado + 1}`;
+
+  atualizarCardModo(
+    "cardModoIntermediario",
+    inicianteConcluido,
+    inicianteConcluido ? "Liberado" : "Bloqueado",
+    inicianteConcluido ? "Modo Intermediário liberado" : "Conclua o Iniciante para liberar"
+  );
+
+  atualizarCardModo(
+    "cardModoAvancado",
+    intermediarioConcluido,
+    intermediarioConcluido ? "Liberado" : "Bloqueado",
+    intermediarioConcluido ? "Modo Avançado liberado" : "Conclua o Intermediário para liberar"
+  );
 
   gridNiveis.innerHTML = NIVEIS_INICIANTE
     .map((nivel, index) => {
@@ -825,6 +916,8 @@ function adicionarSimbolo(simbolo) {
 }
 
 function inserirEspacoLetra() {
+  piscarBotao(btnEspacoLetra);
+
   if (!codigoAtual.trim()) return;
 
   if (!codigoAtual.endsWith(" ")) {
@@ -835,6 +928,8 @@ function inserirEspacoLetra() {
 }
 
 function inserirEspacoPalavra() {
+  piscarBotao(btnEspacoPalavra);
+
   if (!codigoAtual.trim()) return;
 
   codigoAtual = codigoAtual.trim();
@@ -844,6 +939,16 @@ function inserirEspacoPalavra() {
   }
 
   atualizarCodigoNaTela();
+}
+
+function piscarBotao(botao) {
+  if (!botao) return;
+
+  botao.classList.add("piscou");
+
+  setTimeout(() => {
+    botao.classList.remove("piscou");
+  }, 140);
 }
 
 function atualizarCodigoNaTela() {

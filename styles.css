@@ -946,3 +946,9 @@ p {
     padding: 6px 3px;
   }
 }
+ .btn.piscou {
+  background: var(--azul) !important;
+  color: #06111f !important;
+  transform: scale(0.96);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+}
