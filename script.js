@@ -17,6 +17,7 @@ const contadorMissaoEl = document.getElementById("contadorMissao");
 const acertosEl = document.getElementById("acertos");
 const resultadoFinal = document.getElementById("resultadoFinal");
 const faseAtualEl = document.getElementById("faseAtual");
+const dicaMissaoEl = document.getElementById("dicaMissao");
 
 /* =========================
    TABELA MORSE
@@ -229,6 +230,10 @@ function carregarMissao() {
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
   contadorMissaoEl.textContent = `${indiceMissao + 1}/${missoes.length}`;
+
+  if (dicaMissaoEl) {
+    dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
+  }
 
   if (faseAtualEl) {
     faseAtualEl.textContent = missao.tipo;
