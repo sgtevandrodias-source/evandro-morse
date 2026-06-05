@@ -6,74 +6,161 @@
 
   <title>Evandro Morse</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app">
     <!-- TELA INICIAL -->
     <section id="telaInicial" class="tela ativa">
-      <div class="card hero">
-        <div class="badge">Missão de Comunicação</div>
+      <div class="hero-game">
+        <div class="marca-jogo">
+          <div class="icone-radio">⌁</div>
+          <div>
+            <span>Academia de Telegrafia</span>
+            <h1>Evandro Morse</h1>
+          </div>
+        </div>
 
-        <h1>Evandro Morse</h1>
-
-        <p>
-          Treine manipulação em código Morse, avance por níveis, conquiste patentes
-          e entre no ranking local do seu aparelho.
+        <p class="subtitulo-hero">
+          Domine o código Morse, avance na carreira, desbloqueie fases e torne-se um operador operacional.
         </p>
 
-        <div class="campo-operador">
-          <label for="inputNomeOperador">Nome do operador</label>
-          <input
-            id="inputNomeOperador"
-            type="text"
-            maxlength="24"
-            placeholder="Ex: Evandro"
-          />
-        </div>
-
-        <div class="instrucoes">
-          <div>
-            <strong>Toque curto</strong>
-            <span>Ponto .</span>
+        <div class="card painel-inicial">
+          <div class="campo-operador">
+            <label for="inputNomeOperador">Nome do operador</label>
+            <input
+              id="inputNomeOperador"
+              type="text"
+              maxlength="24"
+              placeholder="Ex: Evandro"
+            />
           </div>
 
-          <div>
-            <strong>Toque longo</strong>
-            <span>Traço -</span>
+          <div class="cards-regras">
+            <div>
+              <strong>80%</strong>
+              <span>aprova no nível</span>
+            </div>
+
+            <div>
+              <strong>90%</strong>
+              <span>gera bônus</span>
+            </div>
+
+            <div>
+              <strong>12 WPM</strong>
+              <span>meta operacional</span>
+            </div>
           </div>
 
-          <div>
-            <strong>Meta</strong>
-            <span>12 WPM</span>
+          <div class="botoes-inicio">
+            <button id="btnEntrarCampanha" class="btn principal">
+              Entrar na campanha
+            </button>
+
+            <button id="btnAbrirRanking" class="btn secundario">
+              Ranking local
+            </button>
           </div>
+
+          <p class="texto-pequeno">
+            Ranking salvo neste aparelho/navegador. No futuro, esta estrutura poderá evoluir para ranking global.
+          </p>
         </div>
-
-        <div class="botoes-inicio">
-          <button id="btnIniciar" class="btn principal">
-            Iniciar campanha
-          </button>
-
-          <button id="btnAbrirRanking" class="btn secundario">
-            Ver ranking local
-          </button>
-        </div>
-
-        <p class="texto-pequeno">
-          Regra: 80% aprova. 90% dá bônus. Abaixo de 80%, repete o nível.
-        </p>
       </div>
+    </section>
+
+    <!-- TELA CAMPANHA -->
+    <section id="telaCampanha" class="tela">
+      <header class="cabecalho-app">
+        <div>
+          <span class="label">Campanha</span>
+          <strong>Formação do Operador Morse</strong>
+        </div>
+
+        <button id="btnVoltarInicioCampanha" class="btn compacto secundario">
+          Início
+        </button>
+      </header>
+
+      <section class="grid-modos">
+        <article id="cardModoIniciante" class="card modo-card ativo">
+          <div class="modo-topo">
+            <span class="badge sucesso">Liberado</span>
+            <span class="modo-numero">01</span>
+          </div>
+
+          <h2>Iniciante</h2>
+
+          <p>
+            Aprenda letras, números, palavras e frases usando botões de apoio para separar letras e palavras.
+          </p>
+
+          <div class="modo-status">
+            <span id="statusIniciante">Nível atual: 1</span>
+          </div>
+        </article>
+
+        <article id="cardModoIntermediario" class="card modo-card bloqueado">
+          <div class="modo-topo">
+            <span class="badge alerta">Em breve</span>
+            <span class="modo-numero">02</span>
+          </div>
+
+          <h2>Intermediário</h2>
+
+          <p>
+            Sem botões de espaço. O sistema interpretará a pausa entre sinais, letras e palavras.
+          </p>
+
+          <div class="modo-status">
+            <span>Separação automática por tempo</span>
+          </div>
+        </article>
+
+        <article id="cardModoAvancado" class="card modo-card bloqueado">
+          <div class="modo-topo">
+            <span class="badge alerta">Em breve</span>
+            <span class="modo-numero">03</span>
+          </div>
+
+          <h2>Avançado</h2>
+
+          <p>
+            Mensagens operacionais, menos dicas, ritmo rígido, tempo limite e cobrança real de transmissão.
+          </p>
+
+          <div class="modo-status">
+            <span>Operador em missão</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="card mapa-campanha">
+        <div class="titulo-secao">
+          <div>
+            <span class="label">Modo Iniciante</span>
+            <h2>Mapa de progressão</h2>
+          </div>
+
+          <button id="btnContinuarNivel" class="btn principal compacto">
+            Continuar
+          </button>
+        </div>
+
+        <div id="gridNiveis" class="grid-niveis"></div>
+      </section>
     </section>
 
     <!-- TELA DO JOGO -->
     <section id="telaJogo" class="tela">
-      <header class="topo">
-        <div>
-          <span class="label">Operador</span>
-          <strong id="nomeOperador">Operador</strong>
+      <header class="topo-jogo">
+        <div class="status-card">
+          <span class="label">Patente</span>
+          <strong id="nomeOperador">Bisonho</strong>
         </div>
 
-        <div>
+        <div class="status-card">
           <span class="label">Pontuação</span>
           <strong id="pontuacao">0</strong>
         </div>
@@ -90,7 +177,7 @@
         <p id="dicaMissao">Pressione: .</p>
 
         <div class="painel-codigo">
-          <span>Código enviado:</span>
+          <span>Código enviado</span>
           <strong id="codigoDigitado">—</strong>
         </div>
 
@@ -136,14 +223,20 @@
         </div>
       </section>
 
-      <button id="btnReiniciar" class="btn discreto">
-        Reiniciar nível
-      </button>
+      <div class="barra-rodape-jogo">
+        <button id="btnReiniciar" class="btn discreto">
+          Reiniciar nível
+        </button>
+
+        <button id="btnVoltarCampanha" class="btn discreto">
+          Mapa da campanha
+        </button>
+      </div>
     </section>
 
     <!-- TELA FINAL DO NÍVEL -->
     <section id="telaFinal" class="tela">
-      <div class="card hero">
+      <div class="card resultado-card">
         <div id="resultadoBadge" class="badge">Resultado</div>
 
         <h1 id="tituloResultado">Nível concluído</h1>
@@ -181,6 +274,10 @@
             Repetir nível
           </button>
 
+          <button id="btnMapaResultado" class="btn secundario">
+            Mapa da campanha
+          </button>
+
           <button id="btnRankingFinal" class="btn discreto">
             Ver ranking local
           </button>
@@ -190,7 +287,7 @@
 
     <!-- TELA RANKING -->
     <section id="telaRanking" class="tela">
-      <div class="card hero">
+      <div class="card resultado-card">
         <div class="badge">Competição local</div>
 
         <h1>Ranking Local</h1>
@@ -202,11 +299,15 @@
         <div id="listaRanking" class="ranking-lista"></div>
 
         <div class="botoes-resultado">
-          <button id="btnVoltarInicio" class="btn principal">
-            Voltar ao início
+          <button id="btnVoltarCampanhaRanking" class="btn principal">
+            Mapa da campanha
           </button>
 
-          <button id="btnLimparRanking" class="btn secundario">
+          <button id="btnVoltarInicio" class="btn secundario">
+            Início
+          </button>
+
+          <button id="btnLimparRanking" class="btn discreto">
             Limpar ranking
           </button>
         </div>

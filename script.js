@@ -1,21 +1,30 @@
 const telaInicial = document.getElementById("telaInicial");
+const telaCampanha = document.getElementById("telaCampanha");
 const telaJogo = document.getElementById("telaJogo");
 const telaFinal = document.getElementById("telaFinal");
 const telaRanking = document.getElementById("telaRanking");
 
 const inputNomeOperador = document.getElementById("inputNomeOperador");
 
-const btnIniciar = document.getElementById("btnIniciar");
+const btnEntrarCampanha = document.getElementById("btnEntrarCampanha");
 const btnAbrirRanking = document.getElementById("btnAbrirRanking");
+const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
+const btnContinuarNivel = document.getElementById("btnContinuarNivel");
+
 const btnMorse = document.getElementById("btnMorse");
 const btnLimpar = document.getElementById("btnLimpar");
 const btnEnviar = document.getElementById("btnEnviar");
 const btnEspacoLetra = document.getElementById("btnEspacoLetra");
 const btnEspacoPalavra = document.getElementById("btnEspacoPalavra");
 const btnReiniciar = document.getElementById("btnReiniciar");
+const btnVoltarCampanha = document.getElementById("btnVoltarCampanha");
+
 const btnJogarNovamente = document.getElementById("btnJogarNovamente");
 const btnProximoNivel = document.getElementById("btnProximoNivel");
+const btnMapaResultado = document.getElementById("btnMapaResultado");
 const btnRankingFinal = document.getElementById("btnRankingFinal");
+
+const btnVoltarCampanhaRanking = document.getElementById("btnVoltarCampanhaRanking");
 const btnVoltarInicio = document.getElementById("btnVoltarInicio");
 const btnLimparRanking = document.getElementById("btnLimparRanking");
 
@@ -39,6 +48,8 @@ const resultadoTempo = document.getElementById("resultadoTempo");
 const resultadoWpm = document.getElementById("resultadoWpm");
 const resultadoPontos = document.getElementById("resultadoPontos");
 const listaRanking = document.getElementById("listaRanking");
+const gridNiveis = document.getElementById("gridNiveis");
+const statusIniciante = document.getElementById("statusIniciante");
 
 /* =========================
    TABELA MORSE
@@ -97,134 +108,153 @@ function textoParaMorse(texto) {
 }
 
 /* =========================
-   NÍVEIS E PATENTES
+   CAMPANHA INICIANTE
 ========================= */
 
-const NIVEIS = [
+const NIVEIS_INICIANTE = [
   {
     numero: 1,
     patente: "Bisonho",
     titulo: "Instrução Básica",
+    descricao: "Primeiro contato com ponto e traço.",
     missoes: ["E", "T", "E", "T", "A"]
   },
   {
     numero: 2,
     patente: "Recruta",
     titulo: "Primeiras Letras",
+    descricao: "Letras simples com combinações curtas.",
     missoes: ["E", "T", "A", "N", "M"]
   },
   {
     numero: 3,
     patente: "Soldado",
     titulo: "Letras Simples",
+    descricao: "Sequências básicas de pontos e traços.",
     missoes: ["I", "M", "S", "O", "A", "N"]
   },
   {
     numero: 4,
     patente: "Soldado Safo",
     titulo: "Letras Intermediárias I",
+    descricao: "Padrões mais variados e exigência maior.",
     missoes: ["R", "K", "D", "U", "S", "O"]
   },
   {
     numero: 5,
     patente: "Cabo",
     titulo: "Letras Intermediárias II",
+    descricao: "Mais memória e precisão na manipulação.",
     missoes: ["C", "P", "L", "W", "R", "K"]
   },
   {
     numero: 6,
     patente: "3º Sargento",
     titulo: "Letras Avançadas I",
+    descricao: "Letras com padrões mais longos.",
     missoes: ["F", "G", "H", "V", "D", "U"]
   },
   {
     numero: 7,
     patente: "2º Sargento",
     titulo: "Letras Avançadas II",
+    descricao: "As letras mais difíceis do alfabeto Morse.",
     missoes: ["B", "J", "Q", "X", "Y", "Z"]
   },
   {
     numero: 8,
     patente: "1º Sargento",
     titulo: "Números I",
+    descricao: "Primeira etapa numérica.",
     missoes: ["1", "2", "3", "4", "5"]
   },
   {
     numero: 9,
     patente: "Subtenente",
     titulo: "Números II",
+    descricao: "Segunda etapa numérica.",
     missoes: ["6", "7", "8", "9", "0"]
   },
   {
     numero: 10,
     patente: "Cadete",
     titulo: "Mistura Letra e Número",
+    descricao: "Caracteres mistos na mesma missão.",
     missoes: ["A1", "B2", "C3", "D4", "E5"]
   },
   {
     numero: 11,
     patente: "Aspirante",
     titulo: "Palavras Curtas",
+    descricao: "Primeiro uso real de separação entre letras.",
     missoes: ["SOS", "RIO", "MAR", "SOL", "QSL"]
   },
   {
     numero: 12,
     patente: "2º Tenente",
     titulo: "Palavras Médias",
+    descricao: "Palavras maiores e ritmo mais regular.",
     missoes: ["MORSE", "RADIO", "FOCO", "SINAL", "TORRE"]
   },
   {
     numero: 13,
     patente: "1º Tenente",
     titulo: "Indicativos",
+    descricao: "Códigos usados em comunicação operacional.",
     missoes: ["QTH", "QRA", "QSL", "QTC", "QRV"]
   },
   {
     numero: 14,
     patente: "Capitão",
     titulo: "Frases Curtas",
+    descricao: "Primeiro uso de separação entre palavras.",
     missoes: ["QSL OK", "QRV 5", "QTH RIO", "SINAL OK", "RADIO 1"]
   },
   {
     numero: 15,
     patente: "Major",
     titulo: "Frases com Números",
+    descricao: "Frases misturando palavras e algarismos.",
     missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
   },
   {
     numero: 16,
     patente: "Tenente-Coronel",
     titulo: "Mensagens Operacionais I",
+    descricao: "Mensagens simples com sentido operacional.",
     missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
   },
   {
     numero: 17,
     patente: "Coronel",
     titulo: "Mensagens Operacionais II",
+    descricao: "Mensagens com palavras e números.",
     missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
   },
   {
     numero: 18,
     patente: "General de Brigada",
     titulo: "Transmissão Avançada",
+    descricao: "Frases maiores com mais exigência de regularidade.",
     missoes: ["OPERADOR QRV", "SINAL QSL 5", "BASE RADIO OK", "QTC POSTO 7", "TORRE SINAL 9"]
   },
   {
     numero: 19,
     patente: "General de Divisão",
     titulo: "Mensagem Longa",
+    descricao: "Controle mental e constância até o fim.",
     missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123", "BASE OPERADOR OK"]
   },
   {
     numero: 20,
     patente: "General de Exército",
-    titulo: "Missão Final",
+    titulo: "Missão Final Iniciante",
+    descricao: "Junta letras, números, palavras e frases.",
     missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"]
   }
 ];
 
 const PATENTE_FINAL = "Marechal";
-
 const APROVEITAMENTO_MINIMO = 80;
 const APROVEITAMENTO_BONUS = 90;
 const META_WPM = 12;
@@ -272,16 +302,24 @@ const VOLUME_MORSE = 0.22;
    EVENTOS
 ========================= */
 
-btnIniciar.addEventListener("click", iniciarCampanha);
+btnEntrarCampanha.addEventListener("click", entrarCampanha);
 btnAbrirRanking.addEventListener("click", abrirRanking);
+btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
+btnContinuarNivel.addEventListener("click", continuarNivelAtual);
+
 btnLimpar.addEventListener("click", limparCodigo);
 btnEnviar.addEventListener("click", confirmarEnvio);
 btnEspacoLetra.addEventListener("click", inserirEspacoLetra);
 btnEspacoPalavra.addEventListener("click", inserirEspacoPalavra);
 btnReiniciar.addEventListener("click", reiniciarNivel);
+btnVoltarCampanha.addEventListener("click", entrarCampanha);
+
 btnJogarNovamente.addEventListener("click", repetirNivel);
 btnProximoNivel.addEventListener("click", avancarProximoNivel);
+btnMapaResultado.addEventListener("click", entrarCampanha);
 btnRankingFinal.addEventListener("click", abrirRanking);
+
+btnVoltarCampanhaRanking.addEventListener("click", entrarCampanha);
 btnVoltarInicio.addEventListener("click", voltarInicio);
 btnLimparRanking.addEventListener("click", limparRanking);
 
@@ -335,20 +373,106 @@ function carregarPreferencias() {
   }
 
   if (!Number.isNaN(nivelSalvo)) {
-    nivelAtualIndex = Math.min(Math.max(nivelSalvo, 0), NIVEIS.length - 1);
+    nivelAtualIndex = Math.min(Math.max(nivelSalvo, 0), NIVEIS_INICIANTE.length - 1);
   }
 }
 
 /* =========================
-   CONTROLE DO JOGO
+   TELAS
 ========================= */
 
-function iniciarCampanha() {
-  prepararAudio();
+function mostrarTela(tela) {
+  telaInicial.classList.remove("ativa");
+  telaCampanha.classList.remove("ativa");
+  telaJogo.classList.remove("ativa");
+  telaFinal.classList.remove("ativa");
+  telaRanking.classList.remove("ativa");
 
+  tela.classList.add("ativa");
+}
+
+function voltarInicio() {
+  mostrarTela(telaInicial);
+}
+
+function entrarCampanha() {
+  salvarNomeOperador();
+  renderizarCampanha();
+  mostrarTela(telaCampanha);
+}
+
+function salvarNomeOperador() {
   nomeOperador = inputNomeOperador.value.trim() || "Operador";
   localStorage.setItem("operadorMorseNome", nomeOperador);
+}
 
+/* =========================
+   MAPA DA CAMPANHA
+========================= */
+
+function renderizarCampanha() {
+  const nivelLiberado = obterNivelLiberado();
+
+  statusIniciante.textContent = `Nível liberado: ${nivelLiberado + 1}`;
+
+  gridNiveis.innerHTML = NIVEIS_INICIANTE
+    .map((nivel, index) => {
+      const bloqueado = index > nivelLiberado;
+      const concluido = index < nivelLiberado;
+      const atual = index === nivelLiberado;
+
+      let classe = "nivel-card";
+      if (bloqueado) classe += " bloqueado";
+      if (concluido) classe += " concluido";
+      if (atual) classe += " atual";
+
+      const icone = bloqueado ? "🔒" : concluido ? "✓" : "▶";
+
+      return `
+        <button class="${classe}" data-index="${index}" ${bloqueado ? "disabled" : ""}>
+          <div class="nivel-linha">
+            <span class="nivel-numero">Nível ${nivel.numero}</span>
+            <span class="nivel-lock">${icone}</span>
+          </div>
+
+          <strong>${escaparHtml(nivel.patente)}</strong>
+          <span>${escaparHtml(nivel.titulo)}</span>
+          <span>${escaparHtml(nivel.descricao)}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
+    card.addEventListener("click", () => {
+      const index = Number(card.dataset.index);
+      iniciarNivel(index);
+    });
+  });
+}
+
+function obterNivelLiberado() {
+  const salvo = Number(localStorage.getItem("operadorMorseNivelLiberado") || "0");
+
+  if (Number.isNaN(salvo)) return 0;
+
+  return Math.min(Math.max(salvo, 0), NIVEIS_INICIANTE.length - 1);
+}
+
+function continuarNivelAtual() {
+  iniciarNivel(obterNivelLiberado());
+}
+
+/* =========================
+   CONTROLE DO NÍVEL
+========================= */
+
+function iniciarNivel(index) {
+  prepararAudio();
+
+  salvarNomeOperador();
+
+  nivelAtualIndex = Math.min(Math.max(index, 0), NIVEIS_INICIANTE.length - 1);
   missaoAtualIndex = 0;
   codigoAtual = "";
   pontuacao = 0;
@@ -365,19 +489,7 @@ function iniciarCampanha() {
 
 function reiniciarNivel() {
   pararTomMorse();
-
-  missaoAtualIndex = 0;
-  codigoAtual = "";
-  pontuacao = 0;
-  acertosNivel = 0;
-  errosNivel = 0;
-  sequenciaAcertos = 0;
-  pressionando = false;
-  inicioNivelMs = performance.now();
-
-  mostrarTela(telaJogo);
-  carregarMissao();
-  atualizarPlacar();
+  iniciarNivel(nivelAtualIndex);
 }
 
 function repetirNivel() {
@@ -390,32 +502,16 @@ function avancarProximoNivel() {
     return;
   }
 
-  if (nivelAtualIndex >= NIVEIS.length - 1) {
-    voltarInicio();
+  if (nivelAtualIndex >= NIVEIS_INICIANTE.length - 1) {
+    entrarCampanha();
     return;
   }
 
-  nivelAtualIndex += 1;
-  localStorage.setItem("operadorMorseNivelLiberado", String(nivelAtualIndex));
-
-  reiniciarNivel();
-}
-
-function voltarInicio() {
-  mostrarTela(telaInicial);
-}
-
-function mostrarTela(tela) {
-  telaInicial.classList.remove("ativa");
-  telaJogo.classList.remove("ativa");
-  telaFinal.classList.remove("ativa");
-  telaRanking.classList.remove("ativa");
-
-  tela.classList.add("ativa");
+  iniciarNivel(nivelAtualIndex + 1);
 }
 
 function getNivelAtual() {
-  return NIVEIS[nivelAtualIndex];
+  return NIVEIS_INICIANTE[nivelAtualIndex];
 }
 
 function getMissaoAtual() {
@@ -530,29 +626,25 @@ function finalizarNivel() {
 
   let pontosFinais = pontuacao;
 
-  if (bonus) {
-    pontosFinais += 25;
-  }
-
-  if (excelenciaWpm && aprovado) {
-    pontosFinais += 25;
-  }
+  if (bonus) pontosFinais += 25;
+  if (excelenciaWpm && aprovado) pontosFinais += 25;
 
   pontuacao = pontosFinais;
 
   let patenteResultado = nivel.patente;
   let campanhaFinalizada = false;
 
-  if (aprovado && nivelAtualIndex === NIVEIS.length - 1) {
+  if (aprovado && nivelAtualIndex === NIVEIS_INICIANTE.length - 1) {
     patenteResultado = PATENTE_FINAL;
     campanhaFinalizada = true;
   }
 
   ultimoResultado = {
     nome: nomeOperador,
+    modo: "Iniciante",
     patente: patenteResultado,
-    nivel: campanhaFinalizada ? NIVEIS.length + 1 : nivel.numero,
-    titulo: campanhaFinalizada ? "Campanha concluída" : nivel.titulo,
+    nivel: campanhaFinalizada ? NIVEIS_INICIANTE.length + 1 : nivel.numero,
+    titulo: campanhaFinalizada ? "Campanha iniciante concluída" : nivel.titulo,
     pontos: pontosFinais,
     aproveitamento,
     tempoSegundos,
@@ -564,7 +656,28 @@ function finalizarNivel() {
   };
 
   salvarRanking(ultimoResultado);
+
+  if (aprovado) {
+    liberarProximoNivel(campanhaFinalizada);
+  }
+
   mostrarResultadoNivel(ultimoResultado, campanhaFinalizada);
+}
+
+function liberarProximoNivel(campanhaFinalizada) {
+  const nivelLiberadoAtual = obterNivelLiberado();
+
+  if (campanhaFinalizada) {
+    localStorage.setItem("operadorMorseNivelLiberado", String(NIVEIS_INICIANTE.length - 1));
+    localStorage.setItem("operadorMorseInicianteConcluido", "sim");
+    return;
+  }
+
+  const proximoIndex = Math.min(nivelAtualIndex + 1, NIVEIS_INICIANTE.length - 1);
+
+  if (proximoIndex > nivelLiberadoAtual) {
+    localStorage.setItem("operadorMorseNivelLiberado", String(proximoIndex));
+  }
 }
 
 function mostrarResultadoNivel(resultado, campanhaFinalizada) {
@@ -589,11 +702,11 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   }
 
   if (campanhaFinalizada) {
-    resultadoBadge.textContent = "Campanha concluída";
+    resultadoBadge.textContent = "Campanha iniciante concluída";
     tituloResultado.textContent = "Promoção a Marechal";
 
     resultadoFinal.textContent =
-      `Missão final concluída! Você alcançou a patente de Marechal. ` +
+      `Missão final concluída! Você alcançou Marechal no modo Iniciante. ` +
       `Aproveitamento de ${resultado.aproveitamento}% e velocidade aproximada de ${resultado.wpm.toFixed(1)} WPM.`;
 
     btnProximoNivel.style.display = "none";
@@ -624,11 +737,11 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
 }
 
 function proximaPatenteTexto() {
-  if (nivelAtualIndex >= NIVEIS.length - 1) {
+  if (nivelAtualIndex >= NIVEIS_INICIANTE.length - 1) {
     return PATENTE_FINAL;
   }
 
-  return NIVEIS[nivelAtualIndex + 1].patente;
+  return NIVEIS_INICIANTE[nivelAtualIndex + 1].patente;
 }
 
 /* =========================
@@ -813,7 +926,7 @@ function renderizarRanking() {
           <div>
             <div class="ranking-nome">${escaparHtml(item.nome)} — ${escaparHtml(item.patente)}</div>
             <div class="ranking-detalhes">
-              Nível ${item.nivel} • ${item.aproveitamento}% • ${formatarTempo(item.tempoSegundos)} • ${item.wpm.toFixed(1)} WPM • ${item.data}
+              ${escaparHtml(item.modo || "Iniciante")} • Nível ${item.nivel} • ${item.aproveitamento}% • ${formatarTempo(item.tempoSegundos)} • ${item.wpm.toFixed(1)} WPM • ${item.data}
             </div>
           </div>
 
