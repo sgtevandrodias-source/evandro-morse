@@ -90,15 +90,32 @@ function textoParaMorse(texto) {
     .join(" ");
 }
 
-function morseParaFonico(codigo) {
-  return codigo
-    .replaceAll(".", "di")
-    .replaceAll("-", "dah")
-    .replaceAll(" / ", "   pausa palavra   ")
-    .replaceAll("/", "   pausa palavra   ")
-    .replaceAll(" ", "   pausa letra   ");
-}
+const DICAS_FONICAS = {
+  A: "mi DAA",
+  B: "GOL di di di",
+  C: "BA ti BA ti",
+  D: "GOL di di",
+  F: "AI QUE coi sa",
+  G: "PAI DE gua"
+  // Depois completamos as demais letras.
+};
 
+function getDicaFonico(alvo, codigo) {
+  const texto = String(alvo).toUpperCase();
+
+  // Só mostra colinha fônica quando for uma única letra.
+  if (/^[A-Z]$/.test(texto)) {
+    return DICAS_FONICAS[texto] || "Mnemônico em cadastro";
+  }
+
+  // Para número, deixa espaço reservado.
+  if (/^[0-9]$/.test(texto)) {
+    return "Mnemônico numérico em cadastro";
+  }
+
+  // Para palavras/frases, não mostra colinha fônica.
+  return "Transmita no ritmo correto, usando as pausas naturais.";
+}
 /* =========================
    CONFIGURAÇÕES
 ========================= */
@@ -116,8 +133,8 @@ const WPM = 12;
 const UNIDADE_MORSE = 1200 / WPM;
 const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
 
-const PAUSA_AUTO_LETRA_MS = 800;
-const PAUSA_AUTO_PALAVRA_MS = 1800;
+const PAUSA_AUTO_LETRA_MS = 400;
+const PAUSA_AUTO_PALAVRA_MS = 900;
 
 const FREQUENCIA_SIDETONE = 650;
 const VOLUME_MORSE = 0.22;
@@ -635,7 +652,7 @@ function carregarMissao() {
   textoMissao.textContent = `Envie: ${missao.alvo}`;
 
   if (modoAtual === MODO_INTERMEDIARIO) {
-    dicaMissaoEl.textContent = `Método fônico: ${morseParaFonico(missao.codigo)}`;
+    dicaMissaoEl.textContent = getDicaFonico(missao.alvo, missao.codigo);
   } else {
     dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
   }
