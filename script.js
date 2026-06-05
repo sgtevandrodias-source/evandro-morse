@@ -1,13 +1,23 @@
 const telaInicial = document.getElementById("telaInicial");
 const telaJogo = document.getElementById("telaJogo");
 const telaFinal = document.getElementById("telaFinal");
+const telaRanking = document.getElementById("telaRanking");
+
+const inputNomeOperador = document.getElementById("inputNomeOperador");
 
 const btnIniciar = document.getElementById("btnIniciar");
+const btnAbrirRanking = document.getElementById("btnAbrirRanking");
 const btnMorse = document.getElementById("btnMorse");
 const btnLimpar = document.getElementById("btnLimpar");
 const btnEnviar = document.getElementById("btnEnviar");
+const btnEspacoLetra = document.getElementById("btnEspacoLetra");
+const btnEspacoPalavra = document.getElementById("btnEspacoPalavra");
 const btnReiniciar = document.getElementById("btnReiniciar");
 const btnJogarNovamente = document.getElementById("btnJogarNovamente");
+const btnProximoNivel = document.getElementById("btnProximoNivel");
+const btnRankingFinal = document.getElementById("btnRankingFinal");
+const btnVoltarInicio = document.getElementById("btnVoltarInicio");
+const btnLimparRanking = document.getElementById("btnLimparRanking");
 
 const textoMissao = document.getElementById("textoMissao");
 const codigoDigitado = document.getElementById("codigoDigitado");
@@ -15,9 +25,20 @@ const feedback = document.getElementById("feedback");
 const pontuacaoEl = document.getElementById("pontuacao");
 const contadorMissaoEl = document.getElementById("contadorMissao");
 const acertosEl = document.getElementById("acertos");
-const resultadoFinal = document.getElementById("resultadoFinal");
+const nomeOperadorEl = document.getElementById("nomeOperador");
 const faseAtualEl = document.getElementById("faseAtual");
 const dicaMissaoEl = document.getElementById("dicaMissao");
+const badgeNivel = document.getElementById("badgeNivel");
+const badgePatente = document.getElementById("badgePatente");
+
+const resultadoBadge = document.getElementById("resultadoBadge");
+const tituloResultado = document.getElementById("tituloResultado");
+const resultadoFinal = document.getElementById("resultadoFinal");
+const resultadoAproveitamento = document.getElementById("resultadoAproveitamento");
+const resultadoTempo = document.getElementById("resultadoTempo");
+const resultadoWpm = document.getElementById("resultadoWpm");
+const resultadoPontos = document.getElementById("resultadoPontos");
+const listaRanking = document.getElementById("listaRanking");
 
 /* =========================
    TABELA MORSE
@@ -76,46 +97,154 @@ function textoParaMorse(texto) {
 }
 
 /* =========================
-   MISSÕES
+   NÍVEIS E PATENTES
 ========================= */
 
-const missoes = [
-  // Letras mais simples
-  { alvo: "E", codigo: textoParaMorse("E"), tipo: "Letras básicas" },
-  { alvo: "T", codigo: textoParaMorse("T"), tipo: "Letras básicas" },
-  { alvo: "A", codigo: textoParaMorse("A"), tipo: "Letras básicas" },
-  { alvo: "N", codigo: textoParaMorse("N"), tipo: "Letras básicas" },
-  { alvo: "M", codigo: textoParaMorse("M"), tipo: "Letras básicas" },
-  { alvo: "I", codigo: textoParaMorse("I"), tipo: "Letras básicas" },
-  { alvo: "S", codigo: textoParaMorse("S"), tipo: "Letras básicas" },
-  { alvo: "O", codigo: textoParaMorse("O"), tipo: "Letras básicas" },
-
-  // Letras intermediárias
-  { alvo: "R", codigo: textoParaMorse("R"), tipo: "Letras intermediárias" },
-  { alvo: "K", codigo: textoParaMorse("K"), tipo: "Letras intermediárias" },
-  { alvo: "D", codigo: textoParaMorse("D"), tipo: "Letras intermediárias" },
-  { alvo: "U", codigo: textoParaMorse("U"), tipo: "Letras intermediárias" },
-  { alvo: "C", codigo: textoParaMorse("C"), tipo: "Letras intermediárias" },
-  { alvo: "P", codigo: textoParaMorse("P"), tipo: "Letras intermediárias" },
-
-  // Números
-  { alvo: "1", codigo: textoParaMorse("1"), tipo: "Números" },
-  { alvo: "2", codigo: textoParaMorse("2"), tipo: "Números" },
-  { alvo: "3", codigo: textoParaMorse("3"), tipo: "Números" },
-  { alvo: "5", codigo: textoParaMorse("5"), tipo: "Números" },
-  { alvo: "7", codigo: textoParaMorse("7"), tipo: "Números" },
-  { alvo: "9", codigo: textoParaMorse("9"), tipo: "Números" },
-  { alvo: "0", codigo: textoParaMorse("0"), tipo: "Números" }
+const NIVEIS = [
+  {
+    numero: 1,
+    patente: "Bisonho",
+    titulo: "Instrução Básica",
+    missoes: ["E", "T", "E", "T", "A"]
+  },
+  {
+    numero: 2,
+    patente: "Recruta",
+    titulo: "Primeiras Letras",
+    missoes: ["E", "T", "A", "N", "M"]
+  },
+  {
+    numero: 3,
+    patente: "Soldado",
+    titulo: "Letras Simples",
+    missoes: ["I", "M", "S", "O", "A", "N"]
+  },
+  {
+    numero: 4,
+    patente: "Soldado Safo",
+    titulo: "Letras Intermediárias I",
+    missoes: ["R", "K", "D", "U", "S", "O"]
+  },
+  {
+    numero: 5,
+    patente: "Cabo",
+    titulo: "Letras Intermediárias II",
+    missoes: ["C", "P", "L", "W", "R", "K"]
+  },
+  {
+    numero: 6,
+    patente: "3º Sargento",
+    titulo: "Letras Avançadas I",
+    missoes: ["F", "G", "H", "V", "D", "U"]
+  },
+  {
+    numero: 7,
+    patente: "2º Sargento",
+    titulo: "Letras Avançadas II",
+    missoes: ["B", "J", "Q", "X", "Y", "Z"]
+  },
+  {
+    numero: 8,
+    patente: "1º Sargento",
+    titulo: "Números I",
+    missoes: ["1", "2", "3", "4", "5"]
+  },
+  {
+    numero: 9,
+    patente: "Subtenente",
+    titulo: "Números II",
+    missoes: ["6", "7", "8", "9", "0"]
+  },
+  {
+    numero: 10,
+    patente: "Cadete",
+    titulo: "Mistura Letra e Número",
+    missoes: ["A1", "B2", "C3", "D4", "E5"]
+  },
+  {
+    numero: 11,
+    patente: "Aspirante",
+    titulo: "Palavras Curtas",
+    missoes: ["SOS", "RIO", "MAR", "SOL", "QSL"]
+  },
+  {
+    numero: 12,
+    patente: "2º Tenente",
+    titulo: "Palavras Médias",
+    missoes: ["MORSE", "RADIO", "FOCO", "SINAL", "TORRE"]
+  },
+  {
+    numero: 13,
+    patente: "1º Tenente",
+    titulo: "Indicativos",
+    missoes: ["QTH", "QRA", "QSL", "QTC", "QRV"]
+  },
+  {
+    numero: 14,
+    patente: "Capitão",
+    titulo: "Frases Curtas",
+    missoes: ["QSL OK", "QRV 5", "QTH RIO", "SINAL OK", "RADIO 1"]
+  },
+  {
+    numero: 15,
+    patente: "Major",
+    titulo: "Frases com Números",
+    missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
+  },
+  {
+    numero: 16,
+    patente: "Tenente-Coronel",
+    titulo: "Mensagens Operacionais I",
+    missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
+  },
+  {
+    numero: 17,
+    patente: "Coronel",
+    titulo: "Mensagens Operacionais II",
+    missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
+  },
+  {
+    numero: 18,
+    patente: "General de Brigada",
+    titulo: "Transmissão Avançada",
+    missoes: ["OPERADOR QRV", "SINAL QSL 5", "BASE RADIO OK", "QTC POSTO 7", "TORRE SINAL 9"]
+  },
+  {
+    numero: 19,
+    patente: "General de Divisão",
+    titulo: "Mensagem Longa",
+    missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123", "BASE OPERADOR OK"]
+  },
+  {
+    numero: 20,
+    patente: "General de Exército",
+    titulo: "Missão Final",
+    missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"]
+  }
 ];
+
+const PATENTE_FINAL = "Marechal";
+
+const APROVEITAMENTO_MINIMO = 80;
+const APROVEITAMENTO_BONUS = 90;
+const META_WPM = 12;
 
 /* =========================
    ESTADO DO JOGO
 ========================= */
 
-let indiceMissao = 0;
+let nomeOperador = "Operador";
+let nivelAtualIndex = 0;
+let missaoAtualIndex = 0;
+
 let codigoAtual = "";
 let pontuacao = 0;
-let acertos = 0;
+let acertosNivel = 0;
+let errosNivel = 0;
+let sequenciaAcertos = 0;
+
+let inicioNivelMs = 0;
+let fimNivelMs = 0;
 
 let pressionando = false;
 let inicioPressionamento = 0;
@@ -125,43 +254,36 @@ let osciladorMorse = null;
 let ganhoMorse = null;
 let filtroMorse = null;
 
+let ultimoResultado = null;
+
 /*
-  Configuração Morse realista
-
-  Fórmula tradicional:
-  unidade em ms = 1200 / WPM
-
-  Em 12 palavras por minuto:
-  unidade = 1200 / 12 = 100 ms
-
-  ponto  = 1 unidade = 100 ms
-  traço  = 3 unidades = 300 ms
+  Configuração Morse realista.
+  12 WPM = unidade de 100 ms.
 */
 const WPM = 12;
 const UNIDADE_MORSE = 1200 / WPM;
-
 const DURACAO_PONTO_IDEAL = UNIDADE_MORSE;
 const DURACAO_TRACO_IDEAL = UNIDADE_MORSE * 3;
-
-// Limite para decidir se o operador fez ponto ou traço.
-// Entre 1 e 3 unidades, usamos 2 unidades como fronteira.
 const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
-
-// Frequência clássica agradável para sidetone Morse.
 const FREQUENCIA_SIDETONE = 650;
-
-// Volume do sidetone.
 const VOLUME_MORSE = 0.22;
 
 /* =========================
    EVENTOS
 ========================= */
 
-btnIniciar.addEventListener("click", iniciarJogo);
+btnIniciar.addEventListener("click", iniciarCampanha);
+btnAbrirRanking.addEventListener("click", abrirRanking);
 btnLimpar.addEventListener("click", limparCodigo);
 btnEnviar.addEventListener("click", confirmarEnvio);
-btnReiniciar.addEventListener("click", reiniciarJogo);
-btnJogarNovamente.addEventListener("click", reiniciarJogo);
+btnEspacoLetra.addEventListener("click", inserirEspacoLetra);
+btnEspacoPalavra.addEventListener("click", inserirEspacoPalavra);
+btnReiniciar.addEventListener("click", reiniciarNivel);
+btnJogarNovamente.addEventListener("click", repetirNivel);
+btnProximoNivel.addEventListener("click", avancarProximoNivel);
+btnRankingFinal.addEventListener("click", abrirRanking);
+btnVoltarInicio.addEventListener("click", voltarInicio);
+btnLimparRanking.addEventListener("click", limparRanking);
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
@@ -169,75 +291,157 @@ btnMorse.addEventListener("pointerleave", finalizarPressionamento);
 btnMorse.addEventListener("pointercancel", cancelarPressionamento);
 
 document.addEventListener("keydown", (evento) => {
-  if (evento.code !== "Space") return;
   if (!telaJogo.classList.contains("ativa")) return;
-  if (pressionando) return;
 
-  evento.preventDefault();
-  iniciarPressionamento();
+  if (evento.code === "Space") {
+    if (pressionando) return;
+    evento.preventDefault();
+    iniciarPressionamento();
+  }
+
+  if (evento.code === "Enter") {
+    evento.preventDefault();
+    confirmarEnvio();
+  }
+
+  if (evento.code === "Backspace") {
+    evento.preventDefault();
+    limparCodigo();
+  }
 });
 
 document.addEventListener("keyup", (evento) => {
-  if (evento.code !== "Space") return;
   if (!telaJogo.classList.contains("ativa")) return;
 
-  evento.preventDefault();
-  finalizarPressionamento();
+  if (evento.code === "Space") {
+    evento.preventDefault();
+    finalizarPressionamento();
+  }
 });
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+carregarPreferencias();
+
+function carregarPreferencias() {
+  const nomeSalvo = localStorage.getItem("operadorMorseNome");
+  const nivelSalvo = Number(localStorage.getItem("operadorMorseNivelLiberado") || "0");
+
+  if (nomeSalvo) {
+    nomeOperador = nomeSalvo;
+    inputNomeOperador.value = nomeSalvo;
+  }
+
+  if (!Number.isNaN(nivelSalvo)) {
+    nivelAtualIndex = Math.min(Math.max(nivelSalvo, 0), NIVEIS.length - 1);
+  }
+}
 
 /* =========================
    CONTROLE DO JOGO
 ========================= */
 
-function iniciarJogo() {
+function iniciarCampanha() {
   prepararAudio();
 
-  indiceMissao = 0;
+  nomeOperador = inputNomeOperador.value.trim() || "Operador";
+  localStorage.setItem("operadorMorseNome", nomeOperador);
+
+  missaoAtualIndex = 0;
   codigoAtual = "";
   pontuacao = 0;
-  acertos = 0;
+  acertosNivel = 0;
+  errosNivel = 0;
+  sequenciaAcertos = 0;
   pressionando = false;
+  inicioNivelMs = performance.now();
 
   mostrarTela(telaJogo);
   carregarMissao();
   atualizarPlacar();
 }
 
-function reiniciarJogo() {
+function reiniciarNivel() {
   pararTomMorse();
 
-  indiceMissao = 0;
+  missaoAtualIndex = 0;
   codigoAtual = "";
   pontuacao = 0;
-  acertos = 0;
+  acertosNivel = 0;
+  errosNivel = 0;
+  sequenciaAcertos = 0;
   pressionando = false;
+  inicioNivelMs = performance.now();
 
   mostrarTela(telaJogo);
   carregarMissao();
   atualizarPlacar();
+}
+
+function repetirNivel() {
+  reiniciarNivel();
+}
+
+function avancarProximoNivel() {
+  if (!ultimoResultado || !ultimoResultado.aprovado) {
+    repetirNivel();
+    return;
+  }
+
+  if (nivelAtualIndex >= NIVEIS.length - 1) {
+    voltarInicio();
+    return;
+  }
+
+  nivelAtualIndex += 1;
+  localStorage.setItem("operadorMorseNivelLiberado", String(nivelAtualIndex));
+
+  reiniciarNivel();
+}
+
+function voltarInicio() {
+  mostrarTela(telaInicial);
 }
 
 function mostrarTela(tela) {
   telaInicial.classList.remove("ativa");
   telaJogo.classList.remove("ativa");
   telaFinal.classList.remove("ativa");
+  telaRanking.classList.remove("ativa");
 
   tela.classList.add("ativa");
 }
 
+function getNivelAtual() {
+  return NIVEIS[nivelAtualIndex];
+}
+
+function getMissaoAtual() {
+  const nivel = getNivelAtual();
+  const alvo = nivel.missoes[missaoAtualIndex];
+
+  return {
+    alvo,
+    codigo: textoParaMorse(alvo),
+    tipo: nivel.titulo
+  };
+}
+
 function carregarMissao() {
-  const missao = missoes[indiceMissao];
+  const nivel = getNivelAtual();
+  const missao = getMissaoAtual();
+
+  nomeOperadorEl.textContent = nivel.patente;
+  badgeNivel.textContent = `Nível ${nivel.numero}`;
+  badgePatente.textContent = nivel.patente;
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
-  contadorMissaoEl.textContent = `${indiceMissao + 1}/${missoes.length}`;
+  dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
 
-  if (dicaMissaoEl) {
-    dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
-  }
-
-  if (faseAtualEl) {
-    faseAtualEl.textContent = missao.tipo;
-  }
+  contadorMissaoEl.textContent = `${missaoAtualIndex + 1}/${nivel.missoes.length}`;
+  faseAtualEl.textContent = missao.tipo;
 
   codigoAtual = "";
   atualizarCodigoNaTela();
@@ -245,6 +449,191 @@ function carregarMissao() {
   feedback.textContent = "";
   feedback.className = "feedback";
 }
+
+function confirmarEnvio() {
+  const missao = getMissaoAtual();
+
+  if (!codigoAtual.trim()) {
+    tocarErro();
+
+    feedback.textContent = "Transmita pelo menos um ponto ou traço antes de confirmar.";
+    feedback.className = "feedback erro";
+    return;
+  }
+
+  const enviado = normalizarCodigo(codigoAtual);
+  const correto = normalizarCodigo(missao.codigo);
+
+  if (enviado === correto) {
+    acertosNivel += 1;
+    sequenciaAcertos += 1;
+
+    const pontosGanhos = calcularPontosAcerto();
+    pontuacao += pontosGanhos;
+
+    tocarAcerto();
+
+    feedback.textContent = `Correto! +${pontosGanhos} pontos.`;
+    feedback.className = "feedback sucesso";
+  } else {
+    errosNivel += 1;
+    sequenciaAcertos = 0;
+    pontuacao = Math.max(0, pontuacao - 2);
+
+    tocarErro();
+
+    feedback.textContent = `Incorreto. Correto: ${missao.codigo}`;
+    feedback.className = "feedback erro";
+  }
+
+  atualizarPlacar();
+
+  setTimeout(proximaMissao, 900);
+}
+
+function calcularPontosAcerto() {
+  if (sequenciaAcertos >= 5) return 15;
+  if (sequenciaAcertos >= 3) return 13;
+  if (sequenciaAcertos >= 2) return 12;
+  return 10;
+}
+
+function proximaMissao() {
+  const nivel = getNivelAtual();
+
+  missaoAtualIndex += 1;
+
+  if (missaoAtualIndex >= nivel.missoes.length) {
+    finalizarNivel();
+    return;
+  }
+
+  carregarMissao();
+}
+
+function atualizarPlacar() {
+  pontuacaoEl.textContent = pontuacao;
+  acertosEl.textContent = acertosNivel;
+}
+
+function finalizarNivel() {
+  fimNivelMs = performance.now();
+
+  const nivel = getNivelAtual();
+  const totalMissoes = nivel.missoes.length;
+  const aproveitamento = Math.round((acertosNivel / totalMissoes) * 100);
+  const tempoSegundos = Math.max(1, Math.round((fimNivelMs - inicioNivelMs) / 1000));
+  const wpm = calcularWpmNivel(tempoSegundos);
+  const aprovado = aproveitamento >= APROVEITAMENTO_MINIMO;
+  const bonus = aproveitamento >= APROVEITAMENTO_BONUS;
+  const excelenciaWpm = wpm >= META_WPM;
+
+  let pontosFinais = pontuacao;
+
+  if (bonus) {
+    pontosFinais += 25;
+  }
+
+  if (excelenciaWpm && aprovado) {
+    pontosFinais += 25;
+  }
+
+  pontuacao = pontosFinais;
+
+  let patenteResultado = nivel.patente;
+  let campanhaFinalizada = false;
+
+  if (aprovado && nivelAtualIndex === NIVEIS.length - 1) {
+    patenteResultado = PATENTE_FINAL;
+    campanhaFinalizada = true;
+  }
+
+  ultimoResultado = {
+    nome: nomeOperador,
+    patente: patenteResultado,
+    nivel: campanhaFinalizada ? NIVEIS.length + 1 : nivel.numero,
+    titulo: campanhaFinalizada ? "Campanha concluída" : nivel.titulo,
+    pontos: pontosFinais,
+    aproveitamento,
+    tempoSegundos,
+    wpm,
+    aprovado,
+    bonus,
+    excelenciaWpm,
+    data: new Date().toLocaleDateString("pt-BR")
+  };
+
+  salvarRanking(ultimoResultado);
+  mostrarResultadoNivel(ultimoResultado, campanhaFinalizada);
+}
+
+function mostrarResultadoNivel(resultado, campanhaFinalizada) {
+  mostrarTela(telaFinal);
+
+  resultadoAproveitamento.textContent = `${resultado.aproveitamento}%`;
+  resultadoTempo.textContent = formatarTempo(resultado.tempoSegundos);
+  resultadoWpm.textContent = resultado.wpm.toFixed(1);
+  resultadoPontos.textContent = resultado.pontos;
+
+  if (!resultado.aprovado) {
+    resultadoBadge.textContent = "Repetir nível";
+    tituloResultado.textContent = "Nível não concluído";
+
+    resultadoFinal.textContent =
+      `Você ficou com ${resultado.aproveitamento}% de aproveitamento. ` +
+      `O mínimo é 80%. Repita o nível para tentar novamente.`;
+
+    btnProximoNivel.style.display = "none";
+    btnJogarNovamente.textContent = "Repetir nível";
+    return;
+  }
+
+  if (campanhaFinalizada) {
+    resultadoBadge.textContent = "Campanha concluída";
+    tituloResultado.textContent = "Promoção a Marechal";
+
+    resultadoFinal.textContent =
+      `Missão final concluída! Você alcançou a patente de Marechal. ` +
+      `Aproveitamento de ${resultado.aproveitamento}% e velocidade aproximada de ${resultado.wpm.toFixed(1)} WPM.`;
+
+    btnProximoNivel.style.display = "none";
+    btnJogarNovamente.textContent = "Refazer missão final";
+    return;
+  }
+
+  resultadoBadge.textContent = resultado.bonus ? "Aprovado com destaque" : "Aprovado";
+  tituloResultado.textContent = `Promoção: ${proximaPatenteTexto()}`;
+
+  let mensagem =
+    `Você concluiu o nível com ${resultado.aproveitamento}% de aproveitamento. ` +
+    `Tempo: ${formatarTempo(resultado.tempoSegundos)}. ` +
+    `Velocidade aproximada: ${resultado.wpm.toFixed(1)} WPM.`;
+
+  if (resultado.bonus) {
+    mensagem += " Bônus por aproveitamento de 90% ou mais.";
+  }
+
+  if (resultado.excelenciaWpm) {
+    mensagem += " Ritmo operacional: meta de 12 WPM alcançada.";
+  }
+
+  resultadoFinal.textContent = mensagem;
+
+  btnProximoNivel.style.display = "inline-block";
+  btnJogarNovamente.textContent = "Repetir nível";
+}
+
+function proximaPatenteTexto() {
+  if (nivelAtualIndex >= NIVEIS.length - 1) {
+    return PATENTE_FINAL;
+  }
+
+  return NIVEIS[nivelAtualIndex + 1].patente;
+}
+
+/* =========================
+   CÓDIGO DIGITADO
+========================= */
 
 function iniciarPressionamento() {
   prepararAudio();
@@ -255,7 +644,6 @@ function iniciarPressionamento() {
   inicioPressionamento = performance.now();
 
   btnMorse.classList.add("pressionado");
-
   iniciarTomMorse();
 }
 
@@ -290,8 +678,40 @@ function adicionarSimbolo(simbolo) {
   atualizarCodigoNaTela();
 }
 
+function inserirEspacoLetra() {
+  if (!codigoAtual.trim()) return;
+
+  if (!codigoAtual.endsWith(" ")) {
+    codigoAtual += " ";
+  }
+
+  atualizarCodigoNaTela();
+}
+
+function inserirEspacoPalavra() {
+  if (!codigoAtual.trim()) return;
+
+  codigoAtual = codigoAtual.trim();
+
+  if (!codigoAtual.endsWith("/")) {
+    codigoAtual += " / ";
+  }
+
+  atualizarCodigoNaTela();
+}
+
 function atualizarCodigoNaTela() {
-  codigoDigitado.textContent = codigoAtual || "—";
+  codigoDigitado.textContent = codigoAtual.trim() || "—";
+}
+
+function limparCodigo() {
+  codigoAtual = "";
+  atualizarCodigoNaTela();
+
+  tocarCliqueLimpar();
+
+  feedback.textContent = "Código limpo.";
+  feedback.className = "feedback";
 }
 
 function mostrarFeedbackManipulacao(simbolo, duracao) {
@@ -306,84 +726,124 @@ function mostrarFeedbackManipulacao(simbolo, duracao) {
   feedback.className = "feedback";
 }
 
-function limparCodigo() {
-  codigoAtual = "";
-  atualizarCodigoNaTela();
-
-  tocarCliqueLimpar();
-
-  feedback.textContent = "Código limpo. Transmita novamente.";
-  feedback.className = "feedback";
-}
-
-function confirmarEnvio() {
-  const missao = missoes[indiceMissao];
-
-  if (!codigoAtual) {
-    tocarErro();
-
-    feedback.textContent = "Transmita pelo menos um ponto ou traço antes de confirmar.";
-    feedback.className = "feedback erro";
-    return;
-  }
-
-  if (codigoAtual === missao.codigo) {
-    pontuacao += 10;
-    acertos += 1;
-
-    tocarAcerto();
-
-    feedback.textContent = `Correto! ${missao.alvo} em Morse é ${missao.codigo}.`;
-    feedback.className = "feedback sucesso";
-
-    atualizarPlacar();
-
-    setTimeout(proximaMissao, 900);
-  } else {
-    pontuacao = Math.max(0, pontuacao - 2);
-
-    tocarErro();
-
-    feedback.textContent = `Não foi dessa vez. Você enviou ${codigoAtual}, mas ${missao.alvo} é ${missao.codigo}.`;
-    feedback.className = "feedback erro";
-
-    atualizarPlacar();
-
-    setTimeout(() => {
-      codigoAtual = "";
-      atualizarCodigoNaTela();
-    }, 1000);
-  }
-}
-
-function proximaMissao() {
-  indiceMissao += 1;
-
-  if (indiceMissao >= missoes.length) {
-    finalizarJogo();
-    return;
-  }
-
-  carregarMissao();
-}
-
-function atualizarPlacar() {
-  pontuacaoEl.textContent = pontuacao;
-  acertosEl.textContent = acertos;
-}
-
-function finalizarJogo() {
-  mostrarTela(telaFinal);
-
-  tocarFinalizacao();
-
-  resultadoFinal.textContent =
-    `Você acertou ${acertos} de ${missoes.length} missões e fez ${pontuacao} pontos. ` +
-    `Treinamento concluído. O rádio está operacional.`;
+function normalizarCodigo(codigo) {
+  return codigo
+    .trim()
+    .replace(/\s*\/\s*/g, " / ")
+    .replace(/\s+/g, " ");
 }
 
 /* =========================
-   ÁREA DE ÁUDIO MORSE REALISTA
+   TEMPO, WPM E RANKING
+========================= */
+
+function calcularWpmNivel(tempoSegundos) {
+  const nivel = getNivelAtual();
+  const textoTotal = nivel.missoes.join("");
+  const caracteresValidos = textoTotal.replace(/\s/g, "").length;
+
+  const minutos = tempoSegundos / 60;
+  const wpm = caracteresValidos / 5 / minutos;
+
+  return Number.isFinite(wpm) ? wpm : 0;
+}
+
+function formatarTempo(segundos) {
+  const min = Math.floor(segundos / 60);
+  const seg = segundos % 60;
+
+  if (min <= 0) return `${seg}s`;
+
+  return `${min}min ${String(seg).padStart(2, "0")}s`;
+}
+
+function salvarRanking(resultado) {
+  const ranking = obterRanking();
+
+  ranking.push(resultado);
+
+  ranking.sort((a, b) => {
+    if (b.nivel !== a.nivel) return b.nivel - a.nivel;
+    if (b.pontos !== a.pontos) return b.pontos - a.pontos;
+    if (b.aproveitamento !== a.aproveitamento) return b.aproveitamento - a.aproveitamento;
+    if (a.tempoSegundos !== b.tempoSegundos) return a.tempoSegundos - b.tempoSegundos;
+    return b.wpm - a.wpm;
+  });
+
+  const top20 = ranking.slice(0, 20);
+
+  localStorage.setItem("operadorMorseRanking", JSON.stringify(top20));
+}
+
+function obterRanking() {
+  try {
+    return JSON.parse(localStorage.getItem("operadorMorseRanking")) || [];
+  } catch (erro) {
+    return [];
+  }
+}
+
+function abrirRanking() {
+  renderizarRanking();
+  mostrarTela(telaRanking);
+}
+
+function renderizarRanking() {
+  const ranking = obterRanking();
+
+  if (!ranking.length) {
+    listaRanking.innerHTML = `
+      <div class="ranking-item">
+        <div class="ranking-posicao">—</div>
+        <div>
+          <div class="ranking-nome">Ainda não há registros</div>
+          <div class="ranking-detalhes">Conclua um nível para aparecer no ranking.</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  listaRanking.innerHTML = ranking
+    .map((item, index) => {
+      return `
+        <div class="ranking-item">
+          <div class="ranking-posicao">${index + 1}</div>
+
+          <div>
+            <div class="ranking-nome">${escaparHtml(item.nome)} — ${escaparHtml(item.patente)}</div>
+            <div class="ranking-detalhes">
+              Nível ${item.nivel} • ${item.aproveitamento}% • ${formatarTempo(item.tempoSegundos)} • ${item.wpm.toFixed(1)} WPM • ${item.data}
+            </div>
+          </div>
+
+          <div class="ranking-pontos">${item.pontos} pts</div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function limparRanking() {
+  const confirmar = window.confirm("Deseja limpar o ranking local deste aparelho?");
+
+  if (!confirmar) return;
+
+  localStorage.removeItem("operadorMorseRanking");
+  renderizarRanking();
+}
+
+function escaparHtml(valor) {
+  return String(valor)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+/* =========================
+   ÁUDIO MORSE REALISTA
 ========================= */
 
 function prepararAudio() {
@@ -405,26 +865,15 @@ function iniciarTomMorse() {
   ganhoMorse = audioContext.createGain();
   filtroMorse = audioContext.createBiquadFilter();
 
-  /*
-    square deixa o som mais parecido com sidetone telegráfico,
-    menos "piano eletrônico" e mais rádio.
-  */
   osciladorMorse.type = "square";
   osciladorMorse.frequency.setValueAtTime(
     FREQUENCIA_SIDETONE,
     audioContext.currentTime
   );
 
-  /*
-    Filtro suaviza o square para não ficar agressivo demais.
-  */
   filtroMorse.type = "lowpass";
   filtroMorse.frequency.setValueAtTime(1500, audioContext.currentTime);
 
-  /*
-    Ataque rápido, mas não instantâneo.
-    Isso evita estalo seco no início da manipulação.
-  */
   ganhoMorse.gain.setValueAtTime(0.001, audioContext.currentTime);
   ganhoMorse.gain.exponentialRampToValueAtTime(
     VOLUME_MORSE,
@@ -446,16 +895,11 @@ function pararTomMorse() {
   try {
     ganhoMorse.gain.cancelScheduledValues(agora);
     ganhoMorse.gain.setValueAtTime(ganhoMorse.gain.value || VOLUME_MORSE, agora);
-
-    /*
-      Soltura rápida, mas com pequena rampa.
-      Isso simula melhor a chave e evita clique digital artificial.
-    */
     ganhoMorse.gain.exponentialRampToValueAtTime(0.001, agora + 0.018);
 
     osciladorMorse.stop(agora + 0.025);
   } catch (erro) {
-    // Evita travar caso o navegador já tenha parado o oscilador.
+    // Evita travamento se o navegador já tiver parado o oscilador.
   }
 
   osciladorMorse = null;
@@ -495,9 +939,6 @@ function tocarCliqueLimpar() {
 }
 
 function tocarAcerto() {
-  /*
-    Acerto discreto para não quebrar muito a experiência Morse.
-  */
   tocarTomCurto(760, 80, 0.09, "sine");
 
   setTimeout(() => {
@@ -506,9 +947,6 @@ function tocarAcerto() {
 }
 
 function tocarErro() {
-  /*
-    Erro curto e grave.
-  */
   tocarTomCurto(240, 120, 0.11, "sawtooth");
 
   setTimeout(() => {
@@ -517,10 +955,6 @@ function tocarErro() {
 }
 
 function tocarFinalizacao() {
-  /*
-    Finalização como pequena sequência telegráfica,
-    sem virar música de videogame.
-  */
   tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_PONTO_IDEAL, 0.12, "square");
 
   setTimeout(() => {
