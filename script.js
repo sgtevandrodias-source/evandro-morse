@@ -299,6 +299,35 @@ const FREQUENCIA_SIDETONE = 650;
 const VOLUME_MORSE = 0.22;
 
 /* =========================
+   PROGRESSÃO POR OPERADOR
+========================= */
+
+function getNomeOperadorAtual() {
+  return inputNomeOperador.value.trim() || nomeOperador || "Operador";
+}
+
+function gerarSlugOperador(nome) {
+  return String(nome || "operador")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "operador";
+}
+
+function getChaveOperador() {
+  return gerarSlugOperador(getNomeOperadorAtual());
+}
+
+function chaveNivelLiberado() {
+  return `operadorMorseNivelLiberado_${getChaveOperador()}`;
+}
+
+function chaveInicianteConcluido() {
+  return `operadorMorseInicianteConcluido_${getChaveOperador()}`;
+}
+
+/* =========================
    EVENTOS
 ========================= */
 
@@ -365,16 +394,13 @@ carregarPreferencias();
 
 function carregarPreferencias() {
   const nomeSalvo = localStorage.getItem("operadorMorseNome");
-  const nivelSalvo = Number(localStorage.getItem("operadorMorseNivelLiberado") || "0");
 
   if (nomeSalvo) {
     nomeOperador = nomeSalvo;
     inputNomeOperador.value = nomeSalvo;
   }
 
-  if (!Number.isNaN(nivelSalvo)) {
-    nivelAtualIndex = Math.min(Math.max(nivelSalvo, 0), NIVEIS_INICIANTE.length - 1);
-  }
+  nivelAtualIndex = obterNivelLiberado();
 }
 
 /* =========================
@@ -397,12 +423,14 @@ function voltarInicio() {
 
 function entrarCampanha() {
   salvarNomeOperador();
+  nivelAtualIndex = obterNivelLiberado();
   renderizarCampanha();
   mostrarTela(telaCampanha);
 }
 
 function salvarNomeOperador() {
-  nomeOperador = inputNomeOperador.value.trim() || "Operador";
+  nomeOperador = getNomeOperadorAtual();
+  inputNomeOperador.value = nomeOperador;
   localStorage.setItem("operadorMorseNome", nomeOperador);
 }
 
@@ -412,8 +440,9 @@ function salvarNomeOperador() {
 
 function renderizarCampanha() {
   const nivelLiberado = obterNivelLiberado();
+  const operador = getNomeOperadorAtual();
 
-  statusIniciante.textContent = `Nível liberado: ${nivelLiberado + 1}`;
+  statusIniciante.textContent = `${operador}: nível liberado ${nivelLiberado + 1}`;
 
   gridNiveis.innerHTML = NIVEIS_INICIANTE
     .map((nivel, index) => {
@@ -452,7 +481,7 @@ function renderizarCampanha() {
 }
 
 function obterNivelLiberado() {
-  const salvo = Number(localStorage.getItem("operadorMorseNivelLiberado") || "0");
+  const salvo = Number(localStorage.getItem(chaveNivelLiberado()) || "0");
 
   if (Number.isNaN(salvo)) return 0;
 
@@ -472,7 +501,10 @@ function iniciarNivel(index) {
 
   salvarNomeOperador();
 
-  nivelAtualIndex = Math.min(Math.max(index, 0), NIVEIS_INICIANTE.length - 1);
+  const nivelLiberado = obterNivelLiberado();
+  const indexSeguro = Math.min(Math.max(index, 0), nivelLiberado);
+
+  nivelAtualIndex = Math.min(Math.max(indexSeguro, 0), NIVEIS_INICIANTE.length - 1);
   missaoAtualIndex = 0;
   codigoAtual = "";
   pontuacao = 0;
@@ -641,6 +673,7 @@ function finalizarNivel() {
 
   ultimoResultado = {
     nome: nomeOperador,
+    chaveOperador: getChaveOperador(),
     modo: "Iniciante",
     patente: patenteResultado,
     nivel: campanhaFinalizada ? NIVEIS_INICIANTE.length + 1 : nivel.numero,
@@ -668,15 +701,15 @@ function liberarProximoNivel(campanhaFinalizada) {
   const nivelLiberadoAtual = obterNivelLiberado();
 
   if (campanhaFinalizada) {
-    localStorage.setItem("operadorMorseNivelLiberado", String(NIVEIS_INICIANTE.length - 1));
-    localStorage.setItem("operadorMorseInicianteConcluido", "sim");
+    localStorage.setItem(chaveNivelLiberado(), String(NIVEIS_INICIANTE.length - 1));
+    localStorage.setItem(chaveInicianteConcluido(), "sim");
     return;
   }
 
   const proximoIndex = Math.min(nivelAtualIndex + 1, NIVEIS_INICIANTE.length - 1);
 
   if (proximoIndex > nivelLiberadoAtual) {
-    localStorage.setItem("operadorMorseNivelLiberado", String(proximoIndex));
+    localStorage.setItem(chaveNivelLiberado(), String(proximoIndex));
   }
 }
 
