@@ -1,3 +1,12 @@
+/* 
+  EVANDRO MORSE
+  Versão: Iniciante + Intermediário
+  Ajuste principal:
+  - Modo Intermediário funcional
+  - Sem botões Espaço Letra / Espaço Palavra
+  - Separação automática por pausa
+*/
+
 const telaInicial = document.getElementById("telaInicial");
 const telaCampanha = document.getElementById("telaCampanha");
 const telaJogo = document.getElementById("telaJogo");
@@ -51,6 +60,7 @@ const listaRanking = document.getElementById("listaRanking");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
 
+const cardModoIniciante = document.getElementById("cardModoIniciante");
 const cardModoIntermediario = document.getElementById("cardModoIntermediario");
 const cardModoAvancado = document.getElementById("cardModoAvancado");
 
@@ -59,43 +69,13 @@ const cardModoAvancado = document.getElementById("cardModoAvancado");
 ========================= */
 
 const TABELA_MORSE = {
-  A: ".-",
-  B: "-...",
-  C: "-.-.",
-  D: "-..",
-  E: ".",
-  F: "..-.",
-  G: "--.",
-  H: "....",
-  I: "..",
-  J: ".---",
-  K: "-.-",
-  L: ".-..",
-  M: "--",
-  N: "-.",
-  O: "---",
-  P: ".--.",
-  Q: "--.-",
-  R: ".-.",
-  S: "...",
-  T: "-",
-  U: "..-",
-  V: "...-",
-  W: ".--",
-  X: "-..-",
-  Y: "-.--",
-  Z: "--..",
-
-  0: "-----",
-  1: ".----",
-  2: "..---",
-  3: "...--",
-  4: "....-",
-  5: ".....",
-  6: "-....",
-  7: "--...",
-  8: "---..",
-  9: "----."
+  A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
+  G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..",
+  M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.",
+  S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
+  Y: "-.--", Z: "--..",
+  0: "-----", 1: ".----", 2: "..---", 3: "...--", 4: "....-",
+  5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----."
 };
 
 function textoParaMorse(texto) {
@@ -110,163 +90,148 @@ function textoParaMorse(texto) {
     .join(" ");
 }
 
+function morseParaFonico(codigo) {
+  return codigo
+    .replaceAll(".", "di")
+    .replaceAll("-", "dah")
+    .replaceAll(" / ", "   pausa palavra   ")
+    .replaceAll("/", "   pausa palavra   ")
+    .replaceAll(" ", "   pausa letra   ");
+}
+
 /* =========================
-   CAMPANHA INICIANTE
+   CONFIGURAÇÕES
 ========================= */
 
-const NIVEIS_INICIANTE = [
-  {
-    numero: 1,
-    patente: "Bisonho",
-    titulo: "Instrução Básica",
-    descricao: "Primeiro contato com ponto e traço.",
-    missoes: ["E", "T", "E", "T", "A"]
-  },
-  {
-    numero: 2,
-    patente: "Recruta",
-    titulo: "Primeiras Letras",
-    descricao: "Letras simples com combinações curtas.",
-    missoes: ["E", "T", "A", "N", "M"]
-  },
-  {
-    numero: 3,
-    patente: "Soldado",
-    titulo: "Letras Simples",
-    descricao: "Sequências básicas de pontos e traços.",
-    missoes: ["I", "M", "S", "O", "A", "N"]
-  },
-  {
-    numero: 4,
-    patente: "Soldado Safo",
-    titulo: "Letras Intermediárias I",
-    descricao: "Padrões mais variados e exigência maior.",
-    missoes: ["R", "K", "D", "U", "S", "O"]
-  },
-  {
-    numero: 5,
-    patente: "Cabo",
-    titulo: "Letras Intermediárias II",
-    descricao: "Mais memória e precisão na manipulação.",
-    missoes: ["C", "P", "L", "W", "R", "K"]
-  },
-  {
-    numero: 6,
-    patente: "3º Sargento",
-    titulo: "Letras Avançadas I",
-    descricao: "Letras com padrões mais longos.",
-    missoes: ["F", "G", "H", "V", "D", "U"]
-  },
-  {
-    numero: 7,
-    patente: "2º Sargento",
-    titulo: "Letras Avançadas II",
-    descricao: "As letras mais difíceis do alfabeto Morse.",
-    missoes: ["B", "J", "Q", "X", "Y", "Z"]
-  },
-  {
-    numero: 8,
-    patente: "1º Sargento",
-    titulo: "Números I",
-    descricao: "Primeira etapa numérica.",
-    missoes: ["1", "2", "3", "4", "5"]
-  },
-  {
-    numero: 9,
-    patente: "Subtenente",
-    titulo: "Números II",
-    descricao: "Segunda etapa numérica.",
-    missoes: ["6", "7", "8", "9", "0"]
-  },
-  {
-    numero: 10,
-    patente: "Cadete",
-    titulo: "Mistura Letra e Número",
-    descricao: "Caracteres mistos na mesma missão.",
-    missoes: ["A1", "B2", "C3", "D4", "E5"]
-  },
-  {
-    numero: 11,
-    patente: "Aspirante",
-    titulo: "Palavras Curtas",
-    descricao: "Primeiro uso real de separação entre letras.",
-    missoes: ["SOS", "RIO", "MAR", "SOL", "QSL"]
-  },
-  {
-    numero: 12,
-    patente: "2º Tenente",
-    titulo: "Palavras Médias",
-    descricao: "Palavras maiores e ritmo mais regular.",
-    missoes: ["MORSE", "RADIO", "FOCO", "SINAL", "TORRE"]
-  },
-  {
-    numero: 13,
-    patente: "1º Tenente",
-    titulo: "Indicativos",
-    descricao: "Códigos usados em comunicação operacional.",
-    missoes: ["QTH", "QRA", "QSL", "QTC", "QRV"]
-  },
-  {
-    numero: 14,
-    patente: "Capitão",
-    titulo: "Frases Curtas",
-    descricao: "Primeiro uso de separação entre palavras.",
-    missoes: ["QSL OK", "QRV 5", "QTH RIO", "SINAL OK", "RADIO 1"]
-  },
-  {
-    numero: 15,
-    patente: "Major",
-    titulo: "Frases com Números",
-    descricao: "Frases misturando palavras e algarismos.",
-    missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
-  },
-  {
-    numero: 16,
-    patente: "Tenente-Coronel",
-    titulo: "Mensagens Operacionais I",
-    descricao: "Mensagens simples com sentido operacional.",
-    missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
-  },
-  {
-    numero: 17,
-    patente: "Coronel",
-    titulo: "Mensagens Operacionais II",
-    descricao: "Mensagens com palavras e números.",
-    missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
-  },
-  {
-    numero: 18,
-    patente: "General de Brigada",
-    titulo: "Transmissão Avançada",
-    descricao: "Frases maiores com mais exigência de regularidade.",
-    missoes: ["OPERADOR QRV", "SINAL QSL 5", "BASE RADIO OK", "QTC POSTO 7", "TORRE SINAL 9"]
-  },
-  {
-    numero: 19,
-    patente: "General de Divisão",
-    titulo: "Mensagem Longa",
-    descricao: "Controle mental e constância até o fim.",
-    missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123", "BASE OPERADOR OK"]
-  },
-  {
-    numero: 20,
-    patente: "General de Exército",
-    titulo: "Missão Final Iniciante",
-    descricao: "Junta letras, números, palavras e frases.",
-    missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"]
-  }
-];
-
-const PATENTE_FINAL = "Marechal";
 const APROVEITAMENTO_MINIMO = 80;
 const APROVEITAMENTO_BONUS = 90;
 const META_WPM = 12;
+const PATENTE_FINAL_INICIANTE = "Marechal";
+const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
+
+const MODO_INICIANTE = "iniciante";
+const MODO_INTERMEDIARIO = "intermediario";
+
+const WPM = 12;
+const UNIDADE_MORSE = 1200 / WPM;
+const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
+
+const PAUSA_AUTO_LETRA_MS = UNIDADE_MORSE * 3;
+const PAUSA_AUTO_PALAVRA_MS = UNIDADE_MORSE * 7;
+
+const FREQUENCIA_SIDETONE = 650;
+const VOLUME_MORSE = 0.22;
 
 /* =========================
-   ESTADO DO JOGO
+   NÍVEIS INICIANTE
+========================= */
+
+const NIVEIS_INICIANTE = [
+  { numero: 1, patente: "Bisonho", titulo: "Instrução Básica", descricao: "Primeiro contato com ponto e traço.", missoes: ["E", "T", "E", "T", "A"] },
+  { numero: 2, patente: "Recruta", titulo: "Primeiras Letras", descricao: "Letras simples com combinações curtas.", missoes: ["E", "T", "A", "N", "M"] },
+  { numero: 3, patente: "Soldado", titulo: "Letras Simples", descricao: "Sequências básicas de pontos e traços.", missoes: ["I", "M", "S", "O", "A", "N"] },
+  { numero: 4, patente: "Soldado Safo", titulo: "Letras Intermediárias I", descricao: "Padrões mais variados.", missoes: ["R", "K", "D", "U", "S", "O"] },
+  { numero: 5, patente: "Cabo", titulo: "Letras Intermediárias II", descricao: "Mais memória e precisão.", missoes: ["C", "P", "L", "W", "R", "K"] },
+  { numero: 6, patente: "3º Sargento", titulo: "Letras Avançadas I", descricao: "Letras com padrões mais longos.", missoes: ["F", "G", "H", "V", "D", "U"] },
+  { numero: 7, patente: "2º Sargento", titulo: "Letras Avançadas II", descricao: "Letras mais difíceis.", missoes: ["B", "J", "Q", "X", "Y", "Z"] },
+  { numero: 8, patente: "1º Sargento", titulo: "Números I", descricao: "Primeira etapa numérica.", missoes: ["1", "2", "3", "4", "5"] },
+  { numero: 9, patente: "Subtenente", titulo: "Números II", descricao: "Segunda etapa numérica.", missoes: ["6", "7", "8", "9", "0"] },
+  { numero: 10, patente: "Cadete", titulo: "Mistura Letra e Número", descricao: "Caracteres mistos.", missoes: ["A1", "B2", "C3", "D4", "E5"] },
+  { numero: 11, patente: "Aspirante", titulo: "Palavras Curtas", descricao: "Separação entre letras.", missoes: ["SOS", "RIO", "MAR", "SOL", "QSL"] },
+  { numero: 12, patente: "2º Tenente", titulo: "Palavras Médias", descricao: "Palavras maiores.", missoes: ["MORSE", "RADIO", "FOCO", "SINAL", "TORRE"] },
+  { numero: 13, patente: "1º Tenente", titulo: "Indicativos", descricao: "Códigos operacionais.", missoes: ["QTH", "QRA", "QSL", "QTC", "QRV"] },
+  { numero: 14, patente: "Capitão", titulo: "Frases Curtas", descricao: "Separação entre palavras.", missoes: ["QSL OK", "QRV 5", "QTH RIO", "SINAL OK", "RADIO 1"] },
+  { numero: 15, patente: "Major", titulo: "Frases com Números", descricao: "Palavras e algarismos.", missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"] },
+  { numero: 16, patente: "Tenente-Coronel", titulo: "Mensagens Operacionais I", descricao: "Mensagens simples.", missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"] },
+  { numero: 17, patente: "Coronel", titulo: "Mensagens Operacionais II", descricao: "Mensagens com números.", missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"] },
+  { numero: 18, patente: "General de Brigada", titulo: "Transmissão Avançada", descricao: "Frases maiores.", missoes: ["OPERADOR QRV", "SINAL QSL 5", "BASE RADIO OK", "QTC POSTO 7", "TORRE SINAL 9"] },
+  { numero: 19, patente: "General de Divisão", titulo: "Mensagem Longa", descricao: "Controle mental.", missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123", "BASE OPERADOR OK"] },
+  { numero: 20, patente: "General de Exército", titulo: "Missão Final Iniciante", descricao: "Junta tudo.", missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"] }
+];
+
+/* =========================
+   NÍVEIS INTERMEDIÁRIO
+========================= */
+
+const NIVEIS_INTERMEDIARIO = [
+  {
+    numero: 1,
+    patente: "Operador em Treinamento",
+    titulo: "Sem Rodinhas",
+    descricao: "Letras simples, agora sem botões de espaço.",
+    missoes: ["E", "T", "A", "N", "M"]
+  },
+  {
+    numero: 2,
+    patente: "Operador Aprendiz",
+    titulo: "Pausa entre Letras",
+    descricao: "A pausa média separa automaticamente as letras.",
+    missoes: ["I", "S", "O", "R", "K"]
+  },
+  {
+    numero: 3,
+    patente: "Operador Auxiliar",
+    titulo: "Ritmo Fônico I",
+    descricao: "Reconheça o desenho sonoro das letras.",
+    missoes: ["D", "U", "C", "P", "L"]
+  },
+  {
+    numero: 4,
+    patente: "Operador de Rede",
+    titulo: "Ritmo Fônico II",
+    descricao: "Padrões longos exigem memória auditiva.",
+    missoes: ["F", "G", "H", "V", "B", "Z"]
+  },
+  {
+    numero: 5,
+    patente: "Operador de Posto",
+    titulo: "Palavras Curtas",
+    descricao: "A pausa longa vira separação de palavra.",
+    missoes: ["SOS", "QSL", "QTH", "QRA", "QRV"]
+  },
+  {
+    numero: 6,
+    patente: "Operador Tático",
+    titulo: "Palavras Médias",
+    descricao: "Agora o cérebro começa a ouvir blocos.",
+    missoes: ["RADIO", "SINAL", "TORRE", "POSTO", "MORSE"]
+  },
+  {
+    numero: 7,
+    patente: "Operador de Mensagem",
+    titulo: "Frases Curtas",
+    descricao: "Separe palavras apenas com pausa.",
+    missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"]
+  },
+  {
+    numero: 8,
+    patente: "Operador Chefe",
+    titulo: "Frases Operacionais",
+    descricao: "Pouco apoio visual. Mais escuta e ritmo.",
+    missoes: ["QTC BASE", "RADIO QRV", "POSTO QSL", "SINAL FORTE", "TORRE OK"]
+  },
+  {
+    numero: 9,
+    patente: "Instrutor Morse",
+    titulo: "Mensagem Operacional",
+    descricao: "Mensagens maiores, sem botão auxiliar.",
+    missoes: ["RADIO BASE QRV", "QTC SINAL 3", "POSTO QSL 2", "BASE RADIO OK", "TORRE SINAL 9"]
+  },
+  {
+    numero: 10,
+    patente: "Especialista Morse",
+    titulo: "Missão Final Intermediária",
+    descricao: "Transmissão completa por ritmo e pausa.",
+    missoes: ["OPERADOR QRV", "QTC BASE SINAL", "RADIO POSTO QSL", "SINAL FORTE OK", "MISSAO INTERMEDIARIA"]
+  }
+];
+
+/* =========================
+   ESTADO
 ========================= */
 
 let nomeOperador = "Operador";
+let modoAtual = MODO_INICIANTE;
 let nivelAtualIndex = 0;
 let missaoAtualIndex = 0;
 
@@ -288,17 +253,11 @@ let ganhoMorse = null;
 let filtroMorse = null;
 
 let ultimoResultado = null;
-
-const WPM = 12;
-const UNIDADE_MORSE = 1200 / WPM;
-const DURACAO_PONTO_IDEAL = UNIDADE_MORSE;
-const DURACAO_TRACO_IDEAL = UNIDADE_MORSE * 3;
-const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
-const FREQUENCIA_SIDETONE = 650;
-const VOLUME_MORSE = 0.22;
+let temporizadorLetra = null;
+let temporizadorPalavra = null;
 
 /* =========================
-   PROGRESSÃO POR OPERADOR
+   OPERADOR E CHAVES
 ========================= */
 
 function getNomeOperadorAtual() {
@@ -318,8 +277,8 @@ function getChaveOperador() {
   return gerarSlugOperador(getNomeOperadorAtual());
 }
 
-function chaveNivelLiberado() {
-  return `operadorMorseNivelLiberado_${getChaveOperador()}`;
+function chaveNivelLiberado(modo = modoAtual) {
+  return `operadorMorseNivelLiberado_${modo}_${getChaveOperador()}`;
 }
 
 function chaveInicianteConcluido() {
@@ -328,10 +287,6 @@ function chaveInicianteConcluido() {
 
 function chaveIntermediarioConcluido() {
   return `operadorMorseIntermediarioConcluido_${getChaveOperador()}`;
-}
-
-function chaveAvancadoConcluido() {
-  return `operadorMorseAvancadoConcluido_${getChaveOperador()}`;
 }
 
 /* =========================
@@ -359,13 +314,9 @@ btnVoltarCampanhaRanking.addEventListener("click", entrarCampanha);
 btnVoltarInicio.addEventListener("click", voltarInicio);
 btnLimparRanking.addEventListener("click", limparRanking);
 
-if (cardModoIntermediario) {
-  cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
-}
-
-if (cardModoAvancado) {
-  cardModoAvancado.addEventListener("click", abrirModoAvancado);
-}
+if (cardModoIniciante) cardModoIniciante.addEventListener("click", abrirModoIniciante);
+if (cardModoIntermediario) cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
+if (cardModoAvancado) cardModoAvancado.addEventListener("click", abrirModoAvancado);
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
@@ -415,7 +366,8 @@ function carregarPreferencias() {
     inputNomeOperador.value = nomeSalvo;
   }
 
-  nivelAtualIndex = obterNivelLiberado();
+  modoAtual = MODO_INICIANTE;
+  nivelAtualIndex = obterNivelLiberado(MODO_INICIANTE);
 }
 
 /* =========================
@@ -428,19 +380,11 @@ function mostrarTela(tela) {
   telaJogo.classList.remove("ativa");
   telaFinal.classList.remove("ativa");
   telaRanking.classList.remove("ativa");
-
   tela.classList.add("ativa");
 }
 
 function voltarInicio() {
   mostrarTela(telaInicial);
-}
-
-function entrarCampanha() {
-  salvarNomeOperador();
-  nivelAtualIndex = obterNivelLiberado();
-  renderizarCampanha();
-  mostrarTela(telaCampanha);
 }
 
 function salvarNomeOperador() {
@@ -449,9 +393,25 @@ function salvarNomeOperador() {
   localStorage.setItem("operadorMorseNome", nomeOperador);
 }
 
+function entrarCampanha() {
+  salvarNomeOperador();
+  renderizarCampanha();
+  mostrarTela(telaCampanha);
+}
+
 /* =========================
    MODOS
 ========================= */
+
+function getNiveisModo(modo = modoAtual) {
+  if (modo === MODO_INTERMEDIARIO) return NIVEIS_INTERMEDIARIO;
+  return NIVEIS_INICIANTE;
+}
+
+function getNomeModo(modo = modoAtual) {
+  if (modo === MODO_INTERMEDIARIO) return "Intermediário";
+  return "Iniciante";
+}
 
 function modoInicianteConcluido() {
   return localStorage.getItem(chaveInicianteConcluido()) === "sim";
@@ -459,6 +419,35 @@ function modoInicianteConcluido() {
 
 function modoIntermediarioConcluido() {
   return localStorage.getItem(chaveIntermediarioConcluido()) === "sim";
+}
+
+function abrirModoIniciante() {
+  salvarNomeOperador();
+  modoAtual = MODO_INICIANTE;
+  renderizarCampanha();
+}
+
+function abrirModoIntermediario() {
+  salvarNomeOperador();
+
+  if (!modoInicianteConcluido()) {
+    alert("Conclua o modo Iniciante para liberar o Intermediário.");
+    return;
+  }
+
+  modoAtual = MODO_INTERMEDIARIO;
+  renderizarCampanha();
+}
+
+function abrirModoAvancado() {
+  salvarNomeOperador();
+
+  if (!modoIntermediarioConcluido()) {
+    alert("Conclua o modo Intermediário para liberar o Avançado.");
+    return;
+  }
+
+  alert("Modo Avançado será a próxima grande missão: tempo limite, menos dicas e mensagens operacionais.");
 }
 
 function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
@@ -476,56 +465,50 @@ function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
     badge.className = liberado ? "badge sucesso" : "badge alerta";
   }
 
-  if (status) {
-    status.textContent = textoStatus;
-  }
+  if (status) status.textContent = textoStatus;
 }
 
-function abrirModoIntermediario() {
-  salvarNomeOperador();
+function aplicarModoVisualJogo() {
+  const intermediario = modoAtual === MODO_INTERMEDIARIO;
 
-  if (!modoInicianteConcluido()) {
-    alert("Conclua o modo Iniciante para liberar o Intermediário.");
-    return;
+  btnEspacoLetra.style.display = intermediario ? "none" : "inline-block";
+  btnEspacoPalavra.style.display = intermediario ? "none" : "inline-block";
+
+  if (intermediario) {
+    feedback.textContent = "Modo Intermediário: use pausas naturais. Pausa média separa letra; pausa longa separa palavra.";
+    feedback.className = "feedback alerta";
   }
-
-  alert(
-    "Modo Intermediário liberado.\n\n" +
-    "Próxima etapa: implementar separação automática por tempo, sem botões de espaço."
-  );
-}
-
-function abrirModoAvancado() {
-  salvarNomeOperador();
-
-  if (!modoIntermediarioConcluido()) {
-    alert("Conclua o modo Intermediário para liberar o Avançado.");
-    return;
-  }
-
-  alert(
-    "Modo Avançado liberado.\n\n" +
-    "Próxima etapa: missões operacionais com tempo limite e menor apoio visual."
-  );
 }
 
 /* =========================
-   MAPA DA CAMPANHA
+   CAMPANHA / MAPA
 ========================= */
 
+function obterNivelLiberado(modo = modoAtual) {
+  const niveis = getNiveisModo(modo);
+  const salvo = Number(localStorage.getItem(chaveNivelLiberado(modo)) || "0");
+
+  if (Number.isNaN(salvo)) return 0;
+
+  return Math.min(Math.max(salvo, 0), niveis.length - 1);
+}
+
 function renderizarCampanha() {
-  const nivelLiberado = obterNivelLiberado();
   const operador = getNomeOperadorAtual();
+  const nivelLiberado = obterNivelLiberado(modoAtual);
+  const niveis = getNiveisModo(modoAtual);
+
   const inicianteConcluido = modoInicianteConcluido();
   const intermediarioConcluido = modoIntermediarioConcluido();
 
-  statusIniciante.textContent = `${operador}: nível liberado ${nivelLiberado + 1}`;
+  statusIniciante.textContent =
+    `${operador}: ${getNomeModo(modoAtual)} — nível liberado ${nivelLiberado + 1}`;
 
   atualizarCardModo(
     "cardModoIntermediario",
     inicianteConcluido,
     inicianteConcluido ? "Liberado" : "Bloqueado",
-    inicianteConcluido ? "Modo Intermediário liberado" : "Conclua o Iniciante para liberar"
+    inicianteConcluido ? "Clique para treinar sem botões de espaço" : "Conclua o Iniciante para liberar"
   );
 
   atualizarCardModo(
@@ -535,7 +518,7 @@ function renderizarCampanha() {
     intermediarioConcluido ? "Modo Avançado liberado" : "Conclua o Intermediário para liberar"
   );
 
-  gridNiveis.innerHTML = NIVEIS_INICIANTE
+  gridNiveis.innerHTML = niveis
     .map((nivel, index) => {
       const bloqueado = index > nivelLiberado;
       const concluido = index < nivelLiberado;
@@ -551,10 +534,9 @@ function renderizarCampanha() {
       return `
         <button class="${classe}" data-index="${index}" ${bloqueado ? "disabled" : ""}>
           <div class="nivel-linha">
-            <span class="nivel-numero">Nível ${nivel.numero}</span>
+            <span class="nivel-numero">${getNomeModo(modoAtual)} ${nivel.numero}</span>
             <span class="nivel-lock">${icone}</span>
           </div>
-
           <strong>${escaparHtml(nivel.patente)}</strong>
           <span>${escaparHtml(nivel.titulo)}</span>
           <span>${escaparHtml(nivel.descricao)}</span>
@@ -564,23 +546,12 @@ function renderizarCampanha() {
     .join("");
 
   document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
-    card.addEventListener("click", () => {
-      const index = Number(card.dataset.index);
-      iniciarNivel(index);
-    });
+    card.addEventListener("click", () => iniciarNivel(Number(card.dataset.index)));
   });
 }
 
-function obterNivelLiberado() {
-  const salvo = Number(localStorage.getItem(chaveNivelLiberado()) || "0");
-
-  if (Number.isNaN(salvo)) return 0;
-
-  return Math.min(Math.max(salvo, 0), NIVEIS_INICIANTE.length - 1);
-}
-
 function continuarNivelAtual() {
-  iniciarNivel(obterNivelLiberado());
+  iniciarNivel(obterNivelLiberado(modoAtual));
 }
 
 /* =========================
@@ -589,13 +560,13 @@ function continuarNivelAtual() {
 
 function iniciarNivel(index) {
   prepararAudio();
-
   salvarNomeOperador();
 
-  const nivelLiberado = obterNivelLiberado();
+  const nivelLiberado = obterNivelLiberado(modoAtual);
+  const niveis = getNiveisModo(modoAtual);
   const indexSeguro = Math.min(Math.max(index, 0), nivelLiberado);
 
-  nivelAtualIndex = Math.min(Math.max(indexSeguro, 0), NIVEIS_INICIANTE.length - 1);
+  nivelAtualIndex = Math.min(Math.max(indexSeguro, 0), niveis.length - 1);
   missaoAtualIndex = 0;
   codigoAtual = "";
   pontuacao = 0;
@@ -605,9 +576,12 @@ function iniciarNivel(index) {
   pressionando = false;
   inicioNivelMs = performance.now();
 
+  limparTemporizadoresPausa();
+
   mostrarTela(telaJogo);
   carregarMissao();
   atualizarPlacar();
+  aplicarModoVisualJogo();
 }
 
 function reiniciarNivel() {
@@ -625,7 +599,9 @@ function avancarProximoNivel() {
     return;
   }
 
-  if (nivelAtualIndex >= NIVEIS_INICIANTE.length - 1) {
+  const niveis = getNiveisModo(modoAtual);
+
+  if (nivelAtualIndex >= niveis.length - 1) {
     entrarCampanha();
     return;
   }
@@ -634,7 +610,7 @@ function avancarProximoNivel() {
 }
 
 function getNivelAtual() {
-  return NIVEIS_INICIANTE[nivelAtualIndex];
+  return getNiveisModo(modoAtual)[nivelAtualIndex];
 }
 
 function getMissaoAtual() {
@@ -653,11 +629,16 @@ function carregarMissao() {
   const missao = getMissaoAtual();
 
   nomeOperadorEl.textContent = nivel.patente;
-  badgeNivel.textContent = `Nível ${nivel.numero}`;
+  badgeNivel.textContent = `${getNomeModo(modoAtual)} ${nivel.numero}`;
   badgePatente.textContent = nivel.patente;
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
-  dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
+
+  if (modoAtual === MODO_INTERMEDIARIO) {
+    dicaMissaoEl.textContent = `Método fônico: ${morseParaFonico(missao.codigo)}`;
+  } else {
+    dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
+  }
 
   contadorMissaoEl.textContent = `${missaoAtualIndex + 1}/${nivel.missoes.length}`;
   faseAtualEl.textContent = missao.tipo;
@@ -667,14 +648,17 @@ function carregarMissao() {
 
   feedback.textContent = "";
   feedback.className = "feedback";
+
+  aplicarModoVisualJogo();
 }
 
 function confirmarEnvio() {
+  limparTemporizadoresPausa();
+
   const missao = getMissaoAtual();
 
   if (!codigoAtual.trim()) {
     tocarErro();
-
     feedback.textContent = "Transmita pelo menos um ponto ou traço antes de confirmar.";
     feedback.className = "feedback erro";
     return;
@@ -691,7 +675,6 @@ function confirmarEnvio() {
     pontuacao += pontosGanhos;
 
     tocarAcerto();
-
     feedback.textContent = `Correto! +${pontosGanhos} pontos.`;
     feedback.className = "feedback sucesso";
   } else {
@@ -700,13 +683,11 @@ function confirmarEnvio() {
     pontuacao = Math.max(0, pontuacao - 2);
 
     tocarErro();
-
     feedback.textContent = `Incorreto. Correto: ${missao.codigo}`;
     feedback.className = "feedback erro";
   }
 
   atualizarPlacar();
-
   setTimeout(proximaMissao, 900);
 }
 
@@ -739,6 +720,7 @@ function finalizarNivel() {
   fimNivelMs = performance.now();
 
   const nivel = getNivelAtual();
+  const niveis = getNiveisModo(modoAtual);
   const totalMissoes = nivel.missoes.length;
   const aproveitamento = Math.round((acertosNivel / totalMissoes) * 100);
   const tempoSegundos = Math.max(1, Math.round((fimNivelMs - inicioNivelMs) / 1000));
@@ -748,27 +730,28 @@ function finalizarNivel() {
   const excelenciaWpm = wpm >= META_WPM;
 
   let pontosFinais = pontuacao;
-
   if (bonus) pontosFinais += 25;
   if (excelenciaWpm && aprovado) pontosFinais += 25;
 
   pontuacao = pontosFinais;
 
-  let patenteResultado = nivel.patente;
   let campanhaFinalizada = false;
+  let patenteResultado = nivel.patente;
 
-  if (aprovado && nivelAtualIndex === NIVEIS_INICIANTE.length - 1) {
-    patenteResultado = PATENTE_FINAL;
+  if (aprovado && nivelAtualIndex === niveis.length - 1) {
     campanhaFinalizada = true;
+    patenteResultado = modoAtual === MODO_INTERMEDIARIO
+      ? PATENTE_FINAL_INTERMEDIARIO
+      : PATENTE_FINAL_INICIANTE;
   }
 
   ultimoResultado = {
     nome: nomeOperador,
     chaveOperador: getChaveOperador(),
-    modo: "Iniciante",
+    modo: getNomeModo(modoAtual),
     patente: patenteResultado,
-    nivel: campanhaFinalizada ? NIVEIS_INICIANTE.length + 1 : nivel.numero,
-    titulo: campanhaFinalizada ? "Campanha iniciante concluída" : nivel.titulo,
+    nivel: campanhaFinalizada ? niveis.length + 1 : nivel.numero,
+    titulo: campanhaFinalizada ? `Campanha ${getNomeModo(modoAtual)} concluída` : nivel.titulo,
     pontos: pontosFinais,
     aproveitamento,
     tempoSegundos,
@@ -781,26 +764,33 @@ function finalizarNivel() {
 
   salvarRanking(ultimoResultado);
 
-  if (aprovado) {
-    liberarProximoNivel(campanhaFinalizada);
-  }
+  if (aprovado) liberarProximoNivel(campanhaFinalizada);
 
   mostrarResultadoNivel(ultimoResultado, campanhaFinalizada);
 }
 
 function liberarProximoNivel(campanhaFinalizada) {
-  const nivelLiberadoAtual = obterNivelLiberado();
+  const niveis = getNiveisModo(modoAtual);
+  const nivelLiberadoAtual = obterNivelLiberado(modoAtual);
 
   if (campanhaFinalizada) {
-    localStorage.setItem(chaveNivelLiberado(), String(NIVEIS_INICIANTE.length - 1));
-    localStorage.setItem(chaveInicianteConcluido(), "sim");
+    localStorage.setItem(chaveNivelLiberado(modoAtual), String(niveis.length - 1));
+
+    if (modoAtual === MODO_INICIANTE) {
+      localStorage.setItem(chaveInicianteConcluido(), "sim");
+    }
+
+    if (modoAtual === MODO_INTERMEDIARIO) {
+      localStorage.setItem(chaveIntermediarioConcluido(), "sim");
+    }
+
     return;
   }
 
-  const proximoIndex = Math.min(nivelAtualIndex + 1, NIVEIS_INICIANTE.length - 1);
+  const proximoIndex = Math.min(nivelAtualIndex + 1, niveis.length - 1);
 
   if (proximoIndex > nivelLiberadoAtual) {
-    localStorage.setItem(chaveNivelLiberado(), String(proximoIndex));
+    localStorage.setItem(chaveNivelLiberado(modoAtual), String(proximoIndex));
   }
 }
 
@@ -815,24 +805,18 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   if (!resultado.aprovado) {
     resultadoBadge.textContent = "Repetir nível";
     tituloResultado.textContent = "Nível não concluído";
-
     resultadoFinal.textContent =
-      `Você ficou com ${resultado.aproveitamento}% de aproveitamento. ` +
-      `O mínimo é 80%. Repita o nível para tentar novamente.`;
-
+      `Você ficou com ${resultado.aproveitamento}% de aproveitamento. O mínimo é 80%. Repita o nível.`;
     btnProximoNivel.style.display = "none";
     btnJogarNovamente.textContent = "Repetir nível";
     return;
   }
 
   if (campanhaFinalizada) {
-    resultadoBadge.textContent = "Campanha iniciante concluída";
-    tituloResultado.textContent = "Promoção a Marechal";
-
+    resultadoBadge.textContent = `Campanha ${getNomeModo(modoAtual)} concluída`;
+    tituloResultado.textContent = `Promoção: ${resultado.patente}`;
     resultadoFinal.textContent =
-      `Missão final concluída! Você alcançou Marechal no modo Iniciante. ` +
-      `Aproveitamento de ${resultado.aproveitamento}% e velocidade aproximada de ${resultado.wpm.toFixed(1)} WPM.`;
-
+      `Excelente! Você concluiu o modo ${getNomeModo(modoAtual)} com ${resultado.aproveitamento}% de aproveitamento e ${resultado.wpm.toFixed(1)} WPM aproximado.`;
     btnProximoNivel.style.display = "none";
     btnJogarNovamente.textContent = "Refazer missão final";
     return;
@@ -846,13 +830,8 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
     `Tempo: ${formatarTempo(resultado.tempoSegundos)}. ` +
     `Velocidade aproximada: ${resultado.wpm.toFixed(1)} WPM.`;
 
-  if (resultado.bonus) {
-    mensagem += " Bônus por aproveitamento de 90% ou mais.";
-  }
-
-  if (resultado.excelenciaWpm) {
-    mensagem += " Ritmo operacional: meta de 12 WPM alcançada.";
-  }
+  if (resultado.bonus) mensagem += " Bônus por aproveitamento de 90% ou mais.";
+  if (resultado.excelenciaWpm) mensagem += " Meta operacional de 12 WPM alcançada.";
 
   resultadoFinal.textContent = mensagem;
 
@@ -861,21 +840,27 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
 }
 
 function proximaPatenteTexto() {
-  if (nivelAtualIndex >= NIVEIS_INICIANTE.length - 1) {
-    return PATENTE_FINAL;
+  const niveis = getNiveisModo(modoAtual);
+
+  if (nivelAtualIndex >= niveis.length - 1) {
+    return modoAtual === MODO_INTERMEDIARIO
+      ? PATENTE_FINAL_INTERMEDIARIO
+      : PATENTE_FINAL_INICIANTE;
   }
 
-  return NIVEIS_INICIANTE[nivelAtualIndex + 1].patente;
+  return niveis[nivelAtualIndex + 1].patente;
 }
 
 /* =========================
-   CÓDIGO DIGITADO
+   MANIPULAÇÃO MORSE
 ========================= */
 
 function iniciarPressionamento() {
   prepararAudio();
 
   if (pressionando) return;
+
+  limparTemporizadoresPausa();
 
   pressionando = true;
   inicioPressionamento = performance.now();
@@ -899,6 +884,10 @@ function finalizarPressionamento() {
 
   adicionarSimbolo(simbolo);
   mostrarFeedbackManipulacao(simbolo, duracao);
+
+  if (modoAtual === MODO_INTERMEDIARIO) {
+    agendarSeparacaoAutomatica();
+  }
 }
 
 function cancelarPressionamento() {
@@ -906,7 +895,6 @@ function cancelarPressionamento() {
 
   pressionando = false;
   btnMorse.classList.remove("pressionado");
-
   pararTomMorse();
 }
 
@@ -941,6 +929,41 @@ function inserirEspacoPalavra() {
   atualizarCodigoNaTela();
 }
 
+function agendarSeparacaoAutomatica() {
+  limparTemporizadoresPausa();
+
+  temporizadorLetra = setTimeout(() => {
+    if (!codigoAtual.trim()) return;
+
+    if (!codigoAtual.endsWith(" ") && !codigoAtual.endsWith("/")) {
+      codigoAtual += " ";
+      atualizarCodigoNaTela();
+      feedback.textContent = "Pausa detectada: próxima letra.";
+      feedback.className = "feedback alerta";
+    }
+  }, PAUSA_AUTO_LETRA_MS);
+
+  temporizadorPalavra = setTimeout(() => {
+    if (!codigoAtual.trim()) return;
+
+    codigoAtual = codigoAtual.trim();
+
+    if (!codigoAtual.endsWith("/")) {
+      codigoAtual += " / ";
+      atualizarCodigoNaTela();
+      feedback.textContent = "Pausa longa detectada: próxima palavra.";
+      feedback.className = "feedback alerta";
+    }
+  }, PAUSA_AUTO_PALAVRA_MS);
+}
+
+function limparTemporizadoresPausa() {
+  if (temporizadorLetra) clearTimeout(temporizadorLetra);
+  if (temporizadorPalavra) clearTimeout(temporizadorPalavra);
+  temporizadorLetra = null;
+  temporizadorPalavra = null;
+}
+
 function piscarBotao(botao) {
   if (!botao) return;
 
@@ -956,6 +979,7 @@ function atualizarCodigoNaTela() {
 }
 
 function limparCodigo() {
+  limparTemporizadoresPausa();
   codigoAtual = "";
   atualizarCodigoNaTela();
 
@@ -967,13 +991,9 @@ function limparCodigo() {
 
 function mostrarFeedbackManipulacao(simbolo, duracao) {
   const duracaoArredondada = Math.round(duracao);
-
-  if (simbolo === ".") {
-    feedback.textContent = `Ponto transmitido (${duracaoArredondada} ms).`;
-  } else {
-    feedback.textContent = `Traço transmitido (${duracaoArredondada} ms).`;
-  }
-
+  feedback.textContent = simbolo === "."
+    ? `Ponto transmitido (${duracaoArredondada} ms).`
+    : `Traço transmitido (${duracaoArredondada} ms).`;
   feedback.className = "feedback";
 }
 
@@ -992,7 +1012,6 @@ function calcularWpmNivel(tempoSegundos) {
   const nivel = getNivelAtual();
   const textoTotal = nivel.missoes.join("");
   const caracteresValidos = textoTotal.replace(/\s/g, "").length;
-
   const minutos = tempoSegundos / 60;
   const wpm = caracteresValidos / 5 / minutos;
 
@@ -1014,6 +1033,7 @@ function salvarRanking(resultado) {
   ranking.push(resultado);
 
   ranking.sort((a, b) => {
+    if (b.modo !== a.modo) return String(b.modo).localeCompare(String(a.modo));
     if (b.nivel !== a.nivel) return b.nivel - a.nivel;
     if (b.pontos !== a.pontos) return b.pontos - a.pontos;
     if (b.aproveitamento !== a.aproveitamento) return b.aproveitamento - a.aproveitamento;
@@ -1021,9 +1041,7 @@ function salvarRanking(resultado) {
     return b.wpm - a.wpm;
   });
 
-  const top20 = ranking.slice(0, 20);
-
-  localStorage.setItem("operadorMorseRanking", JSON.stringify(top20));
+  localStorage.setItem("operadorMorseRanking", JSON.stringify(ranking.slice(0, 20)));
 }
 
 function obterRanking() {
@@ -1056,28 +1074,23 @@ function renderizarRanking() {
   }
 
   listaRanking.innerHTML = ranking
-    .map((item, index) => {
-      return `
-        <div class="ranking-item">
-          <div class="ranking-posicao">${index + 1}</div>
-
-          <div>
-            <div class="ranking-nome">${escaparHtml(item.nome)} — ${escaparHtml(item.patente)}</div>
-            <div class="ranking-detalhes">
-              ${escaparHtml(item.modo || "Iniciante")} • Nível ${item.nivel} • ${item.aproveitamento}% • ${formatarTempo(item.tempoSegundos)} • ${item.wpm.toFixed(1)} WPM • ${item.data}
-            </div>
+    .map((item, index) => `
+      <div class="ranking-item">
+        <div class="ranking-posicao">${index + 1}</div>
+        <div>
+          <div class="ranking-nome">${escaparHtml(item.nome)} — ${escaparHtml(item.patente)}</div>
+          <div class="ranking-detalhes">
+            ${escaparHtml(item.modo || "Iniciante")} • Nível ${item.nivel} • ${item.aproveitamento}% • ${formatarTempo(item.tempoSegundos)} • ${item.wpm.toFixed(1)} WPM • ${item.data}
           </div>
-
-          <div class="ranking-pontos">${item.pontos} pts</div>
         </div>
-      `;
-    })
+        <div class="ranking-pontos">${item.pontos} pts</div>
+      </div>
+    `)
     .join("");
 }
 
 function limparRanking() {
   const confirmar = window.confirm("Deseja limpar o ranking local deste aparelho?");
-
   if (!confirmar) return;
 
   localStorage.removeItem("operadorMorseRanking");
@@ -1094,7 +1107,7 @@ function escaparHtml(valor) {
 }
 
 /* =========================
-   ÁUDIO MORSE REALISTA
+   ÁUDIO
 ========================= */
 
 function prepararAudio() {
@@ -1109,7 +1122,6 @@ function prepararAudio() {
 
 function iniciarTomMorse() {
   prepararAudio();
-
   pararTomMorse();
 
   osciladorMorse = audioContext.createOscillator();
@@ -1117,19 +1129,13 @@ function iniciarTomMorse() {
   filtroMorse = audioContext.createBiquadFilter();
 
   osciladorMorse.type = "square";
-  osciladorMorse.frequency.setValueAtTime(
-    FREQUENCIA_SIDETONE,
-    audioContext.currentTime
-  );
+  osciladorMorse.frequency.setValueAtTime(FREQUENCIA_SIDETONE, audioContext.currentTime);
 
   filtroMorse.type = "lowpass";
   filtroMorse.frequency.setValueAtTime(1500, audioContext.currentTime);
 
   ganhoMorse.gain.setValueAtTime(0.001, audioContext.currentTime);
-  ganhoMorse.gain.exponentialRampToValueAtTime(
-    VOLUME_MORSE,
-    audioContext.currentTime + 0.012
-  );
+  ganhoMorse.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
 
   osciladorMorse.connect(filtroMorse);
   filtroMorse.connect(ganhoMorse);
@@ -1147,11 +1153,8 @@ function pararTomMorse() {
     ganhoMorse.gain.cancelScheduledValues(agora);
     ganhoMorse.gain.setValueAtTime(ganhoMorse.gain.value || VOLUME_MORSE, agora);
     ganhoMorse.gain.exponentialRampToValueAtTime(0.001, agora + 0.018);
-
     osciladorMorse.stop(agora + 0.025);
-  } catch (erro) {
-    // Evita travamento se o navegador já tiver parado o oscilador.
-  }
+  } catch (erro) {}
 
   osciladorMorse = null;
   ganhoMorse = null;
@@ -1168,15 +1171,8 @@ function tocarTomCurto(frequencia, duracao, volume = 0.14, tipo = "sine") {
   oscilador.frequency.setValueAtTime(frequencia, audioContext.currentTime);
 
   ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
-  ganho.gain.exponentialRampToValueAtTime(
-    volume,
-    audioContext.currentTime + 0.01
-  );
-
-  ganho.gain.exponentialRampToValueAtTime(
-    0.001,
-    audioContext.currentTime + duracao / 1000
-  );
+  ganho.gain.exponentialRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+  ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracao / 1000);
 
   oscilador.connect(ganho);
   ganho.connect(audioContext.destination);
@@ -1191,28 +1187,10 @@ function tocarCliqueLimpar() {
 
 function tocarAcerto() {
   tocarTomCurto(760, 80, 0.09, "sine");
-
-  setTimeout(() => {
-    tocarTomCurto(980, 100, 0.09, "sine");
-  }, 90);
+  setTimeout(() => tocarTomCurto(980, 100, 0.09, "sine"), 90);
 }
 
 function tocarErro() {
   tocarTomCurto(240, 120, 0.11, "sawtooth");
-
-  setTimeout(() => {
-    tocarTomCurto(180, 160, 0.1, "sawtooth");
-  }, 120);
-}
-
-function tocarFinalizacao() {
-  tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_PONTO_IDEAL, 0.12, "square");
-
-  setTimeout(() => {
-    tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_PONTO_IDEAL, 0.12, "square");
-  }, UNIDADE_MORSE * 2);
-
-  setTimeout(() => {
-    tocarTomCurto(FREQUENCIA_SIDETONE, DURACAO_TRACO_IDEAL, 0.12, "square");
-  }, UNIDADE_MORSE * 4);
+  setTimeout(() => tocarTomCurto(180, 160, 0.1, "sawtooth"), 120);
 }
