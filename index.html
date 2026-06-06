@@ -207,9 +207,22 @@
 
         <!-- PAINEL DE RITMO - APARECE NO MODO INTERMEDIÁRIO -->
         <div id="painelRitmo" class="painel-ritmo">
+          <div class="painel-wpm">
+            <span>Velocidade</span>
+            <strong id="valorWpm">12 WPM</strong>
+
+            <div class="controle-wpm">
+              <button class="btn secundario btn-wpm" data-wpm="8">8</button>
+              <button class="btn secundario btn-wpm" data-wpm="10">10</button>
+              <button class="btn secundario btn-wpm ativo" data-wpm="12">12</button>
+              <button class="btn secundario btn-wpm" data-wpm="15">15</button>
+              <button class="btn secundario btn-wpm" data-wpm="18">18</button>
+            </div>
+          </div>
+
           <div>
             <span>Entre letras</span>
-            <strong id="valorPausaLetra">350 ms</strong>
+            <strong id="valorPausaLetra">300 ms</strong>
 
             <div class="controle-ritmo">
               <button id="btnMenosLetra" class="btn secundario">−</button>
@@ -219,7 +232,7 @@
 
           <div>
             <span>Entre palavras</span>
-            <strong id="valorPausaPalavra">750 ms</strong>
+            <strong id="valorPausaPalavra">700 ms</strong>
 
             <div class="controle-ritmo">
               <button id="btnMenosPalavra" class="btn secundario">−</button>
@@ -336,6 +349,10 @@
         </div>
       </div>
     </section>
+
+    <footer class="rodape-app">
+      Desenvolvido por Op Evandro (ADR) - Versão 1.0
+    </footer>
   </main>
 
   <script src="script.js"></script>

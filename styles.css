@@ -1013,3 +1013,80 @@ p {
     padding: 6px 3px;
   }
 }
+/* =========================
+   PAINEL WPM
+========================= */
+
+.painel-wpm {
+  grid-column: 1 / -1;
+}
+
+.controle-wpm {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.btn-wpm {
+  padding: 9px;
+  font-size: 0.86rem;
+}
+
+.btn-wpm.ativo {
+  background: var(--azul);
+  color: #06111f;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+}
+
+/* =========================
+   RODAPÉ
+========================= */
+
+.rodape-app {
+  width: 100%;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-top: 18px;
+  padding: 14px 8px;
+  opacity: 0.85;
+}
+
+/* =========================
+   FEEDBACK VISUAL DE PAUSA
+========================= */
+
+.feedback-pausa {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.14);
+  color: var(--amarelo);
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  font-weight: 900;
+}
+
+/* =========================
+   AJUSTE MOBILE DO WPM
+========================= */
+
+@media (max-width: 720px) {
+  .controle-wpm {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .btn-wpm {
+    padding: 8px 4px;
+    font-size: 0.72rem;
+    border-radius: 12px;
+  }
+
+  .rodape-app {
+    font-size: 0.72rem;
+    margin-top: 12px;
+    padding-bottom: 20px;
+  }
+}

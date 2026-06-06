@@ -58,50 +58,24 @@ const cardModoIntermediario = document.getElementById("cardModoIntermediario");
 const cardModoAvancado = document.getElementById("cardModoAvancado");
 
 const painelRitmo = document.getElementById("painelRitmo");
+const valorWpm = document.getElementById("valorWpm");
 const valorPausaLetra = document.getElementById("valorPausaLetra");
 const valorPausaPalavra = document.getElementById("valorPausaPalavra");
+const botoesWpm = document.querySelectorAll(".btn-wpm");
+
 const btnMenosLetra = document.getElementById("btnMenosLetra");
 const btnMaisLetra = document.getElementById("btnMaisLetra");
 const btnMenosPalavra = document.getElementById("btnMenosPalavra");
 const btnMaisPalavra = document.getElementById("btnMaisPalavra");
 
 const TABELA_MORSE = {
-  A: ".-",
-  B: "-...",
-  C: "-.-.",
-  D: "-..",
-  E: ".",
-  F: "..-.",
-  G: "--.",
-  H: "....",
-  I: "..",
-  J: ".---",
-  K: "-.-",
-  L: ".-..",
-  M: "--",
-  N: "-.",
-  O: "---",
-  P: ".--.",
-  Q: "--.-",
-  R: ".-.",
-  S: "...",
-  T: "-",
-  U: "..-",
-  V: "...-",
-  W: ".--",
-  X: "-..-",
-  Y: "-.--",
-  Z: "--..",
-  0: "-----",
-  1: ".----",
-  2: "..---",
-  3: "...--",
-  4: "....-",
-  5: ".....",
-  6: "-....",
-  7: "--...",
-  8: "---..",
-  9: "----."
+  A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
+  G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..",
+  M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.",
+  S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
+  Y: "-.--", Z: "--..",
+  0: "-----", 1: ".----", 2: "..---", 3: "...--", 4: "....-",
+  5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----."
 };
 
 function textoParaMorse(texto) {
@@ -118,30 +92,30 @@ function textoParaMorse(texto) {
 
 const DICAS_FONICAS = {
   A: "mi DÁ",
-  B: "GOL de bip bip",
+  B: "GOL de bi bi",
   C: "BÁ ti BÁ ti",
-  D: "GOL de bip",
-  E: "bip",
-  F: "AI que COI sa",
+  D: "GOL de di",
+  E: "bi",
+  F: "fi ti PAL di",
   G: "PAI DÉ gua",
   H: "pi pi pi pi",
-  I: "pi pi",
-  J: "vem CÁ Jo SÉ",
+  I: "bi pi",
+  J: "vem CÁ JO SÉ",
   K: "DÁ ki DÁ",
-  L: "mi DÁ li",
-  M: "ma RÉ",
+  L: "mi DÁ li li",
+  M: "MA RÉ",
   N: "NÁ ri",
-  O: "to ro RÓ",
-  P: "si NAL ver de",
-  Q: "DÁ DÁ ki DÁ",
-  R: "ci DA de",
+  O: "TO RO RÓ",
+  P: "si NAL VER di",
+  Q: "QUEM VEM di LÁ",
+  R: "ci DA di",
   S: "si ri ri",
   T: "TÁ",
   U: "u ru BU",
-  V: "ven ti la DOR",
-  W: "fi la DAP",
-  X: "LEI te com CHÁ",
-  Y: "GOL da VA va",
+  V: "ma ra ca NÁ",
+  W: "ci la DÁ",
+  X: "LEI ti com CHÁ",
+  Y: "GOL di VA VA",
   Z: "ZÁ ZÁ li li"
 };
 
@@ -169,14 +143,15 @@ const META_WPM = 12;
 const PATENTE_FINAL_INICIANTE = "Marechal";
 const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
 
-const WPM = 12;
-const UNIDADE_MORSE = 1200 / WPM;
-const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
 const FREQUENCIA_SIDETONE = 650;
 const VOLUME_MORSE = 0.22;
 
-let pausaAutoLetraMs = Number(localStorage.getItem("operadorMorsePausaLetraMs") || "350");
-let pausaAutoPalavraMs = Number(localStorage.getItem("operadorMorsePausaPalavraMs") || "750");
+let wpmAtual = Number(localStorage.getItem("operadorMorseWpm") || "12");
+
+let unidadeMorseMs = 1200 / wpmAtual;
+let pausaAutoLetraMs = Math.round(unidadeMorseMs * 3);
+let pausaAutoPalavraMs = Math.round(unidadeMorseMs * 7);
+let limitePontoTracoMs = unidadeMorseMs * 2;
 
 const NIVEIS_INICIANTE = [
   { numero: 1, patente: "Bisonho", titulo: "Instrução Básica", descricao: "Primeiro contato com ponto e traço.", missoes: ["E", "T", "E", "T", "A"] },
@@ -240,6 +215,24 @@ let ultimoResultado = null;
 let temporizadorLetra = null;
 let temporizadorPalavra = null;
 
+function recalcularTemposPorWpm() {
+  unidadeMorseMs = 1200 / wpmAtual;
+  pausaAutoLetraMs = Math.round(unidadeMorseMs * 3);
+  pausaAutoPalavraMs = Math.round(unidadeMorseMs * 7);
+  limitePontoTracoMs = unidadeMorseMs * 2;
+}
+
+function selecionarWpm(novoWpm) {
+  wpmAtual = Number(novoWpm);
+  localStorage.setItem("operadorMorseWpm", String(wpmAtual));
+  recalcularTemposPorWpm();
+  atualizarPainelRitmo();
+
+  feedback.textContent =
+    `WPM ajustado para ${wpmAtual}. Letra: ${pausaAutoLetraMs} ms • Palavra: ${pausaAutoPalavraMs} ms.`;
+  feedback.className = "feedback alerta";
+}
+
 function getNomeOperadorAtual() {
   return inputNomeOperador.value.trim() || nomeOperador || "Operador";
 }
@@ -294,10 +287,16 @@ cardModoIniciante.addEventListener("click", abrirModoIniciante);
 cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
 cardModoAvancado.addEventListener("click", abrirModoAvancado);
 
-btnMenosLetra.addEventListener("click", () => ajustarPausa("letra", -50));
-btnMaisLetra.addEventListener("click", () => ajustarPausa("letra", 50));
-btnMenosPalavra.addEventListener("click", () => ajustarPausa("palavra", -50));
-btnMaisPalavra.addEventListener("click", () => ajustarPausa("palavra", 50));
+botoesWpm.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    selecionarWpm(botao.dataset.wpm);
+  });
+});
+
+if (btnMenosLetra) btnMenosLetra.style.display = "none";
+if (btnMaisLetra) btnMaisLetra.style.display = "none";
+if (btnMenosPalavra) btnMenosPalavra.style.display = "none";
+if (btnMaisPalavra) btnMaisPalavra.style.display = "none";
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
@@ -334,6 +333,7 @@ document.addEventListener("keyup", (evento) => {
 });
 
 carregarPreferencias();
+recalcularTemposPorWpm();
 atualizarPainelRitmo();
 
 function carregarPreferencias() {
@@ -452,30 +452,13 @@ function aplicarModoVisualJogo() {
 }
 
 function atualizarPainelRitmo() {
-  valorPausaLetra.textContent = `${pausaAutoLetraMs} ms`;
-  valorPausaPalavra.textContent = `${pausaAutoPalavraMs} ms`;
-}
+  if (valorWpm) valorWpm.textContent = `${wpmAtual} WPM`;
+  if (valorPausaLetra) valorPausaLetra.textContent = `${pausaAutoLetraMs} ms`;
+  if (valorPausaPalavra) valorPausaPalavra.textContent = `${pausaAutoPalavraMs} ms`;
 
-function ajustarPausa(tipo, delta) {
-  if (tipo === "letra") {
-    pausaAutoLetraMs = Math.min(1000, Math.max(200, pausaAutoLetraMs + delta));
-    localStorage.setItem("operadorMorsePausaLetraMs", String(pausaAutoLetraMs));
-  }
-
-  if (tipo === "palavra") {
-    pausaAutoPalavraMs = Math.min(2000, Math.max(450, pausaAutoPalavraMs + delta));
-    localStorage.setItem("operadorMorsePausaPalavraMs", String(pausaAutoPalavraMs));
-  }
-
-  if (pausaAutoPalavraMs <= pausaAutoLetraMs) {
-    pausaAutoPalavraMs = pausaAutoLetraMs + 200;
-    localStorage.setItem("operadorMorsePausaPalavraMs", String(pausaAutoPalavraMs));
-  }
-
-  atualizarPainelRitmo();
-
-  feedback.textContent = `Ritmo ajustado: letras ${pausaAutoLetraMs} ms • palavras ${pausaAutoPalavraMs} ms.`;
-  feedback.className = "feedback alerta";
+  botoesWpm.forEach((botao) => {
+    botao.classList.toggle("ativo", Number(botao.dataset.wpm) === wpmAtual);
+  });
 }
 
 function obterNivelLiberado(modo = modoAtual) {
@@ -750,6 +733,7 @@ function finalizarNivel() {
     aproveitamento,
     tempoSegundos,
     wpm,
+    wpmConfigurado: wpmAtual,
     aprovado,
     bonus,
     excelenciaWpm,
@@ -867,7 +851,7 @@ function finalizarPressionamento() {
 
   pararTomMorse();
 
-  const simbolo = duracao < LIMITE_PONTO_TRACO ? "." : "-";
+  const simbolo = duracao < limitePontoTracoMs ? "." : "-";
 
   adicionarSimbolo(simbolo);
   mostrarFeedbackManipulacao(simbolo, duracao);
@@ -924,8 +908,7 @@ function agendarSeparacaoAutomatica() {
     if (!codigoAtual.endsWith(" ") && !codigoAtual.endsWith("/")) {
       codigoAtual += " ";
       atualizarCodigoNaTela();
-      feedback.textContent = "Pausa detectada: próxima letra.";
-      feedback.className = "feedback alerta";
+      mostrarFeedbackPausa("✓ Letra fechada");
     }
   }, pausaAutoLetraMs);
 
@@ -937,10 +920,14 @@ function agendarSeparacaoAutomatica() {
     if (!codigoAtual.endsWith("/")) {
       codigoAtual += " / ";
       atualizarCodigoNaTela();
-      feedback.textContent = "Pausa longa detectada: próxima palavra.";
-      feedback.className = "feedback alerta";
+      mostrarFeedbackPausa("✓ Palavra fechada");
     }
   }, pausaAutoPalavraMs);
+}
+
+function mostrarFeedbackPausa(texto) {
+  feedback.innerHTML = `<span class="feedback-pausa">${texto}</span>`;
+  feedback.className = "feedback alerta";
 }
 
 function limparTemporizadoresPausa() {
