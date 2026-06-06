@@ -1388,8 +1388,54 @@ function tocarSequenciaMorse(codigoMorse) {
   prepararAudio();
 
   const unidade = 1200 / wpmAtual;
-  let atraso = 3.6;
+  const fatorTraco = 3.6;
+  let atraso = 0;
 
+  function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
+    setTimeout(() => {
+      const oscilador = audioContext.createOscillator();
+      const ganho = audioContext.createGain();
+      const filtro = audioContext.createBiquadFilter();
+
+      oscilador.type = "square";
+      oscilador.frequency.setValueAtTime(frequenciaSidetone, audioContext.currentTime);
+
+      filtro.type = "lowpass";
+      filtro.frequency.setValueAtTime(1500, audioContext.currentTime);
+
+      oscilador.connect(filtro);
+      filtro.connect(ganho);
+      ganho.connect(audioContext.destination);
+
+      ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
+      ganho.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
+      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracaoMs / 1000);
+
+      oscilador.start(audioContext.currentTime);
+      oscilador.stop(audioContext.currentTime + duracaoMs / 1000 + 0.025);
+    }, atrasoMs);
+  }
+
+  String(codigoMorse).split("").forEach((simbolo) => {
+    if (simbolo === ".") {
+      tocarTomMorseAutomatico(unidade, atraso);
+      atraso += unidade * 2;
+    }
+
+    if (simbolo === "-") {
+      tocarTomMorseAutomatico(unidade * fatorTraco, atraso);
+      atraso += unidade * fatorTraco + unidade;
+    }
+
+    if (simbolo === " ") {
+      atraso += unidade * 2;
+    }
+
+    if (simbolo === "/") {
+      atraso += unidade * 6;
+    }
+  });
+}
   function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
     setTimeout(() => {
       const oscilador = audioContext.createOscillator();
