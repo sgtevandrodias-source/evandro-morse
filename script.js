@@ -164,11 +164,45 @@ let pausaAutoPalavraMs = Math.round(unidadeMorseMs * 7);
 let limitePontoTracoMs = unidadeMorseMs * 2;
 
 const NIVEIS_INICIANTE = [
-  { numero: 1, patente: "Bisonho", titulo: "Instrução Básica", descricao: "Primeiro contato com ponto e traço.", missoes: ["E", "T", "E", "T", "A"] },
-  { numero: 2, patente: "Recruta", titulo: "Primeiras Letras", descricao: "Letras simples com combinações curtas.", missoes: ["E", "T", "A", "N", "M"] },
-  { numero: 3, patente: "Soldado", titulo: "Letras Simples", descricao: "Sequências básicas de pontos e traços.", missoes: ["I", "M", "S", "O", "A", "N"] },
-  { numero: 4, patente: "Soldado Safo", titulo: "Letras Intermediárias I", descricao: "Padrões mais variados.", missoes: ["R", "K", "D", "U", "S", "O"] },
-  { numero: 5, patente: "Cabo", titulo: "Letras Intermediárias II", descricao: "Mais memória e precisão.", missoes: ["C", "P", "L", "W", "R", "K"] },
+  {
+    numero: 1,
+    patente: "Bisonho",
+    titulo: "Lição 1",
+    descricao: "F G H J M R U",
+    missoes: ["F", "G", "H", "J", "M", "R", "U"]
+  },
+  
+  {
+    numero: 2,
+    patente: "Recruta",
+    titulo: "Lição 2",
+    descricao: "B D K N T V Y",
+    missoes: ["B", "D", "K", "N", "T", "V", "Y"]
+  },
+  
+  {
+    numero: 3,
+    patente: "Soldado",
+    titulo: "Lição 3",
+    descricao: "C E I L S W O",
+    missoes: ["C", "E", "I", "L", "S", "W", "O"]
+  },
+  
+  {
+    numero: 4,
+    patente: "Soldado Safo",
+    titulo: "Lição 4",
+    descricao: "A P Q X Z 4 5",
+    missoes: ["A", "P", "Q", "X", "Z", "4", "5"]
+  },
+  
+  {
+    numero: 5,
+    patente: "Cabo",
+    titulo: "Lição 5",
+    descricao: "1 2 3 6 7 8 9 0",
+    missoes: ["1", "2", "3", "6", "7", "8", "9", "0"]
+  },
   { numero: 6, patente: "3º Sargento", titulo: "Letras Avançadas I", descricao: "Letras com padrões mais longos.", missoes: ["F", "G", "H", "V", "D", "U"] },
   { numero: 7, patente: "2º Sargento", titulo: "Letras Avançadas II", descricao: "Letras mais difíceis.", missoes: ["B", "J", "Q", "X", "Y", "Z"] },
   { numero: 8, patente: "1º Sargento", titulo: "Números I", descricao: "Primeira etapa numérica.", missoes: ["1", "2", "3", "4", "5"] },
