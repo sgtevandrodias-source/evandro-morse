@@ -1370,11 +1370,30 @@ function tocarSequenciaMorse(codigoMorse) {
   const unidade = 1200 / wpmAtual;
   let atraso = 0;
 
-  const tocarElemento = (simbolo, inicioMs) => {
+  const tocarElementoMorse = (simbolo, inicioMs) => {
     const duracao = simbolo === "." ? unidade : unidade * 3;
 
     setTimeout(() => {
-      tocarTomCurto(FREQUENCIA_SIDETONE, duracao, VOLUME_MORSE, "square");
+      const oscilador = audioContext.createOscillator();
+      const ganho = audioContext.createGain();
+      const filtro = audioContext.createBiquadFilter();
+
+      oscilador.type = "square";
+      oscilador.frequency.setValueAtTime(FREQUENCIA_SIDETONE, audioContext.currentTime);
+
+      filtro.type = "lowpass";
+      filtro.frequency.setValueAtTime(1500, audioContext.currentTime);
+
+      ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
+      ganho.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
+      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracao / 1000);
+
+      oscilador.connect(filtro);
+      filtro.connect(ganho);
+      ganho.connect(audioContext.destination);
+
+      oscilador.start();
+      oscilador.stop(audioContext.currentTime + duracao / 1000 + 0.025);
     }, inicioMs);
 
     return duracao;
@@ -1382,16 +1401,16 @@ function tocarSequenciaMorse(codigoMorse) {
 
   String(codigoMorse).split("").forEach((simbolo) => {
     if (simbolo === "." || simbolo === "-") {
-      const duracao = tocarElemento(simbolo, atraso);
+      const duracao = tocarElementoMorse(simbolo, atraso);
       atraso += duracao + unidade;
     }
 
     if (simbolo === " ") {
-      atraso += unidade * 3;
+      atraso += unidade * 2;
     }
 
     if (simbolo === "/") {
-      atraso += unidade * 7;
+      atraso += unidade * 6;
     }
   });
 }
