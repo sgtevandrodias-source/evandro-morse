@@ -66,14 +66,13 @@ button {
   margin: 0 auto;
   padding: 24px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.tela {
-  display: none;
+.app > .tela {
   width: 100%;
-  animation: aparecer 0.28s ease;
 }
 
 .tela.ativa {
@@ -741,7 +740,7 @@ p {
 
   .app {
     padding: 10px;
-    align-items: flex-start;
+    align-items: center;
     justify-content: flex-start;
     min-height: 100dvh;
   }
