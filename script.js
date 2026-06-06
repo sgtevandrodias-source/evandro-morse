@@ -68,6 +68,8 @@ const valorWpm = document.getElementById("valorWpm");
 const valorPausaLetra = document.getElementById("valorPausaLetra");
 const valorPausaPalavra = document.getElementById("valorPausaPalavra");
 const botoesWpm = document.querySelectorAll(".btn-wpm");
+const botoesTomLicao = document.querySelectorAll(".btnTom");
+const botoesWpmLicao = document.querySelectorAll(".btnWpm");
 
 const btnMenosLetra = document.getElementById("btnMenosLetra");
 const btnMaisLetra = document.getElementById("btnMaisLetra");
@@ -159,7 +161,7 @@ const META_WPM = 12;
 const PATENTE_FINAL_INICIANTE = "Marechal";
 const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
 
-const FREQUENCIA_SIDETONE = 550;
+let frequenciaSidetone = Number(localStorage.getItem("operadorMorseTomHz") || "650");
 const VOLUME_MORSE = 0.22;
 
 let wpmAtual = Number(localStorage.getItem("operadorMorseWpm") || "12");
@@ -449,6 +451,24 @@ cardModoAvancado.addEventListener("click", abrirModoAvancado);
 botoesWpm.forEach((botao) => {
   botao.addEventListener("click", () => {
     selecionarWpm(botao.dataset.wpm);
+  });
+});
+botoesTomLicao.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    frequenciaSidetone = Number(botao.dataset.hz);
+    localStorage.setItem("operadorMorseTomHz", String(frequenciaSidetone));
+
+    botoesTomLicao.forEach((b) => b.classList.remove("ativo"));
+    botao.classList.add("ativo");
+  });
+});
+
+botoesWpmLicao.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    selecionarWpm(botao.dataset.wpm);
+
+    botoesWpmLicao.forEach((b) => b.classList.remove("ativo"));
+    botao.classList.add("ativo");
   });
 });
 
@@ -1299,7 +1319,7 @@ function iniciarTomMorse() {
   filtroMorse = audioContext.createBiquadFilter();
 
   osciladorMorse.type = "square";
-  osciladorMorse.frequency.setValueAtTime(FREQUENCIA_SIDETONE, audioContext.currentTime);
+  osciladorMorse.frequency.setValueAtTime(frequenciaSidetone, audioContext.currentTime);
 
   filtroMorse.type = "lowpass";
   filtroMorse.frequency.setValueAtTime(1500, audioContext.currentTime);
@@ -1377,7 +1397,7 @@ function tocarSequenciaMorse(codigoMorse) {
       const filtro = audioContext.createBiquadFilter();
 
       oscilador.type = "square";
-      oscilador.frequency.setValueAtTime(FREQUENCIA_SIDETONE, audioContext.currentTime);
+      oscilador.frequency.setValueAtTime(frequenciaSidetone, audioContext.currentTime);
 
       filtro.type = "lowpass";
       filtro.frequency.setValueAtTime(1500, audioContext.currentTime);
