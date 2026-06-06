@@ -1235,3 +1235,14 @@ p {
     font-size: 0.78rem;
   }
 }
+.historia-jogo {
+  margin: 18px auto 22px;
+  max-width: 720px;
+  text-align: left;
+  padding: 18px;
+}
+
+.historia-jogo p {
+  margin: 10px 0 0;
+  font-size: 0.95rem;
+}
