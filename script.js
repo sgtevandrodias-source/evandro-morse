@@ -705,26 +705,35 @@ function abrirCartaoLicao(index) {
   gridCartoesLicao.innerHTML = nivel.missoes
     .map((item) => {
       const texto = String(item).toUpperCase();
+      const morse = textoParaMorse(texto);
 
       if (/^[A-Z0-9]$/.test(texto)) {
         return `
-          <div class="cartao-caractere">
+          <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
             <span class="letra">${escaparHtml(texto)}</span>
-            <span class="morse">${escaparHtml(textoParaMorse(texto))}</span>
+            <span class="morse">${escaparHtml(morse)}</span>
             <span class="fonico">${escaparHtml(getDicaFonico(texto))}</span>
-          </div>
+            <span class="ouvir">Toque para ouvir</span>
+          </button>
         `;
       }
 
       return `
-        <div class="cartao-caractere">
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
           <span class="letra">${escaparHtml(texto)}</span>
-          <span class="morse">${escaparHtml(textoParaMorse(texto))}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">Treino de grupo</span>
-        </div>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
       `;
     })
     .join("");
+
+  document.querySelectorAll(".cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
 
   mostrarTela(telaLicao);
 }
@@ -1354,4 +1363,35 @@ function tocarAcerto() {
 function tocarErro() {
   tocarTomCurto(240, 120, 0.11, "sawtooth");
   setTimeout(() => tocarTomCurto(180, 160, 0.1, "sawtooth"), 120);
+}
+function tocarSequenciaMorse(codigoMorse) {
+  prepararAudio();
+
+  const unidade = 1200 / wpmAtual;
+  let atraso = 0;
+
+  const tocarElemento = (simbolo, inicioMs) => {
+    const duracao = simbolo === "." ? unidade : unidade * 3;
+
+    setTimeout(() => {
+      tocarTomCurto(FREQUENCIA_SIDETONE, duracao, VOLUME_MORSE, "square");
+    }, inicioMs);
+
+    return duracao;
+  };
+
+  String(codigoMorse).split("").forEach((simbolo) => {
+    if (simbolo === "." || simbolo === "-") {
+      const duracao = tocarElemento(simbolo, atraso);
+      atraso += duracao + unidade;
+    }
+
+    if (simbolo === " ") {
+      atraso += unidade * 3;
+    }
+
+    if (simbolo === "/") {
+      atraso += unidade * 7;
+    }
+  });
 }
