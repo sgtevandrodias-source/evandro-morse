@@ -136,7 +136,7 @@ const DICAS_FONICAS = {
   4: "pe ga pa ca PA",
   5: "pe ga pa ca pi",
   6: "GOL si ri pi pi",
-  7: "SAL DA di di ti",
+  7: "SAU DA di di ti",
   8: "VAL DE MAR di di",
   9: "VAL DE MAR NA ri",
   0: "VAL DE MAR MA RE"
@@ -735,7 +735,7 @@ function renderizarCampanha() {
     })
     .join("");
     document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
-      card.addEventListener("click", () => abrirCartaoLicao(Number(card.dataset.index)));
+      card.addEventListener("click", () => iniciarNivel(Number(card.dataset.index)));
     });
 }
 
@@ -1420,39 +1420,24 @@ function tocarSequenciaMorse(codigoMorse) {
   const fatorTraco = 3.6;
   let atraso = 0;
 
-  function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
+  function tocarElementoComSomDaChave(duracaoMs, atrasoMs) {
     setTimeout(() => {
-      const oscilador = audioContext.createOscillator();
-      const ganho = audioContext.createGain();
-      const filtro = audioContext.createBiquadFilter();
+      iniciarTomMorse();
 
-      oscilador.type = "square";
-      oscilador.frequency.setValueAtTime(frequenciaSidetone, audioContext.currentTime);
-
-      filtro.type = "lowpass";
-      filtro.frequency.setValueAtTime(1500, audioContext.currentTime);
-
-      oscilador.connect(filtro);
-      filtro.connect(ganho);
-      ganho.connect(audioContext.destination);
-
-      ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
-      ganho.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
-      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracaoMs / 1000);
-
-      oscilador.start(audioContext.currentTime);
-      oscilador.stop(audioContext.currentTime + duracaoMs / 1000 + 0.025);
+      setTimeout(() => {
+        pararTomMorse();
+      }, duracaoMs);
     }, atrasoMs);
   }
 
   String(codigoMorse).split("").forEach((simbolo) => {
     if (simbolo === ".") {
-      tocarTomMorseAutomatico(unidade, atraso);
+      tocarElementoComSomDaChave(unidade, atraso);
       atraso += unidade * 1.5;
     }
 
     if (simbolo === "-") {
-      tocarTomMorseAutomatico(unidade * fatorTraco, atraso);
+      tocarElementoComSomDaChave(unidade * fatorTraco, atraso);
       atraso += unidade * fatorTraco + unidade;
     }
 
