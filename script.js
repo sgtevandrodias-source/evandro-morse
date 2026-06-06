@@ -621,11 +621,16 @@ function carregarMissao() {
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
 
-  if (modoAtual === MODO_INTERMEDIARIO) {
-    dicaMissaoEl.textContent = getDicaFonico(missao.alvo);
-  } else {
-    dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
-  }
+  const dicaFonico = getDicaFonico(missao.alvo);
+
+if (/^[A-Z0-9]$/.test(String(missao.alvo).toUpperCase())) {
+  dicaMissaoEl.innerHTML = `
+    <span>Código: ${missao.codigo}</span><br>
+    <span>Mnemônico: ${dicaFonico}</span>
+  `;
+} else {
+  dicaMissaoEl.textContent = `Código: ${missao.codigo}`;
+}
 
   contadorMissaoEl.textContent = `${missaoAtualIndex + 1}/${nivel.missoes.length}`;
   faseAtualEl.textContent = missao.tipo;
