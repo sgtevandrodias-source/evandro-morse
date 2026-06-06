@@ -1370,9 +1370,7 @@ function tocarSequenciaMorse(codigoMorse) {
   const unidade = 1200 / wpmAtual;
   let atraso = 0;
 
-  const tocarElementoMorse = (simbolo, inicioMs) => {
-    const duracao = simbolo === "." ? unidade : unidade * 3;
-
+  function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
     setTimeout(() => {
       const oscilador = audioContext.createOscillator();
       const ganho = audioContext.createGain();
@@ -1384,25 +1382,28 @@ function tocarSequenciaMorse(codigoMorse) {
       filtro.type = "lowpass";
       filtro.frequency.setValueAtTime(1500, audioContext.currentTime);
 
-      ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
-      ganho.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
-      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracao / 1000);
-
       oscilador.connect(filtro);
       filtro.connect(ganho);
       ganho.connect(audioContext.destination);
 
-      oscilador.start();
-      oscilador.stop(audioContext.currentTime + duracao / 1000 + 0.025);
-    }, inicioMs);
+      ganho.gain.setValueAtTime(0.001, audioContext.currentTime);
+      ganho.gain.exponentialRampToValueAtTime(VOLUME_MORSE, audioContext.currentTime + 0.012);
+      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duracaoMs / 1000);
 
-    return duracao;
-  };
+      oscilador.start(audioContext.currentTime);
+      oscilador.stop(audioContext.currentTime + duracaoMs / 1000 + 0.025);
+    }, atrasoMs);
+  }
 
   String(codigoMorse).split("").forEach((simbolo) => {
-    if (simbolo === "." || simbolo === "-") {
-      const duracao = tocarElementoMorse(simbolo, atraso);
-      atraso += duracao + unidade;
+    if (simbolo === ".") {
+      tocarTomMorseAutomatico(unidade, atraso);
+      atraso += unidade + unidade;
+    }
+
+    if (simbolo === "-") {
+      tocarTomMorseAutomatico(unidade * 3, atraso);
+      atraso += unidade * 3 + unidade;
     }
 
     if (simbolo === " ") {
