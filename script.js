@@ -99,7 +99,7 @@ const DICAS_FONICAS = {
   F: "fi ti PAL di",
   G: "PAI DÉ gua",
   H: "pi pi pi pi",
-  I: "bi pi",
+  I: "pi pi",
   J: "vem CÁ JO SÉ",
   K: "DÁ ki DÁ",
   L: "mi DÁ li li",
@@ -112,13 +112,23 @@ const DICAS_FONICAS = {
   S: "si ri ri",
   T: "TÁ",
   U: "u ru BU",
-  V: "ma ra ca NÁ",
-  W: "ci la DÁ",
-  X: "LEI ti com CHÁ",
+  V: "ma ra ca NÃ",
+  W: "ci la DA",
+  X: "LEI tí com CHÁ",
   Y: "GOL di VA VA",
-  Z: "ZÁ ZÁ li li"
-};
+  Z: "ZÁ ZÁ li li",
 
+  1: "vem CA JO SA FÁ",
+  2: "ca pi TÃO GAL VÃO",
+  3: "co pa ca BA NA",
+  4: "pe ga pa ca PA",
+  5: "pe ga pa ca pi",
+  6: "GOL si ri pi pi",
+  7: "SAL DA di di ti",
+  8: "VAL DE MAR di di",
+  9: "VAL DE MAR NA ri",
+  0: "VAL DE MAR MA RE"
+};
 function getDicaFonico(alvo) {
   const texto = String(alvo).toUpperCase();
 
