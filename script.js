@@ -1417,7 +1417,7 @@ function tocarSequenciaMorse(codigoMorse) {
   prepararAudio();
 
   const unidade = 1200 / wpmAtual;
-  const fatorTraco = 3.6;
+  const fatorTraco = 4.6;
   let atraso = 0;
 
   function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
