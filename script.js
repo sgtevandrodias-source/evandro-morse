@@ -159,7 +159,7 @@ const META_WPM = 12;
 const PATENTE_FINAL_INICIANTE = "Marechal";
 const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
 
-const FREQUENCIA_SIDETONE = 450;
+const FREQUENCIA_SIDETONE = 550;
 const VOLUME_MORSE = 0.22;
 
 let wpmAtual = Number(localStorage.getItem("operadorMorseWpm") || "12");
