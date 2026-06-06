@@ -1448,7 +1448,7 @@ function tocarSequenciaMorse(codigoMorse) {
   String(codigoMorse).split("").forEach((simbolo) => {
     if (simbolo === ".") {
       tocarTomMorseAutomatico(unidade, atraso);
-      atraso += unidade * 2;
+      atraso += unidade * 1.2;
     }
 
     if (simbolo === "-") {
@@ -1457,7 +1457,7 @@ function tocarSequenciaMorse(codigoMorse) {
     }
 
     if (simbolo === " ") {
-      atraso += unidade * 2;
+      atraso += unidade * 0.7;
     }
 
     if (simbolo === "/") {
