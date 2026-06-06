@@ -1,5 +1,6 @@
 const telaInicial = document.getElementById("telaInicial");
 const telaCampanha = document.getElementById("telaCampanha");
+const telaLicao = document.getElementById("telaLicao");
 const telaJogo = document.getElementById("telaJogo");
 const telaFinal = document.getElementById("telaFinal");
 const telaRanking = document.getElementById("telaRanking");
@@ -52,6 +53,11 @@ const listaRanking = document.getElementById("listaRanking");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
 const labelModoAtual = document.getElementById("labelModoAtual");
+const tituloLicao = document.getElementById("tituloLicao");
+const descricaoLicao = document.getElementById("descricaoLicao");
+const gridCartoesLicao = document.getElementById("gridCartoesLicao");
+const btnIniciarTreinoLicao = document.getElementById("btnIniciarTreinoLicao");
+const btnVoltarMapaLicao = document.getElementById("btnVoltarMapaLicao");
 
 const cardModoIniciante = document.getElementById("cardModoIniciante");
 const cardModoIntermediario = document.getElementById("cardModoIntermediario");
@@ -430,6 +436,11 @@ btnRankingFinal.addEventListener("click", abrirRanking);
 btnVoltarCampanhaRanking.addEventListener("click", entrarCampanha);
 btnVoltarInicio.addEventListener("click", voltarInicio);
 btnLimparRanking.addEventListener("click", limparRanking);
+btnIniciarTreinoLicao.addEventListener("click", () => {
+  iniciarNivel(nivelAtualIndex);
+});
+
+btnVoltarMapaLicao.addEventListener("click", entrarCampanha);
 
 cardModoIniciante.addEventListener("click", abrirModoIniciante);
 cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
@@ -499,12 +510,13 @@ function carregarPreferencias() {
 function mostrarTela(tela) {
   telaInicial.classList.remove("ativa");
   telaCampanha.classList.remove("ativa");
+  telaLicao.classList.remove("ativa");
   telaJogo.classList.remove("ativa");
   telaFinal.classList.remove("ativa");
   telaRanking.classList.remove("ativa");
+
   tela.classList.add("ativa");
 }
-
 function voltarInicio() {
   mostrarTela(telaInicial);
 }
@@ -673,16 +685,49 @@ function renderizarCampanha() {
       `;
     })
     .join("");
-
-  document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
-    card.addEventListener("click", () => iniciarNivel(Number(card.dataset.index)));
-  });
+    document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
+      card.addEventListener("click", () => abrirCartaoLicao(Number(card.dataset.index)));
+    });
 }
 
 function continuarNivelAtual() {
   iniciarNivel(obterNivelLiberado(modoAtual));
 }
+function abrirCartaoLicao(index) {
+  const niveis = getNiveisModo(modoAtual);
+  const nivel = niveis[index];
 
+  nivelAtualIndex = index;
+
+  tituloLicao.textContent = `${getNomeModo(modoAtual)} ${nivel.numero} — ${nivel.titulo}`;
+  descricaoLicao.textContent = nivel.descricao;
+
+  gridCartoesLicao.innerHTML = nivel.missoes
+    .map((item) => {
+      const texto = String(item).toUpperCase();
+
+      if (/^[A-Z0-9]$/.test(texto)) {
+        return `
+          <div class="cartao-caractere">
+            <span class="letra">${escaparHtml(texto)}</span>
+            <span class="morse">${escaparHtml(textoParaMorse(texto))}</span>
+            <span class="fonico">${escaparHtml(getDicaFonico(texto))}</span>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="cartao-caractere">
+          <span class="letra">${escaparHtml(texto)}</span>
+          <span class="morse">${escaparHtml(textoParaMorse(texto))}</span>
+          <span class="fonico">Treino de grupo</span>
+        </div>
+      `;
+    })
+    .join("");
+
+  mostrarTela(telaLicao);
+}
 function iniciarNivel(index) {
   prepararAudio();
   salvarNomeOperador();
