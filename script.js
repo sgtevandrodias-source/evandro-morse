@@ -1388,7 +1388,7 @@ function tocarSequenciaMorse(codigoMorse) {
   prepararAudio();
 
   const unidade = 1200 / wpmAtual;
-  let atraso = 0;
+  let atraso = 3.6;
 
   function tocarTomMorseAutomatico(duracaoMs, atrasoMs) {
     setTimeout(() => {
@@ -1422,10 +1422,9 @@ function tocarSequenciaMorse(codigoMorse) {
     }
 
     if (simbolo === "-") {
-      tocarTomMorseAutomatico(unidade * 3, atraso);
-      atraso += unidade * 3 + unidade;
+      tocarTomMorseAutomatico(unidade * fatorTraco, atraso);
+      atraso += unidade * fatorTraco + unidade;
     }
-
     if (simbolo === " ") {
       atraso += unidade * 2;
     }
