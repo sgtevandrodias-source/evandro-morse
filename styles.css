@@ -75,6 +75,10 @@ button {
   width: 100%;
 }
 
+.app > .tela:not(.ativa) {
+  display: none;
+}
+
 .tela.ativa {
   display: block;
 }
