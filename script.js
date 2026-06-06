@@ -203,21 +203,125 @@ const NIVEIS_INICIANTE = [
     descricao: "1 2 3 6 7 8 9 0",
     missoes: ["1", "2", "3", "6", "7", "8", "9", "0"]
   },
-  { numero: 6, patente: "3º Sargento", titulo: "Letras Avançadas I", descricao: "Letras com padrões mais longos.", missoes: ["F", "G", "H", "V", "D", "U"] },
-  { numero: 7, patente: "2º Sargento", titulo: "Letras Avançadas II", descricao: "Letras mais difíceis.", missoes: ["B", "J", "Q", "X", "Y", "Z"] },
-  { numero: 8, patente: "1º Sargento", titulo: "Números I", descricao: "Primeira etapa numérica.", missoes: ["1", "2", "3", "4", "5"] },
-  { numero: 9, patente: "Subtenente", titulo: "Números II", descricao: "Segunda etapa numérica.", missoes: ["6", "7", "8", "9", "0"] },
-  { numero: 10, patente: "Cadete", titulo: "Mistura Letra e Número", descricao: "Caracteres mistos.", missoes: ["A1", "B2", "C3", "D4", "E5"] },
-  { numero: 11, patente: "Aspirante", titulo: "Palavras Curtas", descricao: "Separação entre letras.", missoes: ["SOS", "RIO", "MAR", "SOL", "QSL"] },
-  { numero: 12, patente: "2º Tenente", titulo: "Palavras Médias", descricao: "Palavras maiores.", missoes: ["MORSE", "RADIO", "FOCO", "SINAL", "TORRE"] },
-  { numero: 13, patente: "1º Tenente", titulo: "Indicativos", descricao: "Códigos operacionais.", missoes: ["QTH", "QRA", "QSL", "QTC", "QRV"] },
-  { numero: 14, patente: "Capitão", titulo: "Frases Curtas", descricao: "Separação entre palavras.", missoes: ["QSL OK", "QRV 5", "QTH RIO", "SINAL OK", "RADIO 1"] },
-  { numero: 15, patente: "Major", titulo: "Frases com Números", descricao: "Palavras e algarismos.", missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"] },
-  { numero: 16, patente: "Tenente-Coronel", titulo: "Mensagens Operacionais I", descricao: "Mensagens simples.", missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"] },
-  { numero: 17, patente: "Coronel", titulo: "Mensagens Operacionais II", descricao: "Mensagens com números.", missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"] },
-  { numero: 18, patente: "General de Brigada", titulo: "Transmissão Avançada", descricao: "Frases maiores.", missoes: ["OPERADOR QRV", "SINAL QSL 5", "BASE RADIO OK", "QTC POSTO 7", "TORRE SINAL 9"] },
-  { numero: 19, patente: "General de Divisão", titulo: "Mensagem Longa", descricao: "Controle mental.", missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123", "BASE OPERADOR OK"] },
-  { numero: 20, patente: "General de Exército", titulo: "Missão Final Iniciante", descricao: "Junta tudo.", missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"] }
+  {
+    numero: 6,
+    patente: "3º Sargento",
+    titulo: "Revisão das Letras",
+    descricao: "Revisão geral das letras aprendidas nas cinco lições.",
+    missoes: ["F", "B", "C", "A", "J", "K", "O", "X"]
+  },
+  
+  {
+    numero: 7,
+    patente: "2º Sargento",
+    titulo: "Revisão dos Números",
+    descricao: "Revisão geral dos números em Morse.",
+    missoes: ["1", "5", "9", "0", "2", "6", "8", "3"]
+  },
+  
+  {
+    numero: 8,
+    patente: "1º Sargento",
+    titulo: "Grupos de Letras I",
+    descricao: "Primeiros grupos curtos com letras já conhecidas.",
+    missoes: ["FGH", "JMR", "BDK", "NTV", "CEI"]
+  },
+  
+  {
+    numero: 9,
+    patente: "Subtenente",
+    titulo: "Grupos de Letras II",
+    descricao: "Grupos maiores para ganhar ritmo e memória.",
+    missoes: ["LWS", "APQ", "XYZ", "MOR", "RUT"]
+  },
+  
+  {
+    numero: 10,
+    patente: "Cadete",
+    titulo: "Grupos Mistos",
+    descricao: "Mistura de letras e números em grupos curtos.",
+    missoes: ["A1", "B2", "C3", "D4", "E5", "F6"]
+  },
+  
+  {
+    numero: 11,
+    patente: "Aspirante",
+    titulo: "Indicativos Q",
+    descricao: "Primeiros códigos usados em comunicações.",
+    missoes: ["QRA", "QTH", "QSL", "QTC", "QRV", "QRM"]
+  },
+  
+  {
+    numero: 12,
+    patente: "2º Tenente",
+    titulo: "Palavras Curtas",
+    descricao: "Palavras simples para aplicar o alfabeto.",
+    missoes: ["SOS", "RIO", "MAR", "SOL", "REDE", "SINAL"]
+  },
+  
+  {
+    numero: 13,
+    patente: "1º Tenente",
+    titulo: "Palavras Médias",
+    descricao: "Palavras maiores com mais exigência de ritmo.",
+    missoes: ["MORSE", "RADIO", "TORRE", "POSTO", "BASE", "FOCO"]
+  },
+  
+  {
+    numero: 14,
+    patente: "Capitão",
+    titulo: "Palavras Operacionais",
+    descricao: "Vocabulário de comunicação operacional.",
+    missoes: ["MISSÃO", "COMANDO", "ANTENA", "ESTAÇÃO", "OPERADOR"]
+  },
+  
+  {
+    numero: 15,
+    patente: "Major",
+    titulo: "Frases Curtas",
+    descricao: "Primeiras frases com separação de palavras.",
+    missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"]
+  },
+  
+  {
+    numero: 16,
+    patente: "Tenente-Coronel",
+    titulo: "Frases com Números",
+    descricao: "Frases misturando palavras e algarismos.",
+    missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
+  },
+  
+  {
+    numero: 17,
+    patente: "Coronel",
+    titulo: "Mensagens Operacionais I",
+    descricao: "Mensagens simples com sentido operacional.",
+    missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
+  },
+  
+  {
+    numero: 18,
+    patente: "General de Brigada",
+    titulo: "Mensagens Operacionais II",
+    descricao: "Mensagens com palavras e números.",
+    missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
+  },
+  
+  {
+    numero: 19,
+    patente: "General de Divisão",
+    titulo: "Mensagem Longa",
+    descricao: "Controle mental e constância até o fim.",
+    missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123"]
+  },
+  
+  {
+    numero: 20,
+    patente: "General de Exército",
+    titulo: "Missão Final Iniciante",
+    descricao: "Junta letras, números, palavras e frases.",
+    missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5"]
+  }
 ];
 
 const NIVEIS_INTERMEDIARIO = [
