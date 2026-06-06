@@ -1,4 +1,5 @@
 const telaInicial = document.getElementById("telaInicial");
+const telaBiblioteca = document.getElementById("telaBiblioteca");
 const telaCampanha = document.getElementById("telaCampanha");
 const telaLicao = document.getElementById("telaLicao");
 const telaJogo = document.getElementById("telaJogo");
@@ -8,6 +9,7 @@ const telaRanking = document.getElementById("telaRanking");
 const inputNomeOperador = document.getElementById("inputNomeOperador");
 
 const btnEntrarCampanha = document.getElementById("btnEntrarCampanha");
+const btnAbrirBiblioteca = document.getElementById("btnAbrirBiblioteca");
 const btnAbrirRanking = document.getElementById("btnAbrirRanking");
 const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
 const btnContinuarNivel = document.getElementById("btnContinuarNivel");
@@ -50,6 +52,8 @@ const resultadoWpm = document.getElementById("resultadoWpm");
 const resultadoPontos = document.getElementById("resultadoPontos");
 
 const listaRanking = document.getElementById("listaRanking");
+const gridBibliotecaMorse = document.getElementById("gridBibliotecaMorse");
+const btnVoltarInicioBiblioteca = document.getElementById("btnVoltarInicioBiblioteca");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
 const labelModoAtual = document.getElementById("labelModoAtual");
@@ -140,17 +144,12 @@ const DICAS_FONICAS = {
 function getDicaFonico(alvo) {
   const texto = String(alvo).toUpperCase();
 
-  if (/^[A-Z]$/.test(texto)) {
+  if (/^[A-Z0-9]$/.test(texto)) {
     return DICAS_FONICAS[texto] || "Mnemônico em cadastro";
-  }
-
-  if (/^[0-9]$/.test(texto)) {
-    return "Mnemônico numérico em cadastro";
   }
 
   return "Transmita no ritmo correto, usando as pausas naturais.";
 }
-
 const MODO_INICIANTE = "iniciante";
 const MODO_INTERMEDIARIO = "intermediario";
 
@@ -419,7 +418,9 @@ function chaveIntermediarioConcluido() {
 }
 
 btnEntrarCampanha.addEventListener("click", entrarCampanha);
+btnAbrirBiblioteca.addEventListener("click", abrirBiblioteca);
 btnAbrirRanking.addEventListener("click", abrirRanking);
+btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
 btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
 btnContinuarNivel.addEventListener("click", continuarNivelAtual);
 
@@ -529,6 +530,7 @@ function carregarPreferencias() {
 
 function mostrarTela(tela) {
   telaInicial.classList.remove("ativa");
+  telaBiblioteca.classList.remove("ativa");
   telaCampanha.classList.remove("ativa");
   telaLicao.classList.remove("ativa");
   telaJogo.classList.remove("ativa");
@@ -539,6 +541,33 @@ function mostrarTela(tela) {
 }
 function voltarInicio() {
   mostrarTela(telaInicial);
+}
+function abrirBiblioteca() {
+  const itens = Object.keys(TABELA_MORSE);
+
+  gridBibliotecaMorse.innerHTML = itens
+    .map((item) => {
+      const morse = TABELA_MORSE[item];
+      const fonico = DICAS_FONICAS[item] || "Mnemônico em cadastro";
+
+      return `
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
+          <span class="letra">${escaparHtml(item)}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
+          <span class="fonico">${escaparHtml(fonico)}</span>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll("#gridBibliotecaMorse .cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
+
+  mostrarTela(telaBiblioteca);
 }
 
 function salvarNomeOperador() {
