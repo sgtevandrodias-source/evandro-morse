@@ -141,6 +141,7 @@ const DICAS_FONICAS = {
   9: "VAL DE MAR NA ri",
   0: "VAL DE MAR MA RE"
 };
+
 function getDicaFonico(alvo) {
   const texto = String(alvo).toUpperCase();
 
@@ -150,6 +151,7 @@ function getDicaFonico(alvo) {
 
   return "Transmita no ritmo correto, usando as pausas naturais.";
 }
+
 const MODO_INICIANTE = "iniciante";
 const MODO_INTERMEDIARIO = "intermediario";
 
@@ -174,159 +176,141 @@ const NIVEIS_INICIANTE = [
   {
     numero: 1,
     patente: "Bisonho",
-    titulo: "Lição 1",
-    descricao: "F G H J M R U",
+    titulo: "Missão 01 – Primeiro Contato",
+    descricao: "Os sistemas digitais falharam. Você encontrou um rádio funcional. Aprenda os primeiros sinais.",
     missoes: ["F", "G", "H", "J", "M", "R", "U"]
   },
-  
   {
     numero: 2,
     patente: "Recruta",
-    titulo: "Lição 2",
-    descricao: "B D K N T V Y",
+    titulo: "Missão 02 – Canal Seguro",
+    descricao: "Uma frequência de emergência foi localizada. Amplie seu repertório de sinais.",
     missoes: ["B", "D", "K", "N", "T", "V", "Y"]
   },
-  
   {
     numero: 3,
     patente: "Soldado",
-    titulo: "Lição 3",
-    descricao: "C E I L S W O",
+    titulo: "Missão 03 – Rede de Emergência",
+    descricao: "Outros operadores começaram a responder. A comunicação precisa crescer.",
     missoes: ["C", "E", "I", "L", "S", "W", "O"]
   },
-  
   {
     numero: 4,
     patente: "Soldado Safo",
-    titulo: "Lição 4",
-    descricao: "A P Q X Z 4 5",
+    titulo: "Missão 04 – Mensagem Prioritária",
+    descricao: "As primeiras mensagens importantes estão chegando. Não cometa erros.",
     missoes: ["A", "P", "Q", "X", "Z", "4", "5"]
   },
-  
   {
     numero: 5,
     patente: "Cabo",
-    titulo: "Lição 5",
-    descricao: "1 2 3 6 7 8 9 0",
+    titulo: "Missão 05 – Último Sinal",
+    descricao: "Todos os números operacionais precisam ser dominados. A rede depende disso.",
     missoes: ["1", "2", "3", "6", "7", "8", "9", "0"]
   },
   {
     numero: 6,
     patente: "3º Sargento",
-    titulo: "Revisão das Letras",
-    descricao: "Revisão geral das letras aprendidas nas cinco lições.",
+    titulo: "Missão 06 – Teste de Operador",
+    descricao: "Revise os sinais essenciais e prove que consegue manter a transmissão.",
     missoes: ["F", "B", "C", "A", "J", "K", "O", "X"]
   },
-  
   {
     numero: 7,
     patente: "2º Sargento",
-    titulo: "Revisão dos Números",
-    descricao: "Revisão geral dos números em Morse.",
+    titulo: "Missão 07 – Teste Numérico",
+    descricao: "Números podem salvar coordenadas, horários e códigos. Domine-os.",
     missoes: ["1", "5", "9", "0", "2", "6", "8", "3"]
   },
-  
   {
     numero: 8,
     patente: "1º Sargento",
-    titulo: "Grupos de Letras I",
-    descricao: "Primeiros grupos curtos com letras já conhecidas.",
+    titulo: "Missão 08 – Grupos Táticos I",
+    descricao: "Comece a transmitir grupos curtos de caracteres com mais ritmo.",
     missoes: ["FGH", "JMR", "BDK", "NTV", "CEI"]
   },
-  
   {
     numero: 9,
     patente: "Subtenente",
-    titulo: "Grupos de Letras II",
-    descricao: "Grupos maiores para ganhar ritmo e memória.",
+    titulo: "Missão 09 – Grupos Táticos II",
+    descricao: "A rede exige velocidade, memória e precisão em grupos maiores.",
     missoes: ["LWS", "APQ", "XYZ", "MOR", "RUT"]
   },
-  
   {
     numero: 10,
     patente: "Cadete",
-    titulo: "Grupos Mistos",
-    descricao: "Mistura de letras e números em grupos curtos.",
+    titulo: "Missão 10 – Canal Criptografado",
+    descricao: "Misture letras e números para simular códigos de emergência.",
     missoes: ["A1", "B2", "C3", "D4", "E5", "F6"]
   },
-  
   {
     numero: 11,
     patente: "Aspirante",
-    titulo: "Indicativos Q",
-    descricao: "Primeiros códigos usados em comunicações.",
+    titulo: "Missão 11 – Protocolos de Rádio",
+    descricao: "Aprenda os primeiros códigos usados em comunicações operacionais.",
     missoes: ["QRA", "QTH", "QSL", "QTC", "QRV", "QRM"]
   },
-  
   {
     numero: 12,
     patente: "2º Tenente",
-    titulo: "Palavras Curtas",
-    descricao: "Palavras simples para aplicar o alfabeto.",
+    titulo: "Missão 12 – Mensagens Curtas",
+    descricao: "Transforme sinais isolados em palavras simples e úteis.",
     missoes: ["SOS", "RIO", "MAR", "SOL", "REDE", "SINAL"]
   },
-  
   {
     numero: 13,
     patente: "1º Tenente",
-    titulo: "Palavras Médias",
-    descricao: "Palavras maiores com mais exigência de ritmo.",
+    titulo: "Missão 13 – Rede Regional",
+    descricao: "Palavras médias exigem mais constância e atenção ao ritmo.",
     missoes: ["MORSE", "RADIO", "TORRE", "POSTO", "BASE", "FOCO"]
   },
-  
   {
     numero: 14,
     patente: "Capitão",
-    titulo: "Palavras Operacionais",
-    descricao: "Vocabulário de comunicação operacional.",
+    titulo: "Missão 14 – Centro de Comunicações",
+    descricao: "Use vocabulário operacional para manter a rede funcionando.",
     missoes: ["MISSÃO", "COMANDO", "ANTENA", "ESTAÇÃO", "OPERADOR"]
   },
-  
   {
     numero: 15,
     patente: "Major",
-    titulo: "Frases Curtas",
-    descricao: "Primeiras frases com separação de palavras.",
+    titulo: "Missão 15 – Tráfego Prioritário",
+    descricao: "Agora você começa a transmitir frases curtas com sentido real.",
     missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"]
   },
-  
   {
     numero: 16,
     patente: "Tenente-Coronel",
-    titulo: "Frases com Números",
-    descricao: "Frases misturando palavras e algarismos.",
+    titulo: "Missão 16 – Operação Coordenada",
+    descricao: "Combine frases e números para simular mensagens de coordenação.",
     missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
   },
-  
   {
     numero: 17,
     patente: "Coronel",
-    titulo: "Mensagens Operacionais I",
-    descricao: "Mensagens simples com sentido operacional.",
+    titulo: "Missão 17 – Posto Avançado",
+    descricao: "Mensagens operacionais começam a circular pela rede de emergência.",
     missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
   },
-  
   {
     numero: 18,
     patente: "General de Brigada",
-    titulo: "Mensagens Operacionais II",
-    descricao: "Mensagens com palavras e números.",
+    titulo: "Missão 18 – Rede Nacional",
+    descricao: "A comunicação ficou mais complexa. Mantenha precisão do início ao fim.",
     missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
   },
-  
   {
     numero: 19,
     patente: "General de Divisão",
-    titulo: "Mensagem Longa",
-    descricao: "Controle mental e constância até o fim.",
+    titulo: "Missão 19 – Operador Estratégico",
+    descricao: "Mensagens longas testam controle mental, foco e constância.",
     missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123"]
   },
-  
   {
     numero: 20,
     patente: "General de Exército",
-    titulo: "Missão Final Iniciante",
-    descricao: "Junta letras, números, palavras e frases.",
+    titulo: "Missão 20 – O Último Sinal",
+    descricao: "A rede de emergência depende de você. Prove que consegue transmitir em condição crítica.",
     missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5"]
   }
 ];
@@ -454,6 +438,7 @@ botoesWpm.forEach((botao) => {
     selecionarWpm(botao.dataset.wpm);
   });
 });
+
 botoesTomLicao.forEach((botao) => {
   botao.addEventListener("click", () => {
     frequenciaSidetone = Number(botao.dataset.hz);
@@ -539,9 +524,11 @@ function mostrarTela(tela) {
 
   tela.classList.add("ativa");
 }
+
 function voltarInicio() {
   mostrarTela(telaInicial);
 }
+
 function abrirBiblioteca() {
   const itens = Object.keys(TABELA_MORSE);
 
@@ -734,14 +721,16 @@ function renderizarCampanha() {
       `;
     })
     .join("");
-    document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
-      card.addEventListener("click", () => iniciarNivel(Number(card.dataset.index)));
-    });
+
+  document.querySelectorAll(".nivel-card:not(.bloqueado)").forEach((card) => {
+    card.addEventListener("click", () => iniciarNivel(Number(card.dataset.index)));
+  });
 }
 
 function continuarNivelAtual() {
   iniciarNivel(obterNivelLiberado(modoAtual));
 }
+
 function abrirCartaoLicao(index) {
   const niveis = getNiveisModo(modoAtual);
   const nivel = niveis[index];
@@ -786,6 +775,7 @@ function abrirCartaoLicao(index) {
 
   mostrarTela(telaLicao);
 }
+
 function iniciarNivel(index) {
   prepararAudio();
   salvarNomeOperador();
@@ -864,14 +854,14 @@ function carregarMissao() {
 
   const dicaFonico = getDicaFonico(missao.alvo);
 
-if (/^[A-Z0-9]$/.test(String(missao.alvo).toUpperCase())) {
-  dicaMissaoEl.innerHTML = `
-    <span>Código: ${missao.codigo}</span><br>
-    <span>Mnemônico: ${dicaFonico}</span>
-  `;
-} else {
-  dicaMissaoEl.textContent = `Código: ${missao.codigo}`;
-}
+  if (/^[A-Z0-9]$/.test(String(missao.alvo).toUpperCase())) {
+    dicaMissaoEl.innerHTML = `
+      <span>Código: ${missao.codigo}</span><br>
+      <span>Mnemônico: ${dicaFonico}</span>
+    `;
+  } else {
+    dicaMissaoEl.textContent = `Código: ${missao.codigo}`;
+  }
 
   contadorMissaoEl.textContent = `${missaoAtualIndex + 1}/${nivel.missoes.length}`;
   faseAtualEl.textContent = missao.tipo;
@@ -1413,6 +1403,7 @@ function tocarErro() {
   tocarTomCurto(240, 120, 0.11, "sawtooth");
   setTimeout(() => tocarTomCurto(180, 160, 0.1, "sawtooth"), 120);
 }
+
 function tocarSequenciaMorse(codigoMorse) {
   prepararAudio();
 
