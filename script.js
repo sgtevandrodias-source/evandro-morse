@@ -1,12 +1,3 @@
-/* 
-  EVANDRO MORSE
-  Versão: Iniciante + Intermediário
-  Ajuste principal:
-  - Modo Intermediário funcional
-  - Sem botões Espaço Letra / Espaço Palavra
-  - Separação automática por pausa
-*/
-
 const telaInicial = document.getElementById("telaInicial");
 const telaCampanha = document.getElementById("telaCampanha");
 const telaJogo = document.getElementById("telaJogo");
@@ -56,26 +47,61 @@ const resultadoAproveitamento = document.getElementById("resultadoAproveitamento
 const resultadoTempo = document.getElementById("resultadoTempo");
 const resultadoWpm = document.getElementById("resultadoWpm");
 const resultadoPontos = document.getElementById("resultadoPontos");
+
 const listaRanking = document.getElementById("listaRanking");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
+const labelModoAtual = document.getElementById("labelModoAtual");
 
 const cardModoIniciante = document.getElementById("cardModoIniciante");
 const cardModoIntermediario = document.getElementById("cardModoIntermediario");
 const cardModoAvancado = document.getElementById("cardModoAvancado");
 
-/* =========================
-   TABELA MORSE
-========================= */
+const painelRitmo = document.getElementById("painelRitmo");
+const valorPausaLetra = document.getElementById("valorPausaLetra");
+const valorPausaPalavra = document.getElementById("valorPausaPalavra");
+const btnMenosLetra = document.getElementById("btnMenosLetra");
+const btnMaisLetra = document.getElementById("btnMaisLetra");
+const btnMenosPalavra = document.getElementById("btnMenosPalavra");
+const btnMaisPalavra = document.getElementById("btnMaisPalavra");
 
 const TABELA_MORSE = {
-  A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
-  G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..",
-  M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.",
-  S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
-  Y: "-.--", Z: "--..",
-  0: "-----", 1: ".----", 2: "..---", 3: "...--", 4: "....-",
-  5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----."
+  A: ".-",
+  B: "-...",
+  C: "-.-.",
+  D: "-..",
+  E: ".",
+  F: "..-.",
+  G: "--.",
+  H: "....",
+  I: "..",
+  J: ".---",
+  K: "-.-",
+  L: ".-..",
+  M: "--",
+  N: "-.",
+  O: "---",
+  P: ".--.",
+  Q: "--.-",
+  R: ".-.",
+  S: "...",
+  T: "-",
+  U: "..-",
+  V: "...-",
+  W: ".--",
+  X: "-..-",
+  Y: "-.--",
+  Z: "--..",
+  0: "-----",
+  1: ".----",
+  2: "..---",
+  3: "...--",
+  4: "....-",
+  5: ".....",
+  6: "-....",
+  7: "--...",
+  8: "---..",
+  9: "----."
 };
 
 function textoParaMorse(texto) {
@@ -91,57 +117,66 @@ function textoParaMorse(texto) {
 }
 
 const DICAS_FONICAS = {
-  A: "mi DAA",
-  B: "GOL di di di",
-  C: "BA ti BA ti",
-  D: "GOL di di",
-  F: "AI QUE coi sa",
-  G: "PAI DE gua"
-  // Depois completamos as demais letras.
+  A: "mi DÁ",
+  B: "GOL de bip bip",
+  C: "BÁ ti BÁ ti",
+  D: "GOL de bip",
+  E: "bip",
+  F: "AI que COI sa",
+  G: "PAI DÉ gua",
+  H: "pi pi pi pi",
+  I: "pi pi",
+  J: "vem CÁ Jo SÉ",
+  K: "DÁ ki DÁ",
+  L: "mi DÁ li",
+  M: "ma RÉ",
+  N: "NÁ ri",
+  O: "to ro RÓ",
+  P: "si NAL ver de",
+  Q: "DÁ DÁ ki DÁ",
+  R: "ci DA de",
+  S: "si ri ri",
+  T: "TÁ",
+  U: "u ru BU",
+  V: "ven ti la DOR",
+  W: "fi la DAP",
+  X: "LEI te com CHÁ",
+  Y: "GOL da VA va",
+  Z: "ZÁ ZÁ li li"
 };
 
-function getDicaFonico(alvo, codigo) {
+function getDicaFonico(alvo) {
   const texto = String(alvo).toUpperCase();
 
-  // Só mostra colinha fônica quando for uma única letra.
   if (/^[A-Z]$/.test(texto)) {
     return DICAS_FONICAS[texto] || "Mnemônico em cadastro";
   }
 
-  // Para número, deixa espaço reservado.
   if (/^[0-9]$/.test(texto)) {
     return "Mnemônico numérico em cadastro";
   }
 
-  // Para palavras/frases, não mostra colinha fônica.
   return "Transmita no ritmo correto, usando as pausas naturais.";
 }
-/* =========================
-   CONFIGURAÇÕES
-========================= */
-
-const APROVEITAMENTO_MINIMO = 80;
-const APROVEITAMENTO_BONUS = 90;
-const META_WPM = 12;
-const PATENTE_FINAL_INICIANTE = "Marechal";
-const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
 
 const MODO_INICIANTE = "iniciante";
 const MODO_INTERMEDIARIO = "intermediario";
 
+const APROVEITAMENTO_MINIMO = 80;
+const APROVEITAMENTO_BONUS = 90;
+const META_WPM = 12;
+
+const PATENTE_FINAL_INICIANTE = "Marechal";
+const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
+
 const WPM = 12;
 const UNIDADE_MORSE = 1200 / WPM;
 const LIMITE_PONTO_TRACO = UNIDADE_MORSE * 2;
-
-const PAUSA_AUTO_LETRA_MS = 400;
-const PAUSA_AUTO_PALAVRA_MS = 900;
-
 const FREQUENCIA_SIDETONE = 650;
 const VOLUME_MORSE = 0.22;
 
-/* =========================
-   NÍVEIS INICIANTE
-========================= */
+let pausaAutoLetraMs = Number(localStorage.getItem("operadorMorsePausaLetraMs") || "350");
+let pausaAutoPalavraMs = Number(localStorage.getItem("operadorMorsePausaPalavraMs") || "750");
 
 const NIVEIS_INICIANTE = [
   { numero: 1, patente: "Bisonho", titulo: "Instrução Básica", descricao: "Primeiro contato com ponto e traço.", missoes: ["E", "T", "E", "T", "A"] },
@@ -166,86 +201,18 @@ const NIVEIS_INICIANTE = [
   { numero: 20, patente: "General de Exército", titulo: "Missão Final Iniciante", descricao: "Junta tudo.", missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5", "MISSAO FINAL QRV"] }
 ];
 
-/* =========================
-   NÍVEIS INTERMEDIÁRIO
-========================= */
-
 const NIVEIS_INTERMEDIARIO = [
-  {
-    numero: 1,
-    patente: "Operador em Treinamento",
-    titulo: "Sem Rodinhas",
-    descricao: "Letras simples, agora sem botões de espaço.",
-    missoes: ["E", "T", "A", "N", "M"]
-  },
-  {
-    numero: 2,
-    patente: "Operador Aprendiz",
-    titulo: "Pausa entre Letras",
-    descricao: "A pausa média separa automaticamente as letras.",
-    missoes: ["I", "S", "O", "R", "K"]
-  },
-  {
-    numero: 3,
-    patente: "Operador Auxiliar",
-    titulo: "Ritmo Fônico I",
-    descricao: "Reconheça o desenho sonoro das letras.",
-    missoes: ["D", "U", "C", "P", "L"]
-  },
-  {
-    numero: 4,
-    patente: "Operador de Rede",
-    titulo: "Ritmo Fônico II",
-    descricao: "Padrões longos exigem memória auditiva.",
-    missoes: ["F", "G", "H", "V", "B", "Z"]
-  },
-  {
-    numero: 5,
-    patente: "Operador de Posto",
-    titulo: "Palavras Curtas",
-    descricao: "A pausa longa vira separação de palavra.",
-    missoes: ["SOS", "QSL", "QTH", "QRA", "QRV"]
-  },
-  {
-    numero: 6,
-    patente: "Operador Tático",
-    titulo: "Palavras Médias",
-    descricao: "Agora o cérebro começa a ouvir blocos.",
-    missoes: ["RADIO", "SINAL", "TORRE", "POSTO", "MORSE"]
-  },
-  {
-    numero: 7,
-    patente: "Operador de Mensagem",
-    titulo: "Frases Curtas",
-    descricao: "Separe palavras apenas com pausa.",
-    missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"]
-  },
-  {
-    numero: 8,
-    patente: "Operador Chefe",
-    titulo: "Frases Operacionais",
-    descricao: "Pouco apoio visual. Mais escuta e ritmo.",
-    missoes: ["QTC BASE", "RADIO QRV", "POSTO QSL", "SINAL FORTE", "TORRE OK"]
-  },
-  {
-    numero: 9,
-    patente: "Instrutor Morse",
-    titulo: "Mensagem Operacional",
-    descricao: "Mensagens maiores, sem botão auxiliar.",
-    missoes: ["RADIO BASE QRV", "QTC SINAL 3", "POSTO QSL 2", "BASE RADIO OK", "TORRE SINAL 9"]
-  },
-  {
-    numero: 10,
-    patente: "Especialista Morse",
-    titulo: "Missão Final Intermediária",
-    descricao: "Transmissão completa por ritmo e pausa.",
-    missoes: ["OPERADOR QRV", "QTC BASE SINAL", "RADIO POSTO QSL", "SINAL FORTE OK", "MISSAO INTERMEDIARIA"]
-  }
+  { numero: 1, patente: "Operador em Treinamento", titulo: "Sem Rodinhas", descricao: "Letras simples sem botões de espaço.", missoes: ["E", "T", "A", "N", "M"] },
+  { numero: 2, patente: "Operador Aprendiz", titulo: "Pausa entre Letras", descricao: "A pausa média separa automaticamente as letras.", missoes: ["I", "S", "O", "R", "K"] },
+  { numero: 3, patente: "Operador Auxiliar", titulo: "Ritmo Fônico I", descricao: "Reconheça o desenho sonoro das letras.", missoes: ["D", "U", "C", "P", "L"] },
+  { numero: 4, patente: "Operador de Rede", titulo: "Ritmo Fônico II", descricao: "Padrões longos exigem memória auditiva.", missoes: ["F", "G", "H", "V", "B", "Z"] },
+  { numero: 5, patente: "Operador de Posto", titulo: "Palavras Curtas", descricao: "A pausa longa vira separação de palavra.", missoes: ["SOS", "QSL", "QTH", "QRA", "QRV"] },
+  { numero: 6, patente: "Operador Tático", titulo: "Palavras Médias", descricao: "Agora o cérebro começa a ouvir blocos.", missoes: ["RADIO", "SINAL", "TORRE", "POSTO", "MORSE"] },
+  { numero: 7, patente: "Operador de Mensagem", titulo: "Frases Curtas", descricao: "Separe palavras apenas com pausa.", missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"] },
+  { numero: 8, patente: "Operador Chefe", titulo: "Frases Operacionais", descricao: "Pouco apoio visual. Mais escuta e ritmo.", missoes: ["QTC BASE", "RADIO QRV", "POSTO QSL", "SINAL FORTE", "TORRE OK"] },
+  { numero: 9, patente: "Instrutor Morse", titulo: "Mensagem Operacional", descricao: "Mensagens maiores, sem botão auxiliar.", missoes: ["RADIO BASE QRV", "QTC SINAL 3", "POSTO QSL 2", "BASE RADIO OK", "TORRE SINAL 9"] },
+  { numero: 10, patente: "Especialista Morse", titulo: "Missão Final Intermediária", descricao: "Transmissão completa por ritmo e pausa.", missoes: ["OPERADOR QRV", "QTC BASE SINAL", "RADIO POSTO QSL", "SINAL FORTE OK", "MISSAO INTERMEDIARIA"] }
 ];
-
-/* =========================
-   ESTADO
-========================= */
 
 let nomeOperador = "Operador";
 let modoAtual = MODO_INICIANTE;
@@ -272,10 +239,6 @@ let filtroMorse = null;
 let ultimoResultado = null;
 let temporizadorLetra = null;
 let temporizadorPalavra = null;
-
-/* =========================
-   OPERADOR E CHAVES
-========================= */
 
 function getNomeOperadorAtual() {
   return inputNomeOperador.value.trim() || nomeOperador || "Operador";
@@ -306,10 +269,6 @@ function chaveIntermediarioConcluido() {
   return `operadorMorseIntermediarioConcluido_${getChaveOperador()}`;
 }
 
-/* =========================
-   EVENTOS
-========================= */
-
 btnEntrarCampanha.addEventListener("click", entrarCampanha);
 btnAbrirRanking.addEventListener("click", abrirRanking);
 btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
@@ -331,9 +290,14 @@ btnVoltarCampanhaRanking.addEventListener("click", entrarCampanha);
 btnVoltarInicio.addEventListener("click", voltarInicio);
 btnLimparRanking.addEventListener("click", limparRanking);
 
-if (cardModoIniciante) cardModoIniciante.addEventListener("click", abrirModoIniciante);
-if (cardModoIntermediario) cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
-if (cardModoAvancado) cardModoAvancado.addEventListener("click", abrirModoAvancado);
+cardModoIniciante.addEventListener("click", abrirModoIniciante);
+cardModoIntermediario.addEventListener("click", abrirModoIntermediario);
+cardModoAvancado.addEventListener("click", abrirModoAvancado);
+
+btnMenosLetra.addEventListener("click", () => ajustarPausa("letra", -50));
+btnMaisLetra.addEventListener("click", () => ajustarPausa("letra", 50));
+btnMenosPalavra.addEventListener("click", () => ajustarPausa("palavra", -50));
+btnMaisPalavra.addEventListener("click", () => ajustarPausa("palavra", 50));
 
 btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
@@ -369,11 +333,8 @@ document.addEventListener("keyup", (evento) => {
   }
 });
 
-/* =========================
-   INICIALIZAÇÃO
-========================= */
-
 carregarPreferencias();
+atualizarPainelRitmo();
 
 function carregarPreferencias() {
   const nomeSalvo = localStorage.getItem("operadorMorseNome");
@@ -386,10 +347,6 @@ function carregarPreferencias() {
   modoAtual = MODO_INICIANTE;
   nivelAtualIndex = obterNivelLiberado(MODO_INICIANTE);
 }
-
-/* =========================
-   TELAS
-========================= */
 
 function mostrarTela(tela) {
   telaInicial.classList.remove("ativa");
@@ -415,10 +372,6 @@ function entrarCampanha() {
   renderizarCampanha();
   mostrarTela(telaCampanha);
 }
-
-/* =========================
-   MODOS
-========================= */
 
 function getNiveisModo(modo = modoAtual) {
   if (modo === MODO_INTERMEDIARIO) return NIVEIS_INTERMEDIARIO;
@@ -491,15 +444,39 @@ function aplicarModoVisualJogo() {
   btnEspacoLetra.style.display = intermediario ? "none" : "inline-block";
   btnEspacoPalavra.style.display = intermediario ? "none" : "inline-block";
 
-  if (intermediario) {
-    feedback.textContent = "Modo Intermediário: use pausas naturais. Pausa média separa letra; pausa longa separa palavra.";
-    feedback.className = "feedback alerta";
+  if (painelRitmo) {
+    painelRitmo.classList.toggle("ativo", intermediario);
   }
+
+  atualizarPainelRitmo();
 }
 
-/* =========================
-   CAMPANHA / MAPA
-========================= */
+function atualizarPainelRitmo() {
+  valorPausaLetra.textContent = `${pausaAutoLetraMs} ms`;
+  valorPausaPalavra.textContent = `${pausaAutoPalavraMs} ms`;
+}
+
+function ajustarPausa(tipo, delta) {
+  if (tipo === "letra") {
+    pausaAutoLetraMs = Math.min(1000, Math.max(200, pausaAutoLetraMs + delta));
+    localStorage.setItem("operadorMorsePausaLetraMs", String(pausaAutoLetraMs));
+  }
+
+  if (tipo === "palavra") {
+    pausaAutoPalavraMs = Math.min(2000, Math.max(450, pausaAutoPalavraMs + delta));
+    localStorage.setItem("operadorMorsePausaPalavraMs", String(pausaAutoPalavraMs));
+  }
+
+  if (pausaAutoPalavraMs <= pausaAutoLetraMs) {
+    pausaAutoPalavraMs = pausaAutoLetraMs + 200;
+    localStorage.setItem("operadorMorsePausaPalavraMs", String(pausaAutoPalavraMs));
+  }
+
+  atualizarPainelRitmo();
+
+  feedback.textContent = `Ritmo ajustado: letras ${pausaAutoLetraMs} ms • palavras ${pausaAutoPalavraMs} ms.`;
+  feedback.className = "feedback alerta";
+}
 
 function obterNivelLiberado(modo = modoAtual) {
   const niveis = getNiveisModo(modo);
@@ -520,6 +497,10 @@ function renderizarCampanha() {
 
   statusIniciante.textContent =
     `${operador}: ${getNomeModo(modoAtual)} — nível liberado ${nivelLiberado + 1}`;
+
+  if (labelModoAtual) {
+    labelModoAtual.textContent = `Modo ${getNomeModo(modoAtual)}`;
+  }
 
   atualizarCardModo(
     "cardModoIntermediario",
@@ -570,10 +551,6 @@ function renderizarCampanha() {
 function continuarNivelAtual() {
   iniciarNivel(obterNivelLiberado(modoAtual));
 }
-
-/* =========================
-   CONTROLE DO NÍVEL
-========================= */
 
 function iniciarNivel(index) {
   prepararAudio();
@@ -652,7 +629,7 @@ function carregarMissao() {
   textoMissao.textContent = `Envie: ${missao.alvo}`;
 
   if (modoAtual === MODO_INTERMEDIARIO) {
-    dicaMissaoEl.textContent = getDicaFonico(missao.alvo, missao.codigo);
+    dicaMissaoEl.textContent = getDicaFonico(missao.alvo);
   } else {
     dicaMissaoEl.textContent = `Pressione: ${missao.codigo}`;
   }
@@ -833,7 +810,7 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
     resultadoBadge.textContent = `Campanha ${getNomeModo(modoAtual)} concluída`;
     tituloResultado.textContent = `Promoção: ${resultado.patente}`;
     resultadoFinal.textContent =
-      `Excelente! Você concluiu o modo ${getNomeModo(modoAtual)} com ${resultado.aproveitamento}% de aproveitamento e ${resultado.wpm.toFixed(1)} WPM aproximado.`;
+      `Excelente! Você concluiu o modo ${getNomeModo(modoAtual)} com ${resultado.aproveitamento}% e ${resultado.wpm.toFixed(1)} WPM aproximado.`;
     btnProximoNivel.style.display = "none";
     btnJogarNovamente.textContent = "Refazer missão final";
     return;
@@ -851,7 +828,6 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   if (resultado.excelenciaWpm) mensagem += " Meta operacional de 12 WPM alcançada.";
 
   resultadoFinal.textContent = mensagem;
-
   btnProximoNivel.style.display = "inline-block";
   btnJogarNovamente.textContent = "Repetir nível";
 }
@@ -860,17 +836,11 @@ function proximaPatenteTexto() {
   const niveis = getNiveisModo(modoAtual);
 
   if (nivelAtualIndex >= niveis.length - 1) {
-    return modoAtual === MODO_INTERMEDIARIO
-      ? PATENTE_FINAL_INTERMEDIARIO
-      : PATENTE_FINAL_INICIANTE;
+    return modoAtual === MODO_INTERMEDIARIO ? PATENTE_FINAL_INTERMEDIARIO : PATENTE_FINAL_INICIANTE;
   }
 
   return niveis[nivelAtualIndex + 1].patente;
 }
-
-/* =========================
-   MANIPULAÇÃO MORSE
-========================= */
 
 function iniciarPressionamento() {
   prepararAudio();
@@ -909,7 +879,6 @@ function finalizarPressionamento() {
 
 function cancelarPressionamento() {
   if (!pressionando) return;
-
   pressionando = false;
   btnMorse.classList.remove("pressionado");
   pararTomMorse();
@@ -958,7 +927,7 @@ function agendarSeparacaoAutomatica() {
       feedback.textContent = "Pausa detectada: próxima letra.";
       feedback.className = "feedback alerta";
     }
-  }, PAUSA_AUTO_LETRA_MS);
+  }, pausaAutoLetraMs);
 
   temporizadorPalavra = setTimeout(() => {
     if (!codigoAtual.trim()) return;
@@ -971,7 +940,7 @@ function agendarSeparacaoAutomatica() {
       feedback.textContent = "Pausa longa detectada: próxima palavra.";
       feedback.className = "feedback alerta";
     }
-  }, PAUSA_AUTO_PALAVRA_MS);
+  }, pausaAutoPalavraMs);
 }
 
 function limparTemporizadoresPausa() {
@@ -999,9 +968,7 @@ function limparCodigo() {
   limparTemporizadoresPausa();
   codigoAtual = "";
   atualizarCodigoNaTela();
-
   tocarCliqueLimpar();
-
   feedback.textContent = "Código limpo.";
   feedback.className = "feedback";
 }
@@ -1020,10 +987,6 @@ function normalizarCodigo(codigo) {
     .replace(/\s*\/\s*/g, " / ")
     .replace(/\s+/g, " ");
 }
-
-/* =========================
-   TEMPO, WPM E RANKING
-========================= */
 
 function calcularWpmNivel(tempoSegundos) {
   const nivel = getNivelAtual();
@@ -1122,10 +1085,6 @@ function escaparHtml(valor) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
-/* =========================
-   ÁUDIO
-========================= */
 
 function prepararAudio() {
   if (!audioContext) {

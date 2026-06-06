@@ -103,7 +103,7 @@
 
         <article id="cardModoIntermediario" class="card modo-card bloqueado">
           <div class="modo-topo">
-            <span class="badge alerta">Em breve</span>
+            <span class="badge alerta">Bloqueado</span>
             <span class="modo-numero">02</span>
           </div>
 
@@ -114,13 +114,13 @@
           </p>
 
           <div class="modo-status">
-            <span>Separação automática por tempo</span>
+            <span>Conclua o Iniciante para liberar</span>
           </div>
         </article>
 
         <article id="cardModoAvancado" class="card modo-card bloqueado">
           <div class="modo-topo">
-            <span class="badge alerta">Em breve</span>
+            <span class="badge alerta">Bloqueado</span>
             <span class="modo-numero">03</span>
           </div>
 
@@ -131,7 +131,7 @@
           </p>
 
           <div class="modo-status">
-            <span>Operador em missão</span>
+            <span>Conclua o Intermediário para liberar</span>
           </div>
         </article>
       </section>
@@ -139,7 +139,7 @@
       <section class="card mapa-campanha">
         <div class="titulo-secao">
           <div>
-            <span class="label">Modo Iniciante</span>
+            <span class="label" id="labelModoAtual">Modo Iniciante</span>
             <h2>Mapa de progressão</h2>
           </div>
 
@@ -204,6 +204,29 @@
         </div>
 
         <div id="feedback" class="feedback"></div>
+
+        <!-- PAINEL DE RITMO - APARECE NO MODO INTERMEDIÁRIO -->
+        <div id="painelRitmo" class="painel-ritmo">
+          <div>
+            <span>Entre letras</span>
+            <strong id="valorPausaLetra">350 ms</strong>
+
+            <div class="controle-ritmo">
+              <button id="btnMenosLetra" class="btn secundario">−</button>
+              <button id="btnMaisLetra" class="btn secundario">+</button>
+            </div>
+          </div>
+
+          <div>
+            <span>Entre palavras</span>
+            <strong id="valorPausaPalavra">750 ms</strong>
+
+            <div class="controle-ritmo">
+              <button id="btnMenosPalavra" class="btn secundario">−</button>
+              <button id="btnMaisPalavra" class="btn secundario">+</button>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="card progresso">
