@@ -1246,3 +1246,25 @@ p {
   margin: 10px 0 0;
   font-size: 0.95rem;
 }
+@media (max-width: 720px) {
+  .botoes-inicio {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 18px 0;
+  }
+
+  .botoes-inicio .btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 15px 16px;
+  }
+
+  .historia-jogo {
+    margin-top: 14px;
+  }
+
+  .painel-inicial {
+    margin-top: 14px;
+  }
+}
