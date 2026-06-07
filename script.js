@@ -139,7 +139,7 @@ const DICAS_FONICAS = {
   T: "TÁ",
   U: "u ru BU",
   V: "ma ra ca NÃ",
-  W: "ci la DA",
+  W: "ci LA DA",
   X: "LEI tí com CHÁ",
   Y: "GOL di VA VA",
   Z: "ZÁ ZÁ li li",
@@ -1711,6 +1711,10 @@ function iniciarNivel(index) {
   limparTemporizadoresPausa();
 
   mostrarTela(telaJogo);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
   carregarMissao();
   atualizarPlacar();
   aplicarModoVisualJogo();
