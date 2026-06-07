@@ -752,21 +752,32 @@ function mostrarCategoriaQ(titulo, itens) {
   tituloBiblioteca.textContent = titulo;
 
   descricaoBiblioteca.textContent =
-    "Toque em um cartão para consultar o significado.";
-    btnVoltarMenuBiblioteca.style.display = "none";
-btnVoltarCodigoQ.style.display = "inline-block";
-menuBiblioteca.style.display = "none";
+    "Toque em um cartão para ouvir o código e consultar o significado.";
+
+  btnVoltarMenuBiblioteca.style.display = "none";
+  btnVoltarCodigoQ.style.display = "inline-block";
+  menuBiblioteca.style.display = "none";
 
   gridBibliotecaMorse.innerHTML = itens
-    .map(
-      (item) => `
-      <div class="cartao-caractere">
-        <span class="letra">${item.codigo}</span>
-        <span class="fonico">${item.significado}</span>
-      </div>
-    `
-    )
+    .map((item) => {
+      const morse = textoParaMorse(item.codigo);
+
+      return `
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
+          <span class="letra">📡 ${escaparHtml(item.codigo)}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
+          <span class="fonico">${escaparHtml(item.significado)}</span>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
+      `;
+    })
     .join("");
+
+  document.querySelectorAll("#gridBibliotecaMorse .cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
 }
 function abrirQOperacao() {
   mostrarCategoriaQ(
