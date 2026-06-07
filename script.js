@@ -1561,6 +1561,12 @@ function agendarSeparacaoAutomatica() {
       return;
     }
 
+    const codigoComBarra = normalizarCodigo(`${codigoAtual.trim()} /`);
+
+    if (!correto.startsWith(codigoComBarra)) {
+      return;
+    }
+
     codigoAtual = codigoAtual.trim();
 
     if (!codigoAtual.endsWith("/")) {
@@ -1614,10 +1620,12 @@ function mostrarFeedbackManipulacao(simbolo, duracao) {
 }
 
 function normalizarCodigo(codigo) {
-  return codigo
+  return String(codigo || "")
     .trim()
     .replace(/\s*\/\s*/g, " / ")
-    .replace(/\s+/g, " ");
+    .replace(/\s+/g, " ")
+    .replace(/(?:\s\/\s?)+$/g, "")
+    .trim();
 }
 
 function calcularWpmNivel(tempoSegundos) {
