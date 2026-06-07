@@ -1791,7 +1791,7 @@ function tocarErro() {
 function tocarSequenciaMorse(codigoMorse) {
   prepararAudio();
 
-  const unidade = 910 / wpmAtual;
+  const unidade = 940 / wpmAtual;
   const fatorTraco = 3.6;
   let atraso = 0;
 
