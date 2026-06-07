@@ -997,25 +997,35 @@ function abrirBibliotecaTreinoAuditivo() {
 }
 
 function montarMenuTreinoAuditivo() {
+  tituloBiblioteca.textContent = "🎧 Treino Auditivo";
+  descricaoBiblioteca.textContent =
+    "Escolha uma categoria e treine sua escuta Morse no modo Livre ou Desafio.";
+
+  btnVoltarMenuBiblioteca.style.display = "none";
+  btnVoltarCodigoQ.style.display = "none";
+  menuBiblioteca.style.display = "none";
+
   gridBibliotecaMorse.innerHTML = `
     <div class="painel-treino-auditivo">
       <div class="treino-auditivo-topo">
-        <h2>Centro de Escuta Morse</h2>
-        <p>
-          Escolha uma categoria e o tipo de treino. O modo livre serve para estudar.
-          O desafio tem 10 rodadas, pontuação e sequência de acertos.
-        </p>
+        <span class="badge">Treino Auditivo</span>
+        <h2>🎧 Escuta Morse</h2>
+        <p>Escolha uma categoria. No modo Livre você estuda; no Desafio você testa o ouvido.</p>
       </div>
 
-      <div class="grid-treino-categorias">
-        ${criarCardCategoriaTreino("letras", "🔤 Letras", "Reconhecimento auditivo do alfabeto.")}
-        ${criarCardCategoriaTreino("numeros", "🔢 Números", "Treino dos algarismos de 0 a 9.")}
-        ${criarCardCategoriaTreino("codigoQ", "📡 Código Q", "Códigos operacionais usados em rádio.")}
-        ${criarCardCategoriaTreino("sinais", "⚡ Sinais de Serviço", "Controle da transmissão e sinais de procedimento.")}
-        ${criarCardCategoriaTreino("abreviacoes", "📚 Abreviações", "Abreviações comuns em comunicação Morse.")}
-        ${criarCardCategoriaTreino("palavras", "🧠 Palavras", "Banco com 100 palavras comuns e operacionais.")}
-        ${criarCardCategoriaTreino("frases", "🛰️ Frases", "Frases curtas para preparar o modo avançado.")}
-        ${criarCardCategoriaTreino("misto", "🎲 Misto", "Mistura letras, números, códigos, palavras e frases.")}
+      <div class="lista-treino-auditivo">
+        ${criarLinhaCategoriaTreino("letras", "🔤 ABC / Letras")}
+        ${criarLinhaCategoriaTreino("numeros", "🔢 Números")}
+        ${criarLinhaCategoriaTreino("codigoQ", "📡 Código Q")}
+        ${criarLinhaCategoriaTreino("sinais", "⚡ Sinais de Serviço")}
+        ${criarLinhaCategoriaTreino("abreviacoes", "📚 Abreviações")}
+        ${criarLinhaCategoriaTreino("palavras", "🧠 Palavras Comuns")}
+      </div>
+
+      <div class="botoes-resultado bloco-voltar-treino">
+        <button id="btnVoltarBibliotecaTreinoMenu" class="btn principal">
+          Voltar para Biblioteca
+        </button>
       </div>
     </div>
   `;
@@ -1031,17 +1041,20 @@ function montarMenuTreinoAuditivo() {
       iniciarTreinoAuditivo(botao.dataset.categoria, "desafio");
     });
   });
+
+  document
+    .getElementById("btnVoltarBibliotecaTreinoMenu")
+    .addEventListener("click", abrirBiblioteca);
 }
 
-function criarCardCategoriaTreino(categoria, titulo, descricao) {
+function criarLinhaCategoriaTreino(categoria, titulo) {
   return `
-    <div class="card-treino-auditivo">
+    <div class="linha-categoria-treino">
       <h3>${escaparHtml(titulo)}</h3>
-      <p>${escaparHtml(descricao)}</p>
 
       <div class="botoes-card-treino">
         <button class="btn secundario btn-treino-livre" data-categoria="${escaparHtml(categoria)}">
-          Escuta livre
+          Livre
         </button>
 
         <button class="btn principal btn-treino-desafio" data-categoria="${escaparHtml(categoria)}">
@@ -1051,7 +1064,6 @@ function criarCardCategoriaTreino(categoria, titulo, descricao) {
     </div>
   `;
 }
-
 function iniciarTreinoAuditivo(categoria, modo) {
   treinoAuditivo = {
     modo,
