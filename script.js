@@ -1,4 +1,5 @@
 const telaInicial = document.getElementById("telaInicial");
+const telaMissao = document.getElementById("telaMissao");
 const telaBiblioteca = document.getElementById("telaBiblioteca");
 const telaCampanha = document.getElementById("telaCampanha");
 const telaLicao = document.getElementById("telaLicao");
@@ -9,6 +10,9 @@ const telaRanking = document.getElementById("telaRanking");
 const inputNomeOperador = document.getElementById("inputNomeOperador");
 
 const btnEntrarCampanha = document.getElementById("btnEntrarCampanha");
+const btnAbrirMissao = document.getElementById("btnAbrirMissao");
+const btnVoltarInicioMissao = document.getElementById("btnVoltarInicioMissao");
+const btnIniciarPelaMissao = document.getElementById("btnIniciarPelaMissao");
 const btnAbrirBiblioteca = document.getElementById("btnAbrirBiblioteca");
 const btnAbrirRanking = document.getElementById("btnAbrirRanking");
 const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
@@ -400,7 +404,9 @@ function chaveInicianteConcluido() {
 function chaveIntermediarioConcluido() {
   return `operadorMorseIntermediarioConcluido_${getChaveOperador()}`;
 }
-
+btnAbrirMissao.addEventListener("click", abrirMissao);
+btnVoltarInicioMissao.addEventListener("click", voltarInicio);
+btnIniciarPelaMissao.addEventListener("click", entrarCampanha);
 btnEntrarCampanha.addEventListener("click", entrarCampanha);
 btnAbrirBiblioteca.addEventListener("click", abrirBiblioteca);
 btnAbrirRanking.addEventListener("click", abrirRanking);
@@ -515,6 +521,7 @@ function carregarPreferencias() {
 
 function mostrarTela(tela) {
   telaInicial.classList.remove("ativa");
+  telaMissao.classList.remove("ativa");
   telaBiblioteca.classList.remove("ativa");
   telaCampanha.classList.remove("ativa");
   telaLicao.classList.remove("ativa");
@@ -528,7 +535,9 @@ function mostrarTela(tela) {
 function voltarInicio() {
   mostrarTela(telaInicial);
 }
-
+function abrirMissao() {
+  mostrarTela(telaMissao);
+}
 function abrirBiblioteca() {
   const itens = Object.keys(TABELA_MORSE);
 

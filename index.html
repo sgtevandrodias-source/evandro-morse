@@ -11,81 +11,81 @@
 <body>
   <main class="app">
     <!-- TELA INICIAL -->
-    <section id="telaInicial" class="tela ativa">
-      <div class="hero-game">
-        <div class="marca-jogo">
-          <div class="icone-radio">⌁</div>
-          <div>
-            <span>Game de concentração e código Morse</span>
-            <h1>EDS MORSE</h1>
-          </div>
-        </div>
-        
-        <p class="subtitulo-hero">
-          Quando o complexo falha, o simples prevalece.
-        </p>
-        <div class="botoes-inicio">
-          <button id="btnEntrarCampanha" class="btn principal">
-            🚀 Iniciar Missão
-          </button>
-        
-          <button id="btnAbrirBiblioteca" class="btn secundario">
-            📖 Biblioteca Morse
-          </button>
-        
-          <button id="btnAbrirRanking" class="btn secundario">
-            🏆 Ranking local
-          </button>
-        </div>
-        <div class="card historia-jogo">
-          <div class="badge">📡 O COLAPSO</div>
-        
-          <p>
-            Após um grande bug nos sistemas de telecomunicações, a única forma de se comunicar é por meio de equipamentos simples de rádio usando código Morse.
-          </p>
-        
-          <p>
-            Para sobreviver ao caos, você precisa dominar o código, transmitir mensagens e manter contato com outros operadores.
-          </p>
-        
-          <p>
-            Avance pelas missões mantendo rendimento acima de 80% e alcance a meta operacional de 12 palavras por minuto.
-          </p>
-        </div>
-        <div class="card painel-inicial">
-          <div class="campo-operador">
-            <label for="inputNomeOperador">Nome do operador</label>
-            <input
-              id="inputNomeOperador"
-              type="text"
-              maxlength="24"
-              placeholder="Ex: Evandro"
-            />
-          </div>
-
-          <div class="cards-regras">
-            <div>
-              <strong>80%</strong>
-              <span>aprova no nível</span>
-            </div>
-
-            <div>
-              <strong>90%</strong>
-              <span>gera bônus</span>
-            </div>
-
-            <div>
-              <strong>12 WPM</strong>
-              <span>meta operacional</span>
-            </div>
-          </div>
-         
-          <p class="texto-pequeno">
-            Ranking salvo neste aparelho/navegador. No futuro, esta estrutura poderá evoluir para ranking global.
-          </p>
-        </div>
+<section id="telaInicial" class="tela ativa">
+  <div class="hero-game">
+    <div class="marca-jogo">
+      <div class="icone-radio">⌁</div>
+      <div>
+        <span>Game de concentração e código Morse</span>
+        <h1>EDS MORSE</h1>
       </div>
-    </section>
+    </div>
+
+    <p class="subtitulo-hero">
+      Quando o complexo falha, o simples prevalece.
+    </p>
+
+    <div class="botoes-inicio">
+      <button id="btnAbrirMissao" class="btn secundario">
+        📡 Missão
+      </button>
+
+      <button id="btnEntrarCampanha" class="btn principal">
+        🚀 Iniciar Missão
+      </button>
+
+      <button id="btnAbrirBiblioteca" class="btn secundario">
+        📖 Biblioteca
+      </button>
+
+      <button id="btnAbrirRanking" class="btn secundario">
+        🏆 Ranking
+      </button>
+    </div>
+
+    <div class="card painel-inicial">
+      <div class="campo-operador">
+        <label for="inputNomeOperador">Nome do operador</label>
+        <input
+          id="inputNomeOperador"
+          type="text"
+          maxlength="24"
+          placeholder="Ex: Evandro"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+<!-- TELA MISSÃO / HISTÓRIA -->
+<section id="telaMissao" class="tela">
+  <div class="card historia-jogo">
+    <div class="badge">📡 O COLAPSO</div>
+
+    <h1>Missão EDS MORSE</h1>
+
+    <p>
+      Após um grande bug nos sistemas de telecomunicações, a única forma de se comunicar é por meio de equipamentos simples de rádio usando código Morse.
+    </p>
+
+    <p>
+      Para sobreviver ao caos, você precisa dominar o código, transmitir mensagens e manter contato com outros operadores.
+    </p>
+
+    <p>
+      Avance pelas missões mantendo rendimento acima de 80% e alcance a meta operacional de 12 palavras por minuto.
+    </p>
+
+    <div class="botoes-resultado">
+      <button id="btnVoltarInicioMissao" class="btn secundario">
+        Voltar ao início
+      </button>
+
+      <button id="btnIniciarPelaMissao" class="btn principal">
+        Iniciar Missão
+      </button>
+    </div>
+  </div>
+</section>
 <!-- TELA BIBLIOTECA MORSE -->
 <section id="telaBiblioteca" class="tela">
   <div class="card licao-card">
