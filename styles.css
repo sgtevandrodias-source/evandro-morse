@@ -1483,3 +1483,30 @@ p {
     font-size: 0.76rem;
   }
 }
+/* =========================
+   MENU DA BIBLIOTECA
+========================= */
+
+.menu-biblioteca {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.menu-biblioteca .btn {
+  min-height: 70px;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 720px) {
+  .menu-biblioteca {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .menu-biblioteca .btn {
+    min-height: 58px;
+    width: 100%;
+  }
+}

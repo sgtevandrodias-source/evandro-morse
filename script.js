@@ -14,8 +14,13 @@ const btnAbrirMissao = document.getElementById("btnAbrirMissao");
 const btnVoltarInicioMissao = document.getElementById("btnVoltarInicioMissao");
 const btnIniciarPelaMissao = document.getElementById("btnIniciarPelaMissao");
 const btnAbrirBiblioteca = document.getElementById("btnAbrirBiblioteca");
-const btnAbrirRanking = document.getElementById("btnAbrirRanking");
-const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
+const btnBibAlfabeto = document.getElementById("btnBibAlfabeto");
+const btnBibNumeros = document.getElementById("btnBibNumeros");
+const btnBibCodigoQ = document.getElementById("btnBibCodigoQ");
+const btnBibSinaisServico = document.getElementById("btnBibSinaisServico");
+const btnBibAbreviacoes = document.getElementById("btnBibAbreviacoes");
+const btnBibTreinoAuditivo = document.getElementById("btnBibTreinoAuditivo");
+const btnAbrirRanking = document.getElementById("btnAbrirRanking");const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
 const btnContinuarNivel = document.getElementById("btnContinuarNivel");
 
 const btnMorse = document.getElementById("btnMorse");
@@ -409,6 +414,24 @@ btnVoltarInicioMissao.addEventListener("click", voltarInicio);
 btnIniciarPelaMissao.addEventListener("click", entrarCampanha);
 btnEntrarCampanha.addEventListener("click", entrarCampanha);
 btnAbrirBiblioteca.addEventListener("click", abrirBiblioteca);
+btnBibAlfabeto.addEventListener("click", abrirBibliotecaAlfabeto);
+btnBibNumeros.addEventListener("click", abrirBibliotecaNumeros);
+
+btnBibCodigoQ.addEventListener("click", () => {
+  alert("Código Q em construção.");
+});
+
+btnBibSinaisServico.addEventListener("click", () => {
+  alert("Sinais de Serviço em construção.");
+});
+
+btnBibAbreviacoes.addEventListener("click", () => {
+  alert("Abreviações em construção.");
+});
+
+btnBibTreinoAuditivo.addEventListener("click", () => {
+  alert("Treino Auditivo em construção.");
+});
 btnAbrirRanking.addEventListener("click", abrirRanking);
 btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
 btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
@@ -539,8 +562,11 @@ function abrirMissao() {
   mostrarTela(telaMissao);
 }
 function abrirBiblioteca() {
-  const itens = Object.keys(TABELA_MORSE);
+  gridBibliotecaMorse.innerHTML = "";
+  mostrarTela(telaBiblioteca);
+}
 
+function montarCardsBiblioteca(itens) {
   gridBibliotecaMorse.innerHTML = itens
     .map((item) => {
       const morse = TABELA_MORSE[item];
@@ -562,10 +588,17 @@ function abrirBiblioteca() {
       tocarSequenciaMorse(card.dataset.morse);
     });
   });
-
-  mostrarTela(telaBiblioteca);
 }
 
+function abrirBibliotecaAlfabeto() {
+  const letras = Object.keys(TABELA_MORSE).filter((item) => /^[A-Z]$/.test(item));
+  montarCardsBiblioteca(letras);
+}
+
+function abrirBibliotecaNumeros() {
+  const numeros = Object.keys(TABELA_MORSE).filter((item) => /^[0-9]$/.test(item));
+  montarCardsBiblioteca(numeros);
+}
 function salvarNomeOperador() {
   nomeOperador = getNomeOperadorAtual();
   inputNomeOperador.value = nomeOperador;
