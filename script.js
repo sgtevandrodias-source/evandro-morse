@@ -62,6 +62,7 @@ const resultadoPontos = document.getElementById("resultadoPontos");
 
 const listaRanking = document.getElementById("listaRanking");
 const gridBibliotecaMorse = document.getElementById("gridBibliotecaMorse");
+const menuBiblioteca = document.querySelector(".menu-biblioteca");
 const tituloBiblioteca = document.getElementById("tituloBiblioteca");
 const descricaoBiblioteca = document.getElementById("descricaoBiblioteca");
 const btnVoltarMenuBiblioteca = document.getElementById("btnVoltarMenuBiblioteca");
@@ -571,6 +572,7 @@ function abrirBiblioteca() {
 
   gridBibliotecaMorse.innerHTML = "";
   btnVoltarMenuBiblioteca.style.display = "none";
+  menuBiblioteca.style.display = "grid";
 
   mostrarTela(telaBiblioteca);
 }
@@ -607,7 +609,7 @@ function abrirBibliotecaAlfabeto() {
   montarCardsBiblioteca(letras);
 
   btnVoltarMenuBiblioteca.style.display = "inline-block";
-
+  menuBiblioteca.style.display = "none";
   telaBiblioteca.scrollIntoView({
     behavior: "smooth",
     block: "start"
@@ -622,7 +624,7 @@ function abrirBibliotecaNumeros() {
   montarCardsBiblioteca(numeros);
 
   btnVoltarMenuBiblioteca.style.display = "inline-block";
-
+  menuBiblioteca.style.display = "none";
   telaBiblioteca.scrollIntoView({
     behavior: "smooth",
     block: "start"
