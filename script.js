@@ -62,6 +62,9 @@ const resultadoPontos = document.getElementById("resultadoPontos");
 
 const listaRanking = document.getElementById("listaRanking");
 const gridBibliotecaMorse = document.getElementById("gridBibliotecaMorse");
+const tituloBiblioteca = document.getElementById("tituloBiblioteca");
+const descricaoBiblioteca = document.getElementById("descricaoBiblioteca");
+const btnVoltarMenuBiblioteca = document.getElementById("btnVoltarMenuBiblioteca");
 const btnVoltarInicioBiblioteca = document.getElementById("btnVoltarInicioBiblioteca");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
@@ -434,6 +437,7 @@ btnBibTreinoAuditivo.addEventListener("click", () => {
 });
 btnAbrirRanking.addEventListener("click", abrirRanking);
 btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
+btnVoltarMenuBiblioteca.addEventListener("click", abrirBiblioteca);
 btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
 btnContinuarNivel.addEventListener("click", continuarNivelAtual);
 
@@ -562,7 +566,12 @@ function abrirMissao() {
   mostrarTela(telaMissao);
 }
 function abrirBiblioteca() {
+  tituloBiblioteca.textContent = "📚 Biblioteca Morse";
+  descricaoBiblioteca.textContent = "Escolha uma área de estudo. Consulte, ouça e pratique os sinais.";
+
   gridBibliotecaMorse.innerHTML = "";
+  btnVoltarMenuBiblioteca.style.display = "none";
+
   mostrarTela(telaBiblioteca);
 }
 
@@ -591,13 +600,33 @@ function montarCardsBiblioteca(itens) {
 }
 
 function abrirBibliotecaAlfabeto() {
+  tituloBiblioteca.textContent = "🔤 Alfabeto Morse";
+  descricaoBiblioteca.textContent = "Consulte as letras, seus códigos e mnemônicos fônicos. Toque em um card para ouvir.";
+
   const letras = Object.keys(TABELA_MORSE).filter((item) => /^[A-Z]$/.test(item));
   montarCardsBiblioteca(letras);
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+
+  telaBiblioteca.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
 function abrirBibliotecaNumeros() {
+  tituloBiblioteca.textContent = "🔢 Números em Morse";
+  descricaoBiblioteca.textContent = "Consulte os números, seus códigos e mnemônicos fônicos. Toque em um card para ouvir.";
+
   const numeros = Object.keys(TABELA_MORSE).filter((item) => /^[0-9]$/.test(item));
   montarCardsBiblioteca(numeros);
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+
+  telaBiblioteca.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 function salvarNomeOperador() {
   nomeOperador = getNomeOperadorAtual();
