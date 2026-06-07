@@ -428,9 +428,7 @@ btnBibSinaisServico.addEventListener("click", abrirBibliotecaSinaisServico);
 
 btnBibAbreviacoes.addEventListener("click", abrirBibliotecaAbreviacoes);
 
-btnBibTreinoAuditivo.addEventListener("click", () => {
-  alert("Treino Auditivo em construção.");
-});
+btnBibTreinoAuditivo.addEventListener("click", abrirBibliotecaTreinoAuditivo);
 btnAbrirRanking.addEventListener("click", abrirRanking);
 btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
 btnVoltarMenuBiblioteca.addEventListener("click", abrirBiblioteca);
@@ -799,6 +797,56 @@ const ABREVIACOES_MORSE = [
   { codigo: "73", significado: "Saudações / cordial abraço." },
   { codigo: "88", significado: "Abraços e beijos." }
 ];
+const PALAVRAS_COMUNS_MORSE = [
+  "SOL", "MAR", "RIO", "LUZ", "SOM", "FIO", "RUA", "AR", "REDE", "BASE",
+  "RADIO", "MORSE", "SINAL", "TORRE", "POSTO", "ANTENA", "CANAL", "CHAVE", "FONIA", "CABO",
+  "MISSAO", "COMANDO", "ORDEM", "ALERTA", "APOIO", "GRUPO", "EQUIPE", "PONTO", "ROTA", "MAPA",
+  "ENVIE", "RECEBA", "REPITA", "CONFIRME", "AGUARDE", "COPIE", "CHAME", "ESCUTE", "TRANSMITA", "RESPONDA",
+  "NORTE", "SUL", "LESTE", "OESTE", "CENTRO", "AREA", "SETOR", "LINHA", "LOCAL", "TEMPO",
+  "COLAPSO", "SOBREVIVA", "ENERGIA", "SISTEMA", "FALHA", "CODIGO", "OPERADOR", "ESTACAO", "EMERGENCIA", "CONTATO",
+  "FOCO", "RITMO", "PAUSA", "PONTO", "TRACO", "LETRA", "NUMERO", "PALAVRA", "FRASE", "AUDIO",
+  "PATRULHA", "GUARDA", "PONTE", "CAMPO", "ABRIGO", "PORTAO", "VIATURA", "MOTOR", "BATERIA", "ALARME",
+  "MENSAGEM", "TRANSMISSAO", "FREQUENCIA", "INTERFERENCIA", "CONFIRMACAO", "LOCALIZACAO", "COORDENADA", "PRIORIDADE", "DESTINO", "ORIGEM",
+  "FORTE", "FRACO", "CLARO", "RUIDO", "PRONTO", "SEGURO", "URGENTE", "FINAL", "INICIO", "CAMBIO"
+];
+
+const FRASES_OPERACIONAIS_MORSE = [
+  "QSL OK",
+  "BASE QRV",
+  "SINAL OK",
+  "RADIO 1",
+  "POSTO 2",
+  "TORRE QRV",
+  "QTC BASE",
+  "QRV POSTO",
+  "SINAL FORTE",
+  "CAMBIO",
+  "BASE QSL",
+  "RADIO QRV",
+  "POSTO QSL",
+  "TORRE OK",
+  "QRM FORTE",
+  "QRN FRACO",
+  "QTC SINAL",
+  "BASE 1",
+  "POSTO 3",
+  "RADIO BASE"
+];
+
+let treinoAuditivo = {
+  modo: "livre",
+  categoria: "letras",
+  itens: [],
+  itemAtual: null,
+  rodada: 0,
+  totalRodadas: 10,
+  acertos: 0,
+  erros: 0,
+  pontos: 0,
+  sequencia: 0,
+  repeticoesItem: 0,
+  historico: []
+};
 function mostrarCategoriaQ(titulo, itens) {
   tituloBiblioteca.textContent = titulo;
 
@@ -928,6 +976,499 @@ function abrirBibliotecaAbreviacoes() {
     top: 0,
     behavior: "smooth"
   });
+}
+function abrirBibliotecaTreinoAuditivo() {
+  tituloBiblioteca.textContent = "🎧 Treino Auditivo";
+  descricaoBiblioteca.textContent =
+    "Treine o ouvido para reconhecer letras, números, Código Q, sinais, abreviações, palavras e frases operacionais.";
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+  btnVoltarCodigoQ.style.display = "none";
+  menuBiblioteca.style.display = "none";
+
+  montarMenuTreinoAuditivo();
+
+  mostrarTela(telaBiblioteca);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+function montarMenuTreinoAuditivo() {
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo">
+      <div class="treino-auditivo-topo">
+        <h2>Centro de Escuta Morse</h2>
+        <p>
+          Escolha uma categoria e o tipo de treino. O modo livre serve para estudar.
+          O desafio tem 10 rodadas, pontuação e sequência de acertos.
+        </p>
+      </div>
+
+      <div class="grid-treino-categorias">
+        ${criarCardCategoriaTreino("letras", "🔤 Letras", "Reconhecimento auditivo do alfabeto.")}
+        ${criarCardCategoriaTreino("numeros", "🔢 Números", "Treino dos algarismos de 0 a 9.")}
+        ${criarCardCategoriaTreino("codigoQ", "📡 Código Q", "Códigos operacionais usados em rádio.")}
+        ${criarCardCategoriaTreino("sinais", "⚡ Sinais de Serviço", "Controle da transmissão e sinais de procedimento.")}
+        ${criarCardCategoriaTreino("abreviacoes", "📚 Abreviações", "Abreviações comuns em comunicação Morse.")}
+        ${criarCardCategoriaTreino("palavras", "🧠 Palavras", "Banco com 100 palavras comuns e operacionais.")}
+        ${criarCardCategoriaTreino("frases", "🛰️ Frases", "Frases curtas para preparar o modo avançado.")}
+        ${criarCardCategoriaTreino("misto", "🎲 Misto", "Mistura letras, números, códigos, palavras e frases.")}
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll(".btn-treino-livre").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      iniciarTreinoAuditivo(botao.dataset.categoria, "livre");
+    });
+  });
+
+  document.querySelectorAll(".btn-treino-desafio").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      iniciarTreinoAuditivo(botao.dataset.categoria, "desafio");
+    });
+  });
+}
+
+function criarCardCategoriaTreino(categoria, titulo, descricao) {
+  return `
+    <div class="card-treino-auditivo">
+      <h3>${escaparHtml(titulo)}</h3>
+      <p>${escaparHtml(descricao)}</p>
+
+      <div class="botoes-card-treino">
+        <button class="btn secundario btn-treino-livre" data-categoria="${escaparHtml(categoria)}">
+          Escuta livre
+        </button>
+
+        <button class="btn principal btn-treino-desafio" data-categoria="${escaparHtml(categoria)}">
+          Desafio
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function iniciarTreinoAuditivo(categoria, modo) {
+  treinoAuditivo = {
+    modo,
+    categoria,
+    itens: obterItensTreinoAuditivo(categoria),
+    itemAtual: null,
+    rodada: 0,
+    totalRodadas: modo === "desafio" ? 10 : 0,
+    acertos: 0,
+    erros: 0,
+    pontos: 0,
+    sequencia: 0,
+    repeticoesItem: 0,
+    historico: []
+  };
+
+  if (!treinoAuditivo.itens.length) {
+    alert("Não há itens cadastrados para esta categoria.");
+    return;
+  }
+
+  sortearNovoItemTreinoAuditivo();
+  renderizarTelaTreinoAuditivo();
+}
+
+function obterItensTreinoAuditivo(categoria) {
+  const letras = Object.keys(TABELA_MORSE)
+    .filter((item) => /^[A-Z]$/.test(item))
+    .map((item) => criarItemTreino(item, "Letra", getDicaFonico(item)));
+
+  const numeros = Object.keys(TABELA_MORSE)
+    .filter((item) => /^[0-9]$/.test(item))
+    .map((item) => criarItemTreino(item, "Número", getDicaFonico(item)));
+
+  const codigoQ = Object.values(CODIGO_Q)
+    .flat()
+    .map((item) => criarItemTreino(item.codigo, "Código Q", item.significado));
+
+  const sinais = SINAIS_SERVICO
+    .map((item) => criarItemTreino(item.codigo, "Sinal de Serviço", item.significado));
+
+  const abreviacoes = ABREVIACOES_MORSE
+    .map((item) => criarItemTreino(item.codigo, "Abreviação", item.significado));
+
+  const palavras = PALAVRAS_COMUNS_MORSE
+    .map((item) => criarItemTreino(item, "Palavra comum", "Palavra do banco de treino auditivo."));
+
+  const frases = FRASES_OPERACIONAIS_MORSE
+    .map((item) => criarItemTreino(item, "Frase operacional", "Frase curta para preparação do modo avançado."));
+
+  if (categoria === "letras") return letras;
+  if (categoria === "numeros") return numeros;
+  if (categoria === "codigoQ") return codigoQ;
+  if (categoria === "sinais") return sinais;
+  if (categoria === "abreviacoes") return abreviacoes;
+  if (categoria === "palavras") return palavras;
+  if (categoria === "frases") return frases;
+
+  return [
+    ...letras,
+    ...numeros,
+    ...codigoQ,
+    ...sinais,
+    ...abreviacoes,
+    ...palavras,
+    ...frases
+  ];
+}
+
+function criarItemTreino(resposta, tipo, significado) {
+  const texto = String(resposta).toUpperCase();
+
+  return {
+    resposta: texto,
+    tipo,
+    significado: significado || "",
+    morse: textoParaMorse(texto)
+  };
+}
+
+function sortearNovoItemTreinoAuditivo() {
+  const itensDisponiveis = treinoAuditivo.itens.filter((item) => {
+    return !treinoAuditivo.historico.includes(item.resposta);
+  });
+
+  const lista = itensDisponiveis.length ? itensDisponiveis : treinoAuditivo.itens;
+  const indice = Math.floor(Math.random() * lista.length);
+
+  treinoAuditivo.itemAtual = lista[indice];
+  treinoAuditivo.repeticoesItem = 0;
+
+  treinoAuditivo.historico.push(treinoAuditivo.itemAtual.resposta);
+
+  if (treinoAuditivo.historico.length > 8) {
+    treinoAuditivo.historico.shift();
+  }
+
+  if (treinoAuditivo.modo === "desafio") {
+    treinoAuditivo.rodada += 1;
+  }
+}
+
+function renderizarTelaTreinoAuditivo(mostrarResposta = false, mensagem = "") {
+  const item = treinoAuditivo.itemAtual;
+  const tituloModo = treinoAuditivo.modo === "desafio"
+    ? "Desafio Auditivo"
+    : "Escuta Livre";
+
+  const progresso = treinoAuditivo.modo === "desafio"
+    ? `Rodada ${treinoAuditivo.rodada}/${treinoAuditivo.totalRodadas}`
+    : "Treino sem pontuação";
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo treino-em-andamento">
+      <div class="treino-auditivo-topo">
+        <span class="badge">${escaparHtml(tituloModo)}</span>
+        <h2>🎧 ${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}</h2>
+        <p>${escaparHtml(progresso)}</p>
+      </div>
+
+      <div class="quadro-treino-status">
+        <div>
+          <span class="label">Acertos</span>
+          <strong>${treinoAuditivo.acertos}</strong>
+        </div>
+
+        <div>
+          <span class="label">Erros</span>
+          <strong>${treinoAuditivo.erros}</strong>
+        </div>
+
+        <div>
+          <span class="label">Sequência</span>
+          <strong>${treinoAuditivo.sequencia}</strong>
+        </div>
+
+        <div>
+          <span class="label">Pontos</span>
+          <strong>${treinoAuditivo.pontos}</strong>
+        </div>
+      </div>
+
+      <div class="card-audio-morse">
+        <span class="label">Tipo</span>
+        <strong>${escaparHtml(item.tipo)}</strong>
+
+        <p>
+          Ouça o código Morse e tente identificar a resposta.
+        </p>
+
+        <div class="botoes-resultado">
+          <button id="btnOuvirTreino" class="btn principal">
+            ▶ Ouvir
+          </button>
+
+          <button id="btnRepetirTreino" class="btn secundario">
+            🔁 Repetir
+          </button>
+
+          <button id="btnMostrarRespostaTreino" class="btn secundario">
+            👁 Mostrar resposta
+          </button>
+        </div>
+      </div>
+
+      ${
+        treinoAuditivo.modo === "desafio"
+          ? `
+            <div class="campo-resposta-auditiva">
+              <label for="inputRespostaAuditiva">Digite o que você ouviu</label>
+              <input id="inputRespostaAuditiva" type="text" autocomplete="off" placeholder="Ex: QSL, RADIO, BASE QRV" />
+
+              <button id="btnConfirmarRespostaAuditiva" class="btn principal">
+                Confirmar resposta
+              </button>
+            </div>
+          `
+          : ""
+      }
+
+      <div id="areaRespostaTreino" class="resposta-treino ${mostrarResposta ? "ativa" : ""}">
+        <span class="label">Resposta</span>
+        <strong>${mostrarResposta ? escaparHtml(item.resposta) : "—"}</strong>
+
+        ${
+          mostrarResposta
+            ? `
+              <div class="morse-resposta">${escaparHtml(item.morse)}</div>
+              <p>${escaparHtml(item.significado || "Sem observação cadastrada.")}</p>
+            `
+            : ""
+        }
+      </div>
+
+      <div id="feedbackTreinoAuditivo" class="feedback ${mensagem ? "alerta" : ""}">
+        ${escaparHtml(mensagem)}
+      </div>
+
+      <div class="botoes-resultado">
+        <button id="btnProximoTreinoAuditivo" class="btn principal">
+          Próximo
+        </button>
+
+        <button id="btnVoltarMenuTreinoAuditivo" class="btn secundario">
+          Voltar ao Treino Auditivo
+        </button>
+
+        <button id="btnVoltarBibliotecaTreino" class="btn discreto">
+          Voltar à Biblioteca
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("btnOuvirTreino").addEventListener("click", ouvirItemTreinoAuditivo);
+  document.getElementById("btnRepetirTreino").addEventListener("click", ouvirItemTreinoAuditivo);
+  document.getElementById("btnMostrarRespostaTreino").addEventListener("click", () => {
+    renderizarTelaTreinoAuditivo(true);
+  });
+
+  document.getElementById("btnProximoTreinoAuditivo").addEventListener("click", proximoItemTreinoAuditivo);
+  document.getElementById("btnVoltarMenuTreinoAuditivo").addEventListener("click", montarMenuTreinoAuditivo);
+  document.getElementById("btnVoltarBibliotecaTreino").addEventListener("click", abrirBiblioteca);
+
+  const inputResposta = document.getElementById("inputRespostaAuditiva");
+  const btnConfirmar = document.getElementById("btnConfirmarRespostaAuditiva");
+
+  if (inputResposta && btnConfirmar) {
+    inputResposta.focus();
+
+    btnConfirmar.addEventListener("click", confirmarRespostaAuditiva);
+
+    inputResposta.addEventListener("keydown", (evento) => {
+      if (evento.code === "Enter") {
+        evento.preventDefault();
+        confirmarRespostaAuditiva();
+      }
+    });
+  }
+}
+
+function ouvirItemTreinoAuditivo() {
+  if (!treinoAuditivo.itemAtual) return;
+
+  treinoAuditivo.repeticoesItem += 1;
+  tocarSequenciaMorse(treinoAuditivo.itemAtual.morse);
+}
+
+function confirmarRespostaAuditiva() {
+  const input = document.getElementById("inputRespostaAuditiva");
+  if (!input) return;
+
+  const respostaUsuario = normalizarRespostaAuditiva(input.value);
+  const respostaCorreta = normalizarRespostaAuditiva(treinoAuditivo.itemAtual.resposta);
+
+  if (!respostaUsuario) {
+    renderizarTelaTreinoAuditivo(false, "Digite uma resposta antes de confirmar.");
+    return;
+  }
+
+  if (respostaUsuario === respostaCorreta) {
+    treinoAuditivo.acertos += 1;
+    treinoAuditivo.sequencia += 1;
+
+    let pontosGanhos = 10;
+
+    if (treinoAuditivo.repeticoesItem <= 1) pontosGanhos += 5;
+    if (treinoAuditivo.sequencia === 3) pontosGanhos += 10;
+    if (treinoAuditivo.sequencia === 5) pontosGanhos += 20;
+
+    treinoAuditivo.pontos += pontosGanhos;
+
+    tocarAcerto();
+    renderizarTelaTreinoAuditivo(true, `Correto! +${pontosGanhos} pontos.`);
+    return;
+  }
+
+  treinoAuditivo.erros += 1;
+  treinoAuditivo.sequencia = 0;
+
+  tocarErro();
+  renderizarTelaTreinoAuditivo(true, `Incorreto. Resposta correta: ${treinoAuditivo.itemAtual.resposta}`);
+}
+
+function proximoItemTreinoAuditivo() {
+  if (treinoAuditivo.modo === "desafio" && treinoAuditivo.rodada >= treinoAuditivo.totalRodadas) {
+    finalizarDesafioAuditivo();
+    return;
+  }
+
+  sortearNovoItemTreinoAuditivo();
+  renderizarTelaTreinoAuditivo(false);
+}
+
+function finalizarDesafioAuditivo() {
+  const total = treinoAuditivo.acertos + treinoAuditivo.erros;
+  const aproveitamento = total > 0
+    ? Math.round((treinoAuditivo.acertos / total) * 100)
+    : 0;
+
+  let estrelas = "⭐";
+
+  if (aproveitamento >= 90) estrelas = "⭐⭐⭐";
+  else if (aproveitamento >= 80) estrelas = "⭐⭐";
+  else if (aproveitamento >= 70) estrelas = "⭐";
+
+  salvarResultadoTreinoAuditivo(aproveitamento);
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo treino-finalizado">
+      <span class="badge">Resultado Auditivo</span>
+
+      <h2>${estrelas}</h2>
+
+      <p>
+        Você concluiu o desafio de ${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}.
+      </p>
+
+      <div class="quadro-treino-status">
+        <div>
+          <span class="label">Aproveitamento</span>
+          <strong>${aproveitamento}%</strong>
+        </div>
+
+        <div>
+          <span class="label">Acertos</span>
+          <strong>${treinoAuditivo.acertos}</strong>
+        </div>
+
+        <div>
+          <span class="label">Erros</span>
+          <strong>${treinoAuditivo.erros}</strong>
+        </div>
+
+        <div>
+          <span class="label">Pontos</span>
+          <strong>${treinoAuditivo.pontos}</strong>
+        </div>
+      </div>
+
+      <p>
+        Este resultado futuramente poderá contar como requisito para liberar missões do Modo Avançado.
+      </p>
+
+      <div class="botoes-resultado">
+        <button id="btnRefazerDesafioAuditivo" class="btn principal">
+          Refazer desafio
+        </button>
+
+        <button id="btnVoltarMenuTreinoFinal" class="btn secundario">
+          Voltar ao Treino Auditivo
+        </button>
+
+        <button id="btnVoltarBibliotecaTreinoFinal" class="btn discreto">
+          Voltar à Biblioteca
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("btnRefazerDesafioAuditivo").addEventListener("click", () => {
+    iniciarTreinoAuditivo(treinoAuditivo.categoria, "desafio");
+  });
+
+  document.getElementById("btnVoltarMenuTreinoFinal").addEventListener("click", montarMenuTreinoAuditivo);
+  document.getElementById("btnVoltarBibliotecaTreinoFinal").addEventListener("click", abrirBiblioteca);
+}
+
+function salvarResultadoTreinoAuditivo(aproveitamento) {
+  const chave = `operadorMorseTreinoAuditivo_${getChaveOperador()}`;
+  const dadosAtuais = obterResultadoTreinoAuditivo();
+
+  const categoria = treinoAuditivo.categoria;
+
+  const melhorAtual = dadosAtuais[categoria]?.melhorAproveitamento || 0;
+
+  dadosAtuais[categoria] = {
+    melhorAproveitamento: Math.max(melhorAtual, aproveitamento),
+    ultimaPontuacao: treinoAuditivo.pontos,
+    ultimaData: new Date().toLocaleDateString("pt-BR")
+  };
+
+  localStorage.setItem(chave, JSON.stringify(dadosAtuais));
+}
+
+function obterResultadoTreinoAuditivo() {
+  const chave = `operadorMorseTreinoAuditivo_${getChaveOperador()}`;
+
+  try {
+    return JSON.parse(localStorage.getItem(chave)) || {};
+  } catch (erro) {
+    return {};
+  }
+}
+
+function normalizarRespostaAuditiva(valor) {
+  return String(valor || "")
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function nomeCategoriaTreino(categoria) {
+  const nomes = {
+    letras: "Letras",
+    numeros: "Números",
+    codigoQ: "Código Q",
+    sinais: "Sinais de Serviço",
+    abreviacoes: "Abreviações",
+    palavras: "Palavras comuns",
+    frases: "Frases operacionais",
+    misto: "Treino misto"
+  };
+
+  return nomes[categoria] || "Treino Auditivo";
 }
 function salvarNomeOperador() {
   nomeOperador = getNomeOperadorAtual();
