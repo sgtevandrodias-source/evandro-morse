@@ -1791,3 +1791,30 @@ p {
 .bloco-voltar-treino {
   margin-top: 18px;
 }
+.treino-menu-clean .treino-auditivo-topo {
+  margin-bottom: 12px;
+}
+
+.treino-menu-clean .treino-auditivo-topo h2 {
+  margin: 0 0 12px;
+  font-size: 2rem;
+}
+
+.treino-menu-clean .lista-treino-auditivo {
+  gap: 10px;
+}
+
+.treino-menu-clean .linha-categoria-treino {
+  padding: 12px;
+  border-radius: 18px;
+}
+
+.treino-menu-clean .linha-categoria-treino h3 {
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+
+.treino-menu-clean .btn {
+  padding: 11px 14px;
+  min-height: auto;
+}
