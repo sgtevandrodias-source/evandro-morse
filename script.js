@@ -159,7 +159,7 @@ const APROVEITAMENTO_MINIMO = 80;
 const APROVEITAMENTO_BONUS = 90;
 const META_WPM = 12;
 
-const PATENTE_FINAL_INICIANTE = "Marechal";
+const PATENTE_FINAL_INICIANTE = "Mestre Morse";
 const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
 
 let frequenciaSidetone = Number(localStorage.getItem("operadorMorseTomHz") || "650");
@@ -175,142 +175,142 @@ let limitePontoTracoMs = unidadeMorseMs * 2;
 const NIVEIS_INICIANTE = [
   {
     numero: 1,
-    patente: "Bisonho",
+    patente: "Noob",
     titulo: "Missão 01 – Primeiro Contato",
-    descricao: "Os sistemas digitais falharam. Você encontrou um rádio funcional. Aprenda os primeiros sinais.",
+    descricao: "Você ainda é um Noob. Após o colapso das comunicações, encontrou um rádio funcional. Aprenda os primeiros sinais.",
     missoes: ["F", "G", "H", "J", "M", "R", "U"]
   },
   {
     numero: 2,
-    patente: "Recruta",
+    patente: "Novato",
     titulo: "Missão 02 – Canal Seguro",
-    descricao: "Uma frequência de emergência foi localizada. Amplie seu repertório de sinais.",
+    descricao: "Agora você é um Novato. Uma frequência segura foi encontrada e precisa ser explorada.",
     missoes: ["B", "D", "K", "N", "T", "V", "Y"]
   },
   {
     numero: 3,
-    patente: "Soldado",
+    patente: "Aprendiz",
     titulo: "Missão 03 – Rede de Emergência",
-    descricao: "Outros operadores começaram a responder. A comunicação precisa crescer.",
+    descricao: "Outros sobreviventes começaram a responder. Amplie sua capacidade de comunicação.",
     missoes: ["C", "E", "I", "L", "S", "W", "O"]
   },
   {
     numero: 4,
-    patente: "Soldado Safo",
+    patente: "Explorador",
     titulo: "Missão 04 – Mensagem Prioritária",
-    descricao: "As primeiras mensagens importantes estão chegando. Não cometa erros.",
+    descricao: "As primeiras mensagens importantes estão chegando. Um erro pode custar caro.",
     missoes: ["A", "P", "Q", "X", "Z", "4", "5"]
   },
   {
     numero: 5,
-    patente: "Cabo",
+    patente: "Conectado",
     titulo: "Missão 05 – Último Sinal",
-    descricao: "Todos os números operacionais precisam ser dominados. A rede depende disso.",
+    descricao: "Os números são essenciais para coordenadas e horários. Domine-os para permanecer conectado.",
     missoes: ["1", "2", "3", "6", "7", "8", "9", "0"]
   },
   {
     numero: 6,
-    patente: "3º Sargento",
+    patente: "Decodificador",
     titulo: "Missão 06 – Teste de Operador",
-    descricao: "Revise os sinais essenciais e prove que consegue manter a transmissão.",
+    descricao: "Hora de provar que você consegue reconhecer e transmitir os sinais aprendidos.",
     missoes: ["F", "B", "C", "A", "J", "K", "O", "X"]
   },
   {
     numero: 7,
-    patente: "2º Sargento",
+    patente: "Operador Júnior",
     titulo: "Missão 07 – Teste Numérico",
-    descricao: "Números podem salvar coordenadas, horários e códigos. Domine-os.",
+    descricao: "As transmissões agora incluem números operacionais. A precisão é fundamental.",
     missoes: ["1", "5", "9", "0", "2", "6", "8", "3"]
   },
   {
     numero: 8,
-    patente: "1º Sargento",
+    patente: "Caçador de Sinais",
     titulo: "Missão 08 – Grupos Táticos I",
-    descricao: "Comece a transmitir grupos curtos de caracteres com mais ritmo.",
+    descricao: "Os sinais estão ficando mais complexos. Identifique padrões rapidamente.",
     missoes: ["FGH", "JMR", "BDK", "NTV", "CEI"]
   },
   {
     numero: 9,
-    patente: "Subtenente",
+    patente: "Hacker do Rádio",
     titulo: "Missão 09 – Grupos Táticos II",
-    descricao: "A rede exige velocidade, memória e precisão em grupos maiores.",
+    descricao: "Grandes blocos de sinais exigem memória, atenção e velocidade.",
     missoes: ["LWS", "APQ", "XYZ", "MOR", "RUT"]
   },
   {
     numero: 10,
-    patente: "Cadete",
+    patente: "Técnico de Rede",
     titulo: "Missão 10 – Canal Criptografado",
-    descricao: "Misture letras e números para simular códigos de emergência.",
+    descricao: "Misture letras e números para manter a rede segura e organizada.",
     missoes: ["A1", "B2", "C3", "D4", "E5", "F6"]
   },
   {
     numero: 11,
-    patente: "Aspirante",
+    patente: "Operador de Emergência",
     titulo: "Missão 11 – Protocolos de Rádio",
-    descricao: "Aprenda os primeiros códigos usados em comunicações operacionais.",
+    descricao: "Aprenda os códigos utilizados pelos operadores para agilizar a comunicação.",
     missoes: ["QRA", "QTH", "QSL", "QTC", "QRV", "QRM"]
   },
   {
     numero: 12,
-    patente: "2º Tenente",
+    patente: "Mensageiro",
     titulo: "Missão 12 – Mensagens Curtas",
-    descricao: "Transforme sinais isolados em palavras simples e úteis.",
+    descricao: "Chegou a hora de transmitir palavras completas para outros operadores.",
     missoes: ["SOS", "RIO", "MAR", "SOL", "REDE", "SINAL"]
   },
   {
     numero: 13,
-    patente: "1º Tenente",
+    patente: "Especialista",
     titulo: "Missão 13 – Rede Regional",
-    descricao: "Palavras médias exigem mais constância e atenção ao ritmo.",
+    descricao: "As mensagens estão ficando maiores. Mantenha o ritmo e a precisão.",
     missoes: ["MORSE", "RADIO", "TORRE", "POSTO", "BASE", "FOCO"]
   },
   {
     numero: 14,
-    patente: "Capitão",
+    patente: "Pro",
     titulo: "Missão 14 – Centro de Comunicações",
-    descricao: "Use vocabulário operacional para manter a rede funcionando.",
+    descricao: "Você já opera uma estação importante da rede de sobreviventes.",
     missoes: ["MISSÃO", "COMANDO", "ANTENA", "ESTAÇÃO", "OPERADOR"]
   },
   {
     numero: 15,
-    patente: "Major",
+    patente: "Elite",
     titulo: "Missão 15 – Tráfego Prioritário",
-    descricao: "Agora você começa a transmitir frases curtas com sentido real.",
+    descricao: "Mensagens urgentes estão circulando. Não há espaço para distrações.",
     missoes: ["QSL OK", "BASE QRV", "SINAL OK", "RADIO 1", "POSTO 2"]
   },
   {
     numero: 16,
-    patente: "Tenente-Coronel",
+    patente: "Mestre dos Sinais",
     titulo: "Missão 16 – Operação Coordenada",
-    descricao: "Combine frases e números para simular mensagens de coordenação.",
+    descricao: "Coordene informações usando palavras e números com fluidez.",
     missoes: ["BASE 1", "POSTO 2", "TORRE 3", "QTC 5", "RADIO 9"]
   },
   {
     numero: 17,
-    patente: "Coronel",
+    patente: "Guardião da Rede",
     titulo: "Missão 17 – Posto Avançado",
-    descricao: "Mensagens operacionais começam a circular pela rede de emergência.",
+    descricao: "A rede depende da sua habilidade para manter os postos conectados.",
     missoes: ["QTC BASE", "QSL RADIO", "QRV POSTO", "SINAL FORTE", "BASE QRV"]
   },
   {
     numero: 18,
-    patente: "General de Brigada",
+    patente: "Lenda Digital",
     titulo: "Missão 18 – Rede Nacional",
-    descricao: "A comunicação ficou mais complexa. Mantenha precisão do início ao fim.",
+    descricao: "As transmissões atravessam longas distâncias. A margem para erro desapareceu.",
     missoes: ["RADIO BASE 1", "POSTO QRV 2", "QTC SINAL 3", "BASE QSL 4", "TORRE QRV 5"]
   },
   {
     numero: 19,
-    patente: "General de Divisão",
+    patente: "Herói do Sinal",
     titulo: "Missão 19 – Operador Estratégico",
-    descricao: "Mensagens longas testam controle mental, foco e constância.",
+    descricao: "Mensagens extensas exigem foco total. Sua concentração será testada.",
     missoes: ["OPERADOR MORSE", "RADIO BASE QRV", "QTC SINAL FORTE", "POSTO QSL 123"]
   },
   {
     numero: 20,
-    patente: "General de Exército",
+    patente: "Mestre Morse",
     titulo: "Missão 20 – O Último Sinal",
-    descricao: "A rede de emergência depende de você. Prove que consegue transmitir em condição crítica.",
+    descricao: "A sobrevivência da rede depende de você. Prove que domina o código Morse.",
     missoes: ["OPERADOR MORSE QRV", "QTC BASE SINAL 12", "RADIO POSTO QSL 9", "TRANSMISSAO OK 5"]
   }
 ];
