@@ -424,9 +424,7 @@ btnBibNumeros.addEventListener("click", abrirBibliotecaNumeros);
 
 btnBibCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
 
-btnBibSinaisServico.addEventListener("click", () => {
-  alert("Sinais de Serviço em construção.");
-});
+btnBibSinaisServico.addEventListener("click", abrirBibliotecaSinaisServico);
 
 btnBibAbreviacoes.addEventListener("click", () => {
   alert("Abreviações em construção.");
@@ -748,6 +746,26 @@ const CODIGO_Q = {
     { codigo: "QSJ", significado: "Valor ou taxa da comunicação." }
   ]
 };
+const SINAIS_SERVICO = [
+  { codigo: "AR", significado: "Fim da transmissão." },
+  { codigo: "AS", significado: "Espere." },
+  { codigo: "BT", significado: "Separação entre partes da mensagem." },
+  { codigo: "C", significado: "Certo. Confirmativo." },
+  { codigo: "DE", significado: "De. Indica a estação que está transmitindo." },
+  { codigo: "HH", significado: "Erro. Vou corrigir." },
+  { codigo: "IMI", significado: "Repita. Interrogação ou pedido de repetição." },
+  { codigo: "K", significado: "Câmbio. Transmita." },
+  { codigo: "KN", significado: "Câmbio apenas para a estação chamada." },
+  { codigo: "NR", significado: "Número." },
+  { codigo: "R", significado: "Recebido." },
+  { codigo: "RPT", significado: "Repita." },
+  { codigo: "SK", significado: "Fim do contato." },
+  { codigo: "VA", significado: "Fim de trabalho." },
+  { codigo: "U", significado: "Urgente." },
+  { codigo: "UU", significado: "Urgentíssimo." },
+  { codigo: "WA", significado: "Palavra após." },
+  { codigo: "WB", significado: "Palavra antes." }
+];
 function mostrarCategoriaQ(titulo, itens) {
   tituloBiblioteca.textContent = titulo;
 
@@ -805,6 +823,42 @@ function abrirQTrafego() {
     "📨 Código Q — Tráfego",
     CODIGO_Q.trafego
   );
+}
+function abrirBibliotecaSinaisServico() {
+  tituloBiblioteca.textContent = "⚡ Sinais de Serviço";
+
+  descricaoBiblioteca.textContent =
+    "Sinais usados para controlar, corrigir e organizar a comunicação Morse.";
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+  btnVoltarCodigoQ.style.display = "none";
+  menuBiblioteca.style.display = "none";
+
+  gridBibliotecaMorse.innerHTML = SINAIS_SERVICO
+    .map((item) => {
+      const morse = textoParaMorse(item.codigo);
+
+      return `
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
+          <span class="letra">⚡ ${escaparHtml(item.codigo)}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
+          <span class="fonico">${escaparHtml(item.significado)}</span>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll("#gridBibliotecaMorse .cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 function salvarNomeOperador() {
   nomeOperador = getNomeOperadorAtual();
