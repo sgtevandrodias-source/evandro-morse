@@ -2361,7 +2361,7 @@ function tocarSequenciaMorse(codigoMorse) {
   String(codigoMorse).split("").forEach((simbolo) => {
     if (simbolo === ".") {
       tocarElementoComSomDaChave(unidade, atraso);
-      atraso += unidade * 1.8;
+      atraso += unidade * 2;
     }
 
     if (simbolo === "-") {
