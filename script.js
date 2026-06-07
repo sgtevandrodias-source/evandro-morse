@@ -1554,7 +1554,6 @@ function agendarSeparacaoAutomatica() {
     }
   }, pausaAutoPalavraMs);
 }
-
 function mostrarFeedbackPausa(texto) {
   feedback.innerHTML = `<span class="feedback-pausa">${texto}</span>`;
   feedback.className = "feedback alerta";
