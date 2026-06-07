@@ -421,9 +421,7 @@ btnAbrirBiblioteca.addEventListener("click", abrirBiblioteca);
 btnBibAlfabeto.addEventListener("click", abrirBibliotecaAlfabeto);
 btnBibNumeros.addEventListener("click", abrirBibliotecaNumeros);
 
-btnBibCodigoQ.addEventListener("click", () => {
-  alert("Código Q em construção.");
-});
+btnBibCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
 
 btnBibSinaisServico.addEventListener("click", () => {
   alert("Sinais de Serviço em construção.");
@@ -629,6 +627,166 @@ function abrirBibliotecaNumeros() {
     behavior: "smooth",
     block: "start"
   });
+}
+function abrirBibliotecaCodigoQ() {
+  tituloBiblioteca.textContent = "📡 Código Q";
+
+  descricaoBiblioteca.textContent =
+    "Selecione uma categoria do Código Q.";
+
+  gridBibliotecaMorse.innerHTML = `
+    <button class="cartao-caractere categoria-q" id="btnQOperacao">
+      <span class="letra">📡</span>
+      <span class="morse">Operação</span>
+      <span class="fonico">
+        Comunicação entre operadores
+      </span>
+    </button>
+
+    <button class="cartao-caractere categoria-q" id="btnQEstacao">
+      <span class="letra">🏠</span>
+      <span class="morse">Estação</span>
+      <span class="fonico">
+        Localização e identificação
+      </span>
+    </button>
+
+    <button class="cartao-caractere categoria-q" id="btnQQualidade">
+      <span class="letra">📶</span>
+      <span class="morse">Qualidade</span>
+      <span class="fonico">
+        Sinais, ruídos e interferências
+      </span>
+    </button>
+
+    <button class="cartao-caractere categoria-q" id="btnQTrafego">
+      <span class="letra">📨</span>
+      <span class="morse">Tráfego</span>
+      <span class="fonico">
+        Mensagens e radiogramas
+      </span>
+    </button>
+  `;
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+  menuBiblioteca.style.display = "none";
+
+  document
+    .getElementById("btnQOperacao")
+    .addEventListener("click", abrirQOperacao);
+
+  document
+    .getElementById("btnQEstacao")
+    .addEventListener("click", abrirQEstacao);
+
+  document
+    .getElementById("btnQQualidade")
+    .addEventListener("click", abrirQQualidade);
+
+  document
+    .getElementById("btnQTrafego")
+    .addEventListener("click", abrirQTrafego);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+const CODIGO_Q = {
+  operacao: [
+    { codigo: "QRL", significado: "A frequência está ocupada." },
+    { codigo: "QRM", significado: "Sofro interferência de outra estação." },
+    { codigo: "QRN", significado: "Sofro interferência atmosférica." },
+    { codigo: "QRO", significado: "Aumente a potência de transmissão." },
+    { codigo: "QRP", significado: "Diminua a potência de transmissão." },
+    { codigo: "QRQ", significado: "Transmita mais depressa." },
+    { codigo: "QRS", significado: "Transmita mais devagar." },
+    { codigo: "QRT", significado: "Cesse a transmissão." },
+    { codigo: "QRV", significado: "Estou preparado." },
+    { codigo: "QRX", significado: "Aguarde. Chamarei novamente." },
+    { codigo: "QSY", significado: "Mude para outra frequência." }
+  ],
+
+  estacao: [
+    { codigo: "QRA", significado: "Qual é o nome da sua estação?" },
+    { codigo: "QRB", significado: "Qual a distância entre nossas estações?" },
+    { codigo: "QRG", significado: "Qual é minha frequência exata?" },
+    { codigo: "QRH", significado: "Minha frequência varia?" },
+    { codigo: "QRZ", significado: "Quem está me chamando?" },
+    { codigo: "QTH", significado: "Qual é sua localização?" },
+    { codigo: "QTR", significado: "Qual é a hora certa?" }
+  ],
+
+  qualidade: [
+    { codigo: "QRI", significado: "Qual é a tonalidade da minha transmissão?" },
+    { codigo: "QRK", significado: "Qual é a inteligibilidade dos meus sinais?" },
+    { codigo: "QSA", significado: "Qual é a intensidade dos meus sinais?" },
+    { codigo: "QSB", significado: "Seus sinais estão variando." },
+    { codigo: "QSD", significado: "Minha transmissão está defeituosa?" },
+    { codigo: "QSK", significado: "Posso ouvir entre seus sinais." }
+  ],
+
+  trafego: [
+    { codigo: "QSL", significado: "Confirmo o recebimento." },
+    { codigo: "QSM", significado: "Repita a última mensagem." },
+    { codigo: "QSN", significado: "Você me escutou?" },
+    { codigo: "QSO", significado: "Posso comunicar diretamente." },
+    { codigo: "QSP", significado: "Retransmitirei a mensagem." },
+    { codigo: "QSR", significado: "Repita sua chamada." },
+    { codigo: "QSS", significado: "Frequência de trabalho." },
+    { codigo: "QSU", significado: "Transmita ou responda nesta frequência." },
+    { codigo: "QSV", significado: "Transmita uma série de V." },
+    { codigo: "QSW", significado: "Transmitirei nesta frequência." },
+    { codigo: "QSX", significado: "Escutarei em outra frequência." },
+    { codigo: "QTA", significado: "Cancele a mensagem anterior." },
+    { codigo: "QTC", significado: "Tenho mensagem para transmitir." },
+    { codigo: "QRU", significado: "Não tenho nada para você." },
+    { codigo: "QSJ", significado: "Valor ou taxa da comunicação." }
+  ]
+};
+function mostrarCategoriaQ(titulo, itens) {
+  tituloBiblioteca.textContent = titulo;
+
+  descricaoBiblioteca.textContent =
+    "Toque em um cartão para consultar o significado.";
+
+  gridBibliotecaMorse.innerHTML = itens
+    .map(
+      (item) => `
+      <div class="cartao-caractere">
+        <span class="letra">${item.codigo}</span>
+        <span class="fonico">${item.significado}</span>
+      </div>
+    `
+    )
+    .join("");
+}
+function abrirQOperacao() {
+  mostrarCategoriaQ(
+    "📡 Código Q — Operação",
+    CODIGO_Q.operacao
+  );
+}
+
+function abrirQEstacao() {
+  mostrarCategoriaQ(
+    "🏠 Código Q — Estação",
+    CODIGO_Q.estacao
+  );
+}
+
+function abrirQQualidade() {
+  mostrarCategoriaQ(
+    "📶 Código Q — Qualidade",
+    CODIGO_Q.qualidade
+  );
+}
+
+function abrirQTrafego() {
+  mostrarCategoriaQ(
+    "📨 Código Q — Tráfego",
+    CODIGO_Q.trafego
+  );
 }
 function salvarNomeOperador() {
   nomeOperador = getNomeOperadorAtual();
