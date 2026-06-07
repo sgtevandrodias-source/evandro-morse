@@ -1156,93 +1156,67 @@ function sortearNovoItemTreinoAuditivo() {
 
 function renderizarTelaTreinoAuditivo(mostrarResposta = false, mensagem = "") {
   const item = treinoAuditivo.itemAtual;
-  const tituloModo = treinoAuditivo.modo === "desafio"
-    ? "Desafio Auditivo"
-    : "Escuta Livre";
+  const ehDesafio = treinoAuditivo.modo === "desafio";
 
-  const progresso = treinoAuditivo.modo === "desafio"
-    ? `Rodada ${treinoAuditivo.rodada}/${treinoAuditivo.totalRodadas}`
-    : "Treino sem pontuação";
+  const tituloTela = ehDesafio ? "Desafio" : "Escuta Livre";
+  const textoBotaoVoltar = "Voltar ao Treino";
 
   gridBibliotecaMorse.innerHTML = `
-    <div class="painel-treino-auditivo treino-em-andamento">
+    <div class="painel-treino-auditivo tela-escuta-clean">
       <div class="treino-auditivo-topo">
-        <span class="badge">${escaparHtml(tituloModo)}</span>
-        <h2>🎧 ${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}</h2>
-        <p>${escaparHtml(progresso)}</p>
+        <h2>${escaparHtml(tituloTela)}</h2>
+        <p>${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}</p>
       </div>
 
-      <div class="quadro-treino-status">
-        <div>
-          <span class="label">Acertos</span>
-          <strong>${treinoAuditivo.acertos}</strong>
-        </div>
+      <div class="botoes-escuta-clean">
+        <button id="btnOuvirTreino" class="btn principal">
+          Ouvir
+        </button>
 
-        <div>
-          <span class="label">Erros</span>
-          <strong>${treinoAuditivo.erros}</strong>
-        </div>
-
-        <div>
-          <span class="label">Sequência</span>
-          <strong>${treinoAuditivo.sequencia}</strong>
-        </div>
-
-        <div>
-          <span class="label">Pontos</span>
-          <strong>${treinoAuditivo.pontos}</strong>
-        </div>
-      </div>
-
-      <div class="card-audio-morse">
-        <span class="label">Tipo</span>
-        <strong>${escaparHtml(item.tipo)}</strong>
-
-        <p>
-          Ouça o código Morse e tente identificar a resposta.
-        </p>
-
-        <div class="botoes-resultado">
-          <button id="btnOuvirTreino" class="btn principal">
-            ▶ Ouvir
-          </button>
-
-          <button id="btnRepetirTreino" class="btn secundario">
-            🔁 Repetir
-          </button>
-
-          <button id="btnMostrarRespostaTreino" class="btn secundario">
-            👁 Mostrar resposta
-          </button>
-        </div>
+        ${
+          ehDesafio
+            ? ""
+            : `
+              <button id="btnMostrarRespostaTreino" class="btn secundario">
+                Mostrar resposta
+              </button>
+            `
+        }
       </div>
 
       ${
-        treinoAuditivo.modo === "desafio"
+        ehDesafio
           ? `
-            <div class="campo-resposta-auditiva">
+            <div class="campo-resposta-auditiva campo-clean">
               <label for="inputRespostaAuditiva">Digite o que você ouviu</label>
-              <input id="inputRespostaAuditiva" type="text" autocomplete="off" placeholder="Ex: QSL, RADIO, BASE QRV" />
+              <input
+                id="inputRespostaAuditiva"
+                type="text"
+                autocomplete="off"
+                placeholder="Ex: A, 7, QSL, BASE"
+              />
 
               <button id="btnConfirmarRespostaAuditiva" class="btn principal">
-                Confirmar resposta
+                Confirmar
               </button>
             </div>
           `
           : ""
       }
 
-      <div id="areaRespostaTreino" class="resposta-treino ${mostrarResposta ? "ativa" : ""}">
-        <span class="label">Resposta</span>
-        <strong>${mostrarResposta ? escaparHtml(item.resposta) : "—"}</strong>
-
+      <div id="areaRespostaTreino" class="resposta-treino resposta-clean">
         ${
           mostrarResposta
             ? `
+              <span class="label">Resposta</span>
+              <strong>${escaparHtml(item.resposta)}</strong>
               <div class="morse-resposta">${escaparHtml(item.morse)}</div>
               <p>${escaparHtml(item.significado || "Sem observação cadastrada.")}</p>
             `
-            : ""
+            : `
+              <span class="label">Resposta</span>
+              <strong>—</strong>
+            `
         }
       </div>
 
@@ -1250,31 +1224,47 @@ function renderizarTelaTreinoAuditivo(mostrarResposta = false, mensagem = "") {
         ${escaparHtml(mensagem)}
       </div>
 
-      <div class="botoes-resultado">
-        <button id="btnProximoTreinoAuditivo" class="btn principal">
-          Próximo
-        </button>
+      <div class="botoes-resultado botoes-final-clean">
+        ${
+          ehDesafio && mostrarResposta
+            ? `
+              <button id="btnProximoTreinoAuditivo" class="btn principal">
+                Próxima
+              </button>
+            `
+            : !ehDesafio
+              ? `
+                <button id="btnProximoTreinoAuditivo" class="btn principal">
+                  Próxima
+                </button>
+              `
+              : ""
+        }
 
         <button id="btnVoltarMenuTreinoAuditivo" class="btn secundario">
-          Voltar ao Treino Auditivo
-        </button>
-
-        <button id="btnVoltarBibliotecaTreino" class="btn discreto">
-          Voltar à Biblioteca
+          ${textoBotaoVoltar}
         </button>
       </div>
     </div>
   `;
 
   document.getElementById("btnOuvirTreino").addEventListener("click", ouvirItemTreinoAuditivo);
-  document.getElementById("btnRepetirTreino").addEventListener("click", ouvirItemTreinoAuditivo);
-  document.getElementById("btnMostrarRespostaTreino").addEventListener("click", () => {
-    renderizarTelaTreinoAuditivo(true);
-  });
 
-  document.getElementById("btnProximoTreinoAuditivo").addEventListener("click", proximoItemTreinoAuditivo);
-  document.getElementById("btnVoltarMenuTreinoAuditivo").addEventListener("click", montarMenuTreinoAuditivo);
-  document.getElementById("btnVoltarBibliotecaTreino").addEventListener("click", abrirBiblioteca);
+  const btnMostrarResposta = document.getElementById("btnMostrarRespostaTreino");
+  if (btnMostrarResposta) {
+    btnMostrarResposta.addEventListener("click", () => {
+      renderizarTelaTreinoAuditivo(true);
+    });
+  }
+
+  const btnProximo = document.getElementById("btnProximoTreinoAuditivo");
+  if (btnProximo) {
+    btnProximo.addEventListener("click", proximoItemTreinoAuditivo);
+  }
+
+  document
+    .getElementById("btnVoltarMenuTreinoAuditivo")
+    .addEventListener("click", montarMenuTreinoAuditivo);
 
   const inputResposta = document.getElementById("inputRespostaAuditiva");
   const btnConfirmar = document.getElementById("btnConfirmarRespostaAuditiva");
@@ -1292,7 +1282,6 @@ function renderizarTelaTreinoAuditivo(mostrarResposta = false, mensagem = "") {
     });
   }
 }
-
 function ouvirItemTreinoAuditivo() {
   if (!treinoAuditivo.itemAtual) return;
 
@@ -1325,7 +1314,7 @@ function confirmarRespostaAuditiva() {
     treinoAuditivo.pontos += pontosGanhos;
 
     tocarAcerto();
-    renderizarTelaTreinoAuditivo(true, `Correto! +${pontosGanhos} pontos.`);
+    renderizarTelaTreinoAuditivo(true, `Correto!`);
     return;
   }
 
@@ -1333,7 +1322,7 @@ function confirmarRespostaAuditiva() {
   treinoAuditivo.sequencia = 0;
 
   tocarErro();
-  renderizarTelaTreinoAuditivo(true, `Incorreto. Resposta correta: ${treinoAuditivo.itemAtual.resposta}`);
+  renderizarTelaTreinoAuditivo(true, `Incorreto.`);
 }
 
 function proximoItemTreinoAuditivo() {
