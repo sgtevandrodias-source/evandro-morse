@@ -1269,7 +1269,7 @@ p {
   }
 }
 /* =========================
-   MAPA DA CAMPANHA - ESTILO GAME
+   MAPA DA CAMPANHA - CHECKPOINT GAME
 ========================= */
 
 .mapa-campanha {
@@ -1280,53 +1280,111 @@ p {
 .mapa-campanha::before {
   content: "";
   position: absolute;
-  inset: 90px 32px 32px;
-  background:
-    linear-gradient(90deg, rgba(56, 189, 248, 0.12), transparent 40%, rgba(250, 204, 21, 0.1)),
-    radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.16), transparent 22%),
-    radial-gradient(circle at 70% 70%, rgba(167, 139, 250, 0.16), transparent 24%);
-  border-radius: 28px;
+  left: 50%;
+  top: 116px;
+  bottom: 34px;
+  width: 4px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(56, 189, 248, 0.45),
+    rgba(250, 204, 21, 0.25),
+    rgba(167, 139, 250, 0.22)
+  );
+  border-radius: 999px;
+  opacity: 0.65;
   pointer-events: none;
 }
 
 .grid-niveis {
   position: relative;
   z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 54px;
 }
 
 .nivel-card {
   position: relative;
-  min-height: 172px;
+  min-height: 155px;
   text-align: left;
   overflow: hidden;
+  border-radius: 24px;
+  padding: 18px;
+}
+
+.nivel-card:nth-child(odd) {
+  transform: translateY(8px);
+}
+
+.nivel-card:nth-child(even) {
+  transform: translateY(36px);
+}
+
+.nivel-card:hover {
+  transform: translateY(4px) scale(1.01);
 }
 
 .nivel-card::before {
   content: "📡";
   position: absolute;
-  right: 12px;
-  bottom: 10px;
-  font-size: 2.4rem;
+  right: 14px;
+  bottom: 12px;
+  font-size: 2.3rem;
   opacity: 0.08;
 }
 
+.nivel-card::after {
+  content: "";
+  position: absolute;
+  top: 24px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--azul);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+}
+
+.nivel-card:nth-child(odd)::after {
+  right: -36px;
+}
+
+.nivel-card:nth-child(even)::after {
+  left: -36px;
+}
+
 .nivel-card.atual {
-  transform: translateY(-2px);
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.48);
   box-shadow:
     0 0 0 1px rgba(56, 189, 248, 0.38),
-    0 18px 42px rgba(56, 189, 248, 0.16);
+    0 18px 42px rgba(56, 189, 248, 0.18);
 }
 
 .nivel-card.atual::before {
   content: "▶";
   color: var(--azul);
-  opacity: 0.18;
+  opacity: 0.2;
+}
+
+.nivel-card.concluido {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.28);
 }
 
 .nivel-card.concluido::before {
   content: "✓";
   color: var(--verde);
-  opacity: 0.2;
+  opacity: 0.22;
+}
+
+.nivel-card.concluido::after {
+  background: var(--verde);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.55);
+}
+
+.nivel-card.bloqueado {
+  opacity: 0.42;
 }
 
 .nivel-card.bloqueado::before {
@@ -1334,18 +1392,25 @@ p {
   opacity: 0.1;
 }
 
-.nivel-card strong {
-  color: var(--texto);
-  font-size: 1.05rem;
+.nivel-card.bloqueado::after {
+  background: rgba(156, 163, 175, 0.55);
+  box-shadow: none;
 }
 
 .nivel-card .nivel-numero {
   display: inline-block;
   background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.2);
   border-radius: 999px;
   padding: 5px 9px;
   font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--azul);
+}
+
+.nivel-card strong {
+  color: var(--texto);
+  font-size: 1.08rem;
 }
 
 .nivel-card span:nth-child(3) {
@@ -1373,18 +1438,41 @@ p {
   transform: translateY(-2px);
 }
 
-/* Mobile: mapa mais compacto */
+/* Mobile: trilha vertical simples */
 @media (max-width: 720px) {
   .mapa-campanha::before {
-    inset: 78px 14px 18px;
+    left: 22px;
+    top: 112px;
+    bottom: 24px;
+    transform: none;
+  }
+
+  .grid-niveis {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-left: 22px;
+  }
+
+  .nivel-card,
+  .nivel-card:nth-child(odd),
+  .nivel-card:nth-child(even),
+  .nivel-card:hover {
+    transform: none;
   }
 
   .nivel-card {
-    min-height: 150px;
+    min-height: 138px;
+    padding: 15px;
   }
 
-  .nivel-card::before {
-    font-size: 2rem;
+  .nivel-card::after,
+  .nivel-card:nth-child(odd)::after,
+  .nivel-card:nth-child(even)::after {
+    left: -31px;
+    right: auto;
+    top: 24px;
+    width: 15px;
+    height: 15px;
   }
 
   .nivel-card strong {
