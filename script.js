@@ -1535,6 +1535,14 @@ function agendarSeparacaoAutomatica() {
   temporizadorLetra = setTimeout(() => {
     if (!codigoAtual.trim()) return;
 
+    const missao = getMissaoAtual();
+    const enviado = normalizarCodigo(codigoAtual);
+    const correto = normalizarCodigo(missao.codigo);
+
+    if (enviado === correto) {
+      return;
+    }
+
     if (!codigoAtual.endsWith(" ") && !codigoAtual.endsWith("/")) {
       codigoAtual += " ";
       atualizarCodigoNaTela();
@@ -1544,6 +1552,14 @@ function agendarSeparacaoAutomatica() {
 
   temporizadorPalavra = setTimeout(() => {
     if (!codigoAtual.trim()) return;
+
+    const missao = getMissaoAtual();
+    const enviado = normalizarCodigo(codigoAtual);
+    const correto = normalizarCodigo(missao.codigo);
+
+    if (enviado === correto) {
+      return;
+    }
 
     codigoAtual = codigoAtual.trim();
 
