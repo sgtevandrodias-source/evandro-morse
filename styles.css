@@ -1510,3 +1510,86 @@ p {
     width: 100%;
   }
 }
+/* =========================
+   CARDS DO CÓDIGO Q
+========================= */
+
+#gridBibliotecaMorse .cartao-clicavel {
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#gridBibliotecaMorse .cartao-clicavel:hover {
+  transform: translateY(-3px);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 16px 34px rgba(56, 189, 248, 0.12);
+}
+
+#gridBibliotecaMorse .cartao-clicavel .letra {
+  font-size: 1.85rem;
+  color: var(--texto);
+}
+
+#gridBibliotecaMorse .cartao-clicavel .morse {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 999px;
+  padding: 6px 10px;
+  margin: 8px auto;
+  width: fit-content;
+}
+
+#gridBibliotecaMorse .cartao-clicavel .fonico {
+  color: var(--texto);
+  font-size: 0.9rem;
+  font-weight: 800;
+  min-height: 42px;
+}
+
+#gridBibliotecaMorse .cartao-clicavel .ouvir {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.14);
+  color: var(--amarelo);
+  font-size: 0.72rem;
+  font-weight: 900;
+  border: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+/* Cards de categoria do Código Q */
+.categoria-q {
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.categoria-q:hover {
+  transform: translateY(-3px);
+  border-color: rgba(250, 204, 21, 0.42);
+  box-shadow: 0 16px 34px rgba(250, 204, 21, 0.1);
+}
+
+.categoria-q .letra {
+  font-size: 2.4rem;
+}
+
+.categoria-q .morse {
+  color: var(--amarelo);
+  letter-spacing: normal;
+}
+
+@media (max-width: 720px) {
+  #gridBibliotecaMorse .cartao-clicavel .letra {
+    font-size: 1.55rem;
+  }
+
+  #gridBibliotecaMorse .cartao-clicavel .fonico {
+    font-size: 0.82rem;
+    min-height: auto;
+  }
+
+  #gridBibliotecaMorse .cartao-clicavel .morse {
+    font-size: 0.95rem;
+  }
+}
