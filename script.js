@@ -426,9 +426,7 @@ btnBibCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
 
 btnBibSinaisServico.addEventListener("click", abrirBibliotecaSinaisServico);
 
-btnBibAbreviacoes.addEventListener("click", () => {
-  alert("Abreviações em construção.");
-});
+btnBibAbreviacoes.addEventListener("click", abrirBibliotecaAbreviacoes);
 
 btnBibTreinoAuditivo.addEventListener("click", () => {
   alert("Treino Auditivo em construção.");
@@ -766,6 +764,41 @@ const SINAIS_SERVICO = [
   { codigo: "WA", significado: "Palavra após." },
   { codigo: "WB", significado: "Palavra antes." }
 ];
+const ABREVIACOES_MORSE = [
+  { codigo: "AGN", significado: "Novamente." },
+  { codigo: "ANT", significado: "Antena." },
+  { codigo: "BK", significado: "Interrompa / volte a transmitir." },
+  { codigo: "CQ", significado: "Chamando qualquer estação." },
+  { codigo: "CUL", significado: "Até logo. Nos vemos depois." },
+  { codigo: "DE", significado: "De. Indica quem está transmitindo." },
+  { codigo: "DX", significado: "Comunicação a longa distância." },
+  { codigo: "FER", significado: "Por / para." },
+  { codigo: "GA", significado: "Boa tarde." },
+  { codigo: "GB", significado: "Adeus." },
+  { codigo: "GE", significado: "Boa noite." },
+  { codigo: "GL", significado: "Boa sorte." },
+  { codigo: "GM", significado: "Bom dia." },
+  { codigo: "GUD", significado: "Bom." },
+  { codigo: "HI", significado: "Risada em telegrafia." },
+  { codigo: "HR", significado: "Aqui." },
+  { codigo: "HW", significado: "Como você copia?" },
+  { codigo: "OM", significado: "Operador / amigo operador." },
+  { codigo: "OP", significado: "Operador." },
+  { codigo: "PSE", significado: "Por favor." },
+  { codigo: "RIG", significado: "Equipamento de rádio." },
+  { codigo: "RPT", significado: "Repita." },
+  { codigo: "RST", significado: "Relatório de sinal: legibilidade, intensidade e tom." },
+  { codigo: "RX", significado: "Receptor / receber." },
+  { codigo: "TX", significado: "Transmissor / transmitir." },
+  { codigo: "TNX", significado: "Obrigado." },
+  { codigo: "TU", significado: "Obrigado." },
+  { codigo: "UR", significado: "Seu / sua." },
+  { codigo: "WX", significado: "Tempo / clima." },
+  { codigo: "YL", significado: "Jovem senhora / operadora." },
+  { codigo: "XYL", significado: "Esposa." },
+  { codigo: "73", significado: "Saudações / cordial abraço." },
+  { codigo: "88", significado: "Abraços e beijos." }
+];
 function mostrarCategoriaQ(titulo, itens) {
   tituloBiblioteca.textContent = titulo;
 
@@ -841,6 +874,42 @@ function abrirBibliotecaSinaisServico() {
       return `
         <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
           <span class="letra">⚡ ${escaparHtml(item.codigo)}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
+          <span class="fonico">${escaparHtml(item.significado)}</span>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll("#gridBibliotecaMorse .cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+function abrirBibliotecaAbreviacoes() {
+  tituloBiblioteca.textContent = "📚 Abreviações Morse";
+
+  descricaoBiblioteca.textContent =
+    "Abreviações comuns usadas em comunicação Morse e rádio.";
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+  btnVoltarCodigoQ.style.display = "none";
+  menuBiblioteca.style.display = "none";
+
+  gridBibliotecaMorse.innerHTML = ABREVIACOES_MORSE
+    .map((item) => {
+      const morse = textoParaMorse(item.codigo);
+
+      return `
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
+          <span class="letra">📚 ${escaparHtml(item.codigo)}</span>
           <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">${escaparHtml(item.significado)}</span>
           <span class="ouvir">Toque para ouvir</span>
