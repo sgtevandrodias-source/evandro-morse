@@ -596,10 +596,21 @@ function modoIntermediarioConcluido() {
   return localStorage.getItem(chaveIntermediarioConcluido()) === "sim";
 }
 
+function rolarParaMapaCampanha() {
+  const mapa = document.querySelector(".mapa-campanha");
+  if (!mapa) return;
+
+  mapa.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
 function abrirModoIniciante() {
   salvarNomeOperador();
   modoAtual = MODO_INICIANTE;
   renderizarCampanha();
+  setTimeout(rolarParaMapaCampanha, 100);
 }
 
 function abrirModoIntermediario() {
@@ -612,8 +623,8 @@ function abrirModoIntermediario() {
 
   modoAtual = MODO_INTERMEDIARIO;
   renderizarCampanha();
+  setTimeout(rolarParaMapaCampanha, 100);
 }
-
 function abrirModoAvancado() {
   salvarNomeOperador();
 
@@ -623,6 +634,7 @@ function abrirModoAvancado() {
   }
 
   alert("Modo Avançado será a próxima grande missão: tempo limite, menos dicas e mensagens operacionais.");
+setTimeout(rolarParaMapaCampanha, 100);
 }
 
 function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
