@@ -66,6 +66,7 @@ const menuBiblioteca = document.querySelector(".menu-biblioteca");
 const tituloBiblioteca = document.getElementById("tituloBiblioteca");
 const descricaoBiblioteca = document.getElementById("descricaoBiblioteca");
 const btnVoltarMenuBiblioteca = document.getElementById("btnVoltarMenuBiblioteca");
+const btnVoltarCodigoQ = document.getElementById("btnVoltarCodigoQ");
 const btnVoltarInicioBiblioteca = document.getElementById("btnVoltarInicioBiblioteca");
 const gridNiveis = document.getElementById("gridNiveis");
 const statusIniciante = document.getElementById("statusIniciante");
@@ -437,6 +438,7 @@ btnBibTreinoAuditivo.addEventListener("click", () => {
 btnAbrirRanking.addEventListener("click", abrirRanking);
 btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
 btnVoltarMenuBiblioteca.addEventListener("click", abrirBiblioteca);
+btnVoltarCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
 btnVoltarInicioCampanha.addEventListener("click", voltarInicio);
 btnContinuarNivel.addEventListener("click", continuarNivelAtual);
 
@@ -570,6 +572,7 @@ function abrirBiblioteca() {
 
   gridBibliotecaMorse.innerHTML = "";
   btnVoltarMenuBiblioteca.style.display = "none";
+  btnVoltarCodigoQ.style.display = "none";
   menuBiblioteca.style.display = "grid";
 
   mostrarTela(telaBiblioteca);
@@ -669,6 +672,7 @@ function abrirBibliotecaCodigoQ() {
   `;
 
   btnVoltarMenuBiblioteca.style.display = "inline-block";
+  btnVoltarCodigoQ.style.display = "none";
   menuBiblioteca.style.display = "none";
 
   document
@@ -749,6 +753,9 @@ function mostrarCategoriaQ(titulo, itens) {
 
   descricaoBiblioteca.textContent =
     "Toque em um cartão para consultar o significado.";
+    btnVoltarMenuBiblioteca.style.display = "none";
+btnVoltarCodigoQ.style.display = "inline-block";
+menuBiblioteca.style.display = "none";
 
   gridBibliotecaMorse.innerHTML = itens
     .map(
