@@ -2370,7 +2370,7 @@ function tocarSequenciaMorse(codigoMorse) {
     }
 
     if (simbolo === " ") {
-      atraso += unidade * 1.1;
+      atraso += unidade * 1.6;
     }
 
     if (simbolo === "/") {
