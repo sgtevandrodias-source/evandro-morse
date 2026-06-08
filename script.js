@@ -1543,15 +1543,42 @@ function confirmarRespostaAuditiva() {
     treinoAuditivo.pontos += pontosGanhos;
 
     tocarAcerto();
-    renderizarTelaTreinoAuditivo(true, `Correto!`);
-    return;
+
+setTimeout(() => {
+  renderizarTelaTreinoAuditivo(true, `Correto!`);
+
+  setTimeout(() => {
+    const areaResposta = document.getElementById("areaRespostaTreino");
+    if (areaResposta) {
+      areaResposta.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }, 150);
+}, 350);
+
+return;
   }
 
   treinoAuditivo.erros += 1;
   treinoAuditivo.sequencia = 0;
 
   tocarErro();
+
+setTimeout(() => {
   renderizarTelaTreinoAuditivo(true, `Incorreto.`);
+
+  setTimeout(() => {
+    const areaResposta = document.getElementById("areaRespostaTreino");
+    if (areaResposta) {
+      areaResposta.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }, 150);
+}, 350);
 }
 
 function proximoItemTreinoAuditivo() {
