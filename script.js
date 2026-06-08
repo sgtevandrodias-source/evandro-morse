@@ -2306,63 +2306,7 @@ function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
   if (!resultado || !resultado.aprovado) return [];
 
   const novas = [];
-  function renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada) {
-    let relatorio = document.getElementById("relatorioOperacionalResultado");
-  
-    if (!relatorio) {
-      const cardResultado = document.querySelector("#telaFinal .resultado-card");
-      const botoes = document.querySelector("#telaFinal .botoes-resultado");
-  
-      relatorio = document.createElement("div");
-      relatorio.id = "relatorioOperacionalResultado";
-      relatorio.className = "relatorio-operacional";
-  
-      if (cardResultado && botoes) {
-        cardResultado.insertBefore(relatorio, botoes);
-      } else if (cardResultado) {
-        cardResultado.appendChild(relatorio);
-      } else {
-        document.body.appendChild(relatorio);
-      }
-    }
-  
-    relatorio.style.display = "grid";
-  
-    const proximaPromocao = resultado.aprovado
-      ? (campanhaFinalizada ? resultado.patente : proximaPatenteTexto())
-      : resultado.patente;
-  
-    const tituloRelatorio = mensagemNarrativa?.titulo || "📡 Nível concluído";
-    const textoRelatorio = mensagemNarrativa?.texto || "A rede avançou para a próxima etapa.";
-  
-    const listaConquistas = conquistasNovas.length
-      ? conquistasNovas
-          .map((id) => {
-            const conquista = CONQUISTAS[id];
-            if (!conquista) return "";
-            return `<li>${escaparHtml(conquista.nome)}</li>`;
-          })
-          .join("")
-      : "<li>Nenhuma nova medalha nesta missão.</li>";
-  
-    relatorio.innerHTML = `
-      <div class="relatorio-bloco">
-        <span class="label">Situação da Rede</span>
-        <h2>${escaparHtml(tituloRelatorio)}</h2>
-        <p>${escaparHtml(textoRelatorio)}</p>
-      </div>
-  
-      <div class="relatorio-bloco">
-        <span class="label">Promoção</span>
-        <strong>${escaparHtml(proximaPromocao)}</strong>
-      </div>
-  
-      <div class="relatorio-bloco">
-        <span class="label">Medalhas e Distintivos</span>
-        <ul>${listaConquistas}</ul>
-      </div>
-    `;
-  }
+
   function tentar(idConquista) {
     const desbloqueou = desbloquearConquista(idConquista);
     if (desbloqueou) novas.push(idConquista);
@@ -2387,6 +2331,48 @@ function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
   }
 
   return novas;
+}
+
+function renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada) {
+  const relatorio = document.getElementById("relatorioOperacionalResultado");
+  if (!relatorio) return;
+
+  relatorio.style.display = "grid";
+
+  const proximaPromocao = resultado.aprovado
+    ? (campanhaFinalizada ? resultado.patente : proximaPatenteTexto())
+    : resultado.patente;
+
+  const tituloRelatorio = mensagemNarrativa?.titulo || "📡 Nível concluído";
+  const textoRelatorio = mensagemNarrativa?.texto || "A rede avançou para a próxima etapa.";
+
+  const listaConquistas = conquistasNovas.length
+    ? conquistasNovas
+        .map((id) => {
+          const conquista = CONQUISTAS[id];
+          if (!conquista) return "";
+          return `<li>${escaparHtml(conquista.nome)}</li>`;
+        })
+        .join("")
+    : "<li>Nenhuma nova medalha nesta missão.</li>";
+
+  relatorio.innerHTML = `
+    <div class="relatorio-bloco">
+      <span class="label">Situação da Rede</span>
+      <h2>${escaparHtml(tituloRelatorio)}</h2>
+      <p>${escaparHtml(textoRelatorio)}</p>
+    </div>
+
+    <div class="relatorio-bloco">
+      <span class="label">Promoção</span>
+      <strong>${escaparHtml(proximaPromocao)}</strong>
+    </div>
+
+    <div class="relatorio-bloco">
+      <span class="label">Medalhas e Distintivos</span>
+      <ul>${listaConquistas}</ul>
+    </div>
+  `;
 }
 function proximaPatenteTexto() {
   const niveis = getNiveisModo(modoAtual);
