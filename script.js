@@ -883,7 +883,7 @@ function mostrarCategoriaQ(titulo, itens) {
 
       return `
         <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
-          <span class="letra">📡 ${escaparHtml(item.codigo)}</span>
+          <span class="letra">${escaparHtml(item.codigo)}</span>
           <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">${escaparHtml(item.significado)}</span>
           <span class="ouvir">Toque para ouvir</span>
@@ -941,7 +941,7 @@ function abrirBibliotecaSinaisServico() {
 
       return `
         <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
-          <span class="letra">⚡ ${escaparHtml(item.codigo)}</span>
+          <span class="letra">${escaparHtml(item.codigo)}</span>
           <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">${escaparHtml(item.significado)}</span>
           <span class="ouvir">Toque para ouvir</span>
@@ -977,7 +977,7 @@ function abrirBibliotecaAbreviacoes() {
 
       return `
         <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
-          <span class="letra">📚 ${escaparHtml(item.codigo)}</span>
+          <span class="letra">${escaparHtml(item.codigo)}</span>
           <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">${escaparHtml(item.significado)}</span>
           <span class="ouvir">Toque para ouvir</span>
@@ -1011,7 +1011,7 @@ function abrirBibliotecaCaracteresEspeciais() {
 
       return `
         <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
-          <span class="letra">🔣 ${escaparHtml(item.codigo)}</span>
+          <span class="letra">${escaparHtml(item.codigo)}</span>
           <span class="morse">${escaparHtml(morse)}</span>
           <span class="fonico">${escaparHtml(item.significado)}</span>
           <span class="ouvir">Toque para ouvir</span>
