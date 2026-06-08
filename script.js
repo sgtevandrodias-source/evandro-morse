@@ -1516,8 +1516,12 @@ function confirmarRespostaAuditiva() {
   const input = document.getElementById("inputRespostaAuditiva");
   if (!input) return;
 
+  input.setAttribute("readonly", "readonly");
   input.blur();
-
+  
+  setTimeout(() => {
+    input.removeAttribute("readonly");
+  }, 300);
   const respostaUsuario = normalizarRespostaAuditiva(input.value);
   const respostaCorreta = normalizarRespostaAuditiva(treinoAuditivo.itemAtual.resposta);
 
