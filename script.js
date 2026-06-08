@@ -2310,15 +2310,23 @@ function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
     let relatorio = document.getElementById("relatorioOperacionalResultado");
   
     if (!relatorio) {
+      const cardResultado = document.querySelector("#telaFinal .resultado-card");
+      const botoes = document.querySelector("#telaFinal .botoes-resultado");
+  
       relatorio = document.createElement("div");
       relatorio.id = "relatorioOperacionalResultado";
       relatorio.className = "relatorio-operacional";
   
-      const quadro = document.querySelector(".quadro-resultado");
-      if (quadro) {
-        quadro.insertAdjacentElement("afterend", relatorio);
+      if (cardResultado && botoes) {
+        cardResultado.insertBefore(relatorio, botoes);
+      } else if (cardResultado) {
+        cardResultado.appendChild(relatorio);
+      } else {
+        document.body.appendChild(relatorio);
       }
     }
+  
+    relatorio.style.display = "grid";
   
     const proximaPromocao = resultado.aprovado
       ? (campanhaFinalizada ? resultado.patente : proximaPatenteTexto())
@@ -2335,11 +2343,11 @@ function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
             return `<li>${escaparHtml(conquista.nome)}</li>`;
           })
           .join("")
-      : "<li>Nenhuma conquista nova nesta missão.</li>";
+      : "<li>Nenhuma nova medalha nesta missão.</li>";
   
     relatorio.innerHTML = `
       <div class="relatorio-bloco">
-        <span class="label">Relatório operacional</span>
+        <span class="label">Situação da Rede</span>
         <h2>${escaparHtml(tituloRelatorio)}</h2>
         <p>${escaparHtml(textoRelatorio)}</p>
       </div>
@@ -2350,12 +2358,11 @@ function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
       </div>
   
       <div class="relatorio-bloco">
-        <span class="label">Conquistas desbloqueadas</span>
+        <span class="label">Medalhas e Distintivos</span>
         <ul>${listaConquistas}</ul>
       </div>
     `;
   }
-
   function tentar(idConquista) {
     const desbloqueou = desbloquearConquista(idConquista);
     if (desbloqueou) novas.push(idConquista);
