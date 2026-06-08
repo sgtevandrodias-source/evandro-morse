@@ -469,6 +469,38 @@ const NIVEIS_INICIANTE = [
   }
 ];
 
+const MENSAGENS_NARRATIVAS_INICIANTE = {
+  1: {
+    titulo: "📡 Primeiro contato confirmado",
+    texto: "O rádio respondeu. Ainda há sinal no meio do caos."
+  },
+  2: {
+    titulo: "📡 Canal seguro aberto",
+    texto: "A frequência foi estabilizada. A rede começa a respirar."
+  },
+  3: {
+    titulo: "🚨 Rede de emergência ativada",
+    texto: "Novas estações começaram a responder aos seus sinais."
+  },
+  4: {
+    titulo: "📨 Mensagem prioritária entregue",
+    texto: "Sua transmissão chegou limpa. A confiança na rede aumentou."
+  },
+  5: {
+    titulo: "🔢 Coordenadas recebidas",
+    texto: "Os números agora permitem localizar postos e rotas."
+  }
+};
+function getMensagemNarrativaNivel(resultado) {
+  if (!resultado) return null;
+
+  if (resultado.modo === "Iniciante") {
+    return MENSAGENS_NARRATIVAS_INICIANTE[resultado.nivel] || null;
+  }
+
+  return null;
+}
+
 const NIVEIS_INTERMEDIARIO = [
   { numero: 1, patente: "Operador em Treinamento", titulo: "Sem Rodinhas", descricao: "Letras simples sem botões de espaço.", missoes: ["E", "T", "A", "N", "M"] },
   { numero: 2, patente: "Operador Aprendiz", titulo: "Pausa entre Letras", descricao: "A pausa média separa automaticamente as letras.", missoes: ["I", "S", "O", "R", "K"] },
@@ -2137,6 +2169,18 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   mostrarTela(telaFinal);
 
   verificarConquistasDoNivel(resultado, campanhaFinalizada);
+  if (resultado.aprovado) {
+    const mensagemNarrativa = getMensagemNarrativaNivel(resultado);
+  
+    if (mensagemNarrativa) {
+      mostrarAvisoRapido(mensagemNarrativa.titulo, mensagemNarrativa.texto);
+    } else {
+      mostrarAvisoRapido(
+        "📡 Nível concluído",
+        "A rede avançou para a próxima etapa."
+      );
+    }
+  }
   if (resultado.aprovado) {
     mostrarAvisoRapido(
       "📡 Nível concluído",
