@@ -1076,6 +1076,30 @@ const FRASES_OPERACIONAIS_MORSE = [
   "POSTO 3",
   "RADIO BASE"
 ];
+const MENSAGENS_OPERACIONAIS_MORSE = [
+  "QSL RECEBIDO",
+  "QRV PARA TRANSMITIR",
+  "QAP ESTACAO ALFA",
+  "QTH BRASILIA",
+  "SOS NECESSITO APOIO",
+  "POSTO BRAVO CONFIRMAR",
+  "EQUIPE ALFA LOCALIZADA",
+  "INICIAR RESGATE",
+  "ROTA SEGURA CONFIRMADA",
+  "MENSAGEM RECEBIDA",
+  "BASE ALFA QRV",
+  "CANAL LIVRE PARA QTC",
+  "SINAL FRACO REPITA",
+  "INTERFERENCIA FORTE",
+  "OPERADOR AGUARDE",
+  "COORDENADA RECEBIDA",
+  "PONTO DE APOIO ATIVO",
+  "ABRIGO LOCALIZADO",
+  "TRANSMISSAO FINALIZADA",
+  "REDE OPERACIONAL"
+];
+
+
 
 let treinoAuditivo = {
   modo: "livre",
@@ -1273,10 +1297,27 @@ function abrirBibliotecaTreinoAuditivo() {
   });
 }
 function montarMenuTreinoAuditivo() {
+  const progressoAuditivo = obterProgressoAuditivo();
   gridBibliotecaMorse.innerHTML = `
     <div class="painel-treino-auditivo treino-menu-clean">
       <div class="treino-auditivo-topo">
         <h2>🎧 Treino Auditivo</h2>
+        <div class="painel-progresso-auditivo">
+  <div class="progresso-auditivo-card">
+    <span class="label">Categorias concluídas</span>
+    <strong>${progressoAuditivo.concluidas}/8</strong>
+  </div>
+
+  <div class="progresso-auditivo-card">
+    <span class="label">Melhor aproveitamento</span>
+    <strong>${progressoAuditivo.melhor}%</strong>
+  </div>
+
+  <div class="progresso-auditivo-card">
+    <span class="label">Treinos realizados</span>
+    <strong>${progressoAuditivo.total}</strong>
+  </div>
+</div>
       </div>
 
       <div class="lista-treino-auditivo">
@@ -1287,6 +1328,8 @@ function montarMenuTreinoAuditivo() {
         ${criarLinhaCategoriaTreino("abreviacoes", "Abreviações")}
         ${criarLinhaCategoriaTreino("caracteres", "Caracteres Especiais")}
         ${criarLinhaCategoriaTreino("palavras", "Palavras Comuns")}
+        ${criarLinhaCategoriaTreino("frases", "Frases Operacionais")}
+        ${criarLinhaCategoriaTreino("mensagens", "Mensagens Operacionais")}  
       </div>
 
       <div class="botoes-resultado bloco-voltar-treino">
@@ -1382,6 +1425,8 @@ function obterItensTreinoAuditivo(categoria) {
 
   const frases = FRASES_OPERACIONAIS_MORSE
     .map((item) => criarItemTreino(item, "Frase operacional", "Frase curta para preparação do modo avançado."));
+    const mensagens = MENSAGENS_OPERACIONAIS_MORSE
+    .map((item) => criarItemTreino(item, "Mensagem operacional", "Mensagem completa para preparação do modo avançado."));
 
   if (categoria === "letras") return letras;
   if (categoria === "numeros") return numeros;
@@ -1391,6 +1436,7 @@ function obterItensTreinoAuditivo(categoria) {
   if (categoria === "caracteres") return caracteres;
   if (categoria === "palavras") return palavras;
   if (categoria === "frases") return frases;
+  if (categoria === "mensagens") return mensagens;
 
   return [
     ...letras,
@@ -1400,7 +1446,8 @@ function obterItensTreinoAuditivo(categoria) {
     ...abreviacoes,
     ...caracteres,
     ...palavras,
-    ...frases
+    ...frases,
+    ...mensagens
   ];
 }
 
@@ -1658,13 +1705,26 @@ function finalizarDesafioAuditivo() {
     : 0;
 
   let estrelas = "⭐";
+  let titulo = "Treino concluído";
+  let mensagem = "Você concluiu o desafio auditivo. Continue treinando para fortalecer sua escuta.";
 
-  if (aproveitamento >= 90) estrelas = "⭐⭐⭐";
-  else if (aproveitamento >= 80) estrelas = "⭐⭐";
-  else if (aproveitamento >= 70) estrelas = "⭐";
+  if (aproveitamento >= 90) {
+    estrelas = "⭐⭐⭐";
+    titulo = "Escuta de elite";
+    mensagem = "Excelente desempenho. Seu ouvido já está reconhecendo os sinais com muita precisão.";
+  } else if (aproveitamento >= 80) {
+    estrelas = "⭐⭐";
+    titulo = "Escuta operacional";
+    mensagem = "Bom desempenho. Você já consegue operar com segurança nessa categoria.";
+  } else if (aproveitamento >= 70) {
+    estrelas = "⭐";
+    titulo = "Escuta em formação";
+    mensagem = "Você concluiu o treino, mas ainda precisa reforçar essa categoria.";
+  }
 
   salvarResultadoTreinoAuditivo(aproveitamento);
-  desbloquearConquista("escuta_ativa");
+
+  const novaConquista = desbloquearConquista("escuta_ativa");
 
   gridBibliotecaMorse.innerHTML = `
     <div class="painel-treino-auditivo treino-finalizado">
@@ -1672,11 +1732,16 @@ function finalizarDesafioAuditivo() {
 
       <h2>${estrelas}</h2>
 
-      <p>
-        Você concluiu o desafio de ${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}.
-      </p>
+      <h3>${escaparHtml(titulo)}</h3>
+
+      <p>${escaparHtml(mensagem)}</p>
 
       <div class="quadro-treino-status">
+        <div>
+          <span class="label">Categoria</span>
+          <strong>${escaparHtml(nomeCategoriaTreino(treinoAuditivo.categoria))}</strong>
+        </div>
+
         <div>
           <span class="label">Aproveitamento</span>
           <strong>${aproveitamento}%</strong>
@@ -1688,19 +1753,29 @@ function finalizarDesafioAuditivo() {
         </div>
 
         <div>
-          <span class="label">Erros</span>
-          <strong>${treinoAuditivo.erros}</strong>
-        </div>
-
-        <div>
           <span class="label">Pontos</span>
           <strong>${treinoAuditivo.pontos}</strong>
         </div>
       </div>
 
-      <p>
-        Este resultado futuramente poderá contar como requisito para liberar missões do Modo Avançado.
-      </p>
+      <div class="relatorio-operacional">
+        <div class="relatorio-bloco">
+          <span class="label">Situação da escuta</span>
+          <h2>🎧 Treino Auditivo registrado</h2>
+          <p>Esse resultado prepara o operador para as missões avançadas com mensagens recebidas por áudio.</p>
+        </div>
+
+        <div class="relatorio-bloco">
+          <span class="label">Medalhas e Distintivos</span>
+          <ul>
+            ${
+              novaConquista
+                ? "<li>🎧 Escuta Ativa</li>"
+                : "<li>Nenhuma nova medalha nesta rodada.</li>"
+            }
+          </ul>
+        </div>
+      </div>
 
       <div class="botoes-resultado">
         <button id="btnRefazerDesafioAuditivo" class="btn principal">
@@ -1725,24 +1800,59 @@ function finalizarDesafioAuditivo() {
   document.getElementById("btnVoltarMenuTreinoFinal").addEventListener("click", montarMenuTreinoAuditivo);
   document.getElementById("btnVoltarBibliotecaTreinoFinal").addEventListener("click", abrirBiblioteca);
 }
+function obterProgressoAuditivo() {
+  const dados = JSON.parse(
+    localStorage.getItem("edsMorseProgressoAuditivo") || "{}"
+  );
 
+  const categorias = Object.keys(dados);
+
+  let melhor = 0;
+  let total = 0;
+
+  categorias.forEach((categoria) => {
+    const item = dados[categoria];
+
+    if (!item) return;
+
+    total += item.tentativas || 0;
+
+    if ((item.melhor || 0) > melhor) {
+      melhor = item.melhor;
+    }
+  });
+
+  return {
+    concluidas: categorias.length,
+    melhor,
+    total
+  };
+}
 function salvarResultadoTreinoAuditivo(aproveitamento) {
-  const chave = `operadorMorseTreinoAuditivo_${getChaveOperador()}`;
-  const dadosAtuais = obterResultadoTreinoAuditivo();
+  const dados = JSON.parse(
+    localStorage.getItem("edsMorseProgressoAuditivo") || "{}"
+  );
 
   const categoria = treinoAuditivo.categoria;
 
-  const melhorAtual = dadosAtuais[categoria]?.melhorAproveitamento || 0;
+  if (!dados[categoria]) {
+    dados[categoria] = {
+      melhor: 0,
+      tentativas: 0
+    };
+  }
 
-  dadosAtuais[categoria] = {
-    melhorAproveitamento: Math.max(melhorAtual, aproveitamento),
-    ultimaPontuacao: treinoAuditivo.pontos,
-    ultimaData: new Date().toLocaleDateString("pt-BR")
-  };
+  dados[categoria].tentativas += 1;
 
-  localStorage.setItem(chave, JSON.stringify(dadosAtuais));
+  if (aproveitamento > dados[categoria].melhor) {
+    dados[categoria].melhor = aproveitamento;
+  }
+
+  localStorage.setItem(
+    "edsMorseProgressoAuditivo",
+    JSON.stringify(dados)
+  );
 }
-
 function obterResultadoTreinoAuditivo() {
   const chave = `operadorMorseTreinoAuditivo_${getChaveOperador()}`;
 
@@ -1772,6 +1882,7 @@ function nomeCategoriaTreino(categoria) {
     caracteres: "Caracteres Especiais",
     palavras: "Palavras comuns",
     frases: "Frases operacionais",
+    mensagens: "Mensagens operacionais",
     misto: "Treino misto"
   };
 

@@ -2009,3 +2009,28 @@ transform: translate(-50%, -140%);
 .relatorio-bloco li {
   margin: 6px 0;
 }
+/* ==========================
+   PROGRESSO AUDITIVO
+========================== */
+
+.painel-progresso-auditivo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 18px 0 24px;
+}
+
+.progresso-auditivo-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 12px;
+  text-align: center;
+}
+
+.progresso-auditivo-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.4rem;
+  color: var(--amarelo);
+}
