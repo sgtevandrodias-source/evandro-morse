@@ -1925,3 +1925,43 @@ p {
   font-size: 0.86rem;
   font-weight: 800;
 }
+/* =========================
+   AVISO RÁPIDO
+========================= */
+
+.aviso-rapido {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translate(-50%, 120%);
+  width: min(380px, calc(100% - 24px));
+  z-index: 9998;
+  background: rgba(31, 41, 55, 0.96);
+  color: var(--texto);
+  border: 1px solid var(--linha-forte);
+  border-radius: 18px;
+  padding: 14px 16px;
+  text-align: center;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.aviso-rapido.visivel {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+.aviso-rapido strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 1000;
+}
+
+.aviso-rapido small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}

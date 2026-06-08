@@ -284,6 +284,29 @@ function processarFilaAvisosConquista() {
     }, 400);
   }, 3000);
 }
+function mostrarAvisoRapido(titulo, texto) {
+  const avisoAntigo = document.querySelector(".aviso-rapido");
+  if (avisoAntigo) avisoAntigo.remove();
+
+  const aviso = document.createElement("div");
+  aviso.className = "aviso-rapido";
+  aviso.innerHTML = `
+    <strong>${escaparHtml(titulo)}</strong>
+    <small>${escaparHtml(texto)}</small>
+  `;
+
+  document.body.appendChild(aviso);
+
+  setTimeout(() => {
+    aviso.classList.add("visivel");
+  }, 50);
+
+  setTimeout(() => {
+    aviso.classList.remove("visivel");
+    setTimeout(() => aviso.remove(), 350);
+  }, 1800);
+}
+
 const MODO_INTERMEDIARIO = "intermediario";
 
 const APROVEITAMENTO_MINIMO = 80;
@@ -1483,6 +1506,7 @@ function confirmarRespostaAuditiva() {
 
     tocarAcerto();
     renderizarTelaTreinoAuditivo(true, `Correto!`);
+    mostrarAvisoRapido("🎧 Sinal reconhecido", "Boa escuta. Continue treinando.");
     return;
   }
 
@@ -1992,6 +2016,7 @@ function confirmarEnvio() {
     tocarAcerto();
     feedback.textContent = `Correto! +${pontosGanhos} pontos.`;
     feedback.className = "feedback sucesso";
+    mostrarAvisoRapido("✅ Mensagem entregue", "A rede recebeu sua transmissão.");
   } else {
     errosNivel += 1;
     sequenciaAcertos = 0;
