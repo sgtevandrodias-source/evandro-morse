@@ -489,6 +489,66 @@ const MENSAGENS_NARRATIVAS_INICIANTE = {
   5: {
     titulo: "🔢 Coordenadas recebidas",
     texto: "Os números agora permitem localizar postos e rotas."
+  },
+  6: {
+    titulo: "📻 Operador em teste aprovado",
+    texto: "Você demonstrou que consegue reconhecer e transmitir sinais variados."
+  },
+  7: {
+    titulo: "🧭 Dados numéricos confirmados",
+    texto: "As transmissões com números já podem ser usadas para horários, rotas e referências."
+  },
+  8: {
+    titulo: "🧠 Grupos táticos reconhecidos",
+    texto: "Seu cérebro começa a identificar blocos de sinais, não apenas letras isoladas."
+  },
+  9: {
+    titulo: "📶 Sinal complexo decodificado",
+    texto: "Mensagens maiores foram transmitidas sem quebrar o ritmo da rede."
+  },
+  10: {
+    titulo: "🔐 Canal organizado",
+    texto: "Letras e números agora viajam juntos pela rede com mais segurança."
+  },
+  11: {
+    titulo: "📡 Protocolos de rádio iniciados",
+    texto: "Os primeiros códigos Q entraram em operação. A comunicação ficou mais rápida."
+  },
+  12: {
+    titulo: "✉️ Mensagens curtas entregues",
+    texto: "Você já consegue transmitir palavras completas para outros operadores."
+  },
+  13: {
+    titulo: "🌐 Rede regional em expansão",
+    texto: "A rede alcança novas estações e começa a formar uma malha de comunicação."
+  },
+  14: {
+    titulo: "🏢 Centro de comunicações ativo",
+    texto: "Você assumiu uma posição importante dentro da rede de sobreviventes."
+  },
+  15: {
+    titulo: "🚨 Tráfego prioritário controlado",
+    texto: "Mensagens urgentes circularam com precisão. A rede confia mais em você."
+  },
+  16: {
+    titulo: "🧩 Operação coordenada",
+    texto: "Palavras e números foram combinados para orientar postos e equipes."
+  },
+  17: {
+    titulo: "🛡️ Posto avançado conectado",
+    texto: "A rede alcançou uma área distante. Novos operadores podem receber apoio."
+  },
+  18: {
+    titulo: "📡 Rede de longo alcance",
+    texto: "As transmissões cruzaram grandes distâncias e mantiveram a rede viva."
+  },
+  19: {
+    titulo: "🎯 Operador estratégico",
+    texto: "Você lidou com mensagens extensas mantendo foco, ritmo e precisão."
+  },
+  20: {
+    titulo: "🚨 Rede restabelecida",
+    texto: "As comunicações básicas voltaram a funcionar. O treinamento inicial foi concluído."
   }
 };
 function getMensagemNarrativaNivel(resultado) {
@@ -2201,25 +2261,8 @@ function liberarProximoNivel(campanhaFinalizada) {
 function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   mostrarTela(telaFinal);
 
-  verificarConquistasDoNivel(resultado, campanhaFinalizada);
-  if (resultado.aprovado) {
-    const mensagemNarrativa = getMensagemNarrativaNivel(resultado);
-  
-    if (mensagemNarrativa) {
-      mostrarAvisoRapido(mensagemNarrativa.titulo, mensagemNarrativa.texto);
-    } else {
-      mostrarAvisoRapido(
-        "📡 Nível concluído",
-        "A rede avançou para a próxima etapa."
-      );
-    }
-  }
-  if (resultado.aprovado) {
-    mostrarAvisoRapido(
-      "📡 Nível concluído",
-      `A rede avançou para a próxima etapa: ${resultado.titulo}`
-    );
-  }
+  const conquistasNovas = verificarConquistasDoNivel(resultado, campanhaFinalizada) || [];
+  const mensagemNarrativa = getMensagemNarrativaNivel(resultado);
 
   resultadoAproveitamento.textContent = `${resultado.aproveitamento}%`;
   resultadoTempo.textContent = formatarTempo(resultado.tempoSegundos);
@@ -2228,62 +2271,116 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
 
   if (!resultado.aprovado) {
     resultadoBadge.textContent = "Repetir nível";
-    tituloResultado.textContent = "Nível não concluído";
+    tituloResultado.textContent = "Missão não concluída";
     resultadoFinal.textContent =
-      `Você ficou com ${resultado.aproveitamento}% de aproveitamento. O mínimo é 80%. Repita o nível.`;
+      `Você ficou com ${resultado.aproveitamento}% de aproveitamento. O mínimo é 80%. Repita a missão para manter a rede operacional.`;
     btnProximoNivel.style.display = "none";
     btnJogarNovamente.textContent = "Repetir nível";
+    renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada);
     return;
   }
 
   if (campanhaFinalizada) {
     resultadoBadge.textContent = `Campanha ${getNomeModo(modoAtual)} concluída`;
-    tituloResultado.textContent = `Promoção: ${resultado.patente}`;
+    tituloResultado.textContent = "Rede restabelecida";
     resultadoFinal.textContent =
-      `Excelente! Você concluiu o modo ${getNomeModo(modoAtual)} com ${resultado.aproveitamento}% e ${resultado.wpm.toFixed(1)} WPM aproximado.`;
+      `Você concluiu o modo ${getNomeModo(modoAtual)} com ${resultado.aproveitamento}% de aproveitamento e ${resultado.wpm.toFixed(1)} WPM aproximado.`;
     btnProximoNivel.style.display = "none";
     btnJogarNovamente.textContent = "Refazer missão final";
+    renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada);
     return;
   }
 
-  resultadoBadge.textContent = resultado.bonus ? "Aprovado com destaque" : "Aprovado";
-  tituloResultado.textContent = `Promoção: ${proximaPatenteTexto()}`;
+  resultadoBadge.textContent = resultado.bonus ? "Missão concluída com destaque" : "Missão concluída";
+  tituloResultado.textContent = "Relatório da missão";
 
-  let mensagem =
-    `Você concluiu o nível com ${resultado.aproveitamento}% de aproveitamento. ` +
-    `Tempo: ${formatarTempo(resultado.tempoSegundos)}. ` +
-    `Velocidade aproximada: ${resultado.wpm.toFixed(1)} WPM.`;
+  resultadoFinal.textContent =
+    `Você concluiu a missão com ${resultado.aproveitamento}% de aproveitamento, em ${formatarTempo(resultado.tempoSegundos)}, alcançando ${resultado.wpm.toFixed(1)} WPM aproximado.`;
 
-  if (resultado.bonus) mensagem += " Bônus por aproveitamento de 90% ou mais.";
-  if (resultado.excelenciaWpm) mensagem += " Meta operacional de 12 WPM alcançada.";
-
-  resultadoFinal.textContent = mensagem;
   btnProximoNivel.style.display = "inline-block";
-  btnJogarNovamente.textContent = "Repetir nível";
+  btnJogarNovamente.textContent = "Repetir missão";
+
+  renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada);
 }
-
 function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
-  if (!resultado || !resultado.aprovado) return;
+  if (!resultado || !resultado.aprovado) return [];
 
-  desbloquearConquista("primeiro_sinal");
+  const novas = [];
+  function renderizarRelatorioOperacional(resultado, mensagemNarrativa, conquistasNovas, campanhaFinalizada) {
+    let relatorio = document.getElementById("relatorioOperacionalResultado");
+  
+    if (!relatorio) {
+      relatorio = document.createElement("div");
+      relatorio.id = "relatorioOperacionalResultado";
+      relatorio.className = "relatorio-operacional";
+  
+      const quadro = document.querySelector(".quadro-resultado");
+      if (quadro) {
+        quadro.insertAdjacentElement("afterend", relatorio);
+      }
+    }
+  
+    const proximaPromocao = resultado.aprovado
+      ? (campanhaFinalizada ? resultado.patente : proximaPatenteTexto())
+      : resultado.patente;
+  
+    const tituloRelatorio = mensagemNarrativa?.titulo || "📡 Nível concluído";
+    const textoRelatorio = mensagemNarrativa?.texto || "A rede avançou para a próxima etapa.";
+  
+    const listaConquistas = conquistasNovas.length
+      ? conquistasNovas
+          .map((id) => {
+            const conquista = CONQUISTAS[id];
+            if (!conquista) return "";
+            return `<li>${escaparHtml(conquista.nome)}</li>`;
+          })
+          .join("")
+      : "<li>Nenhuma conquista nova nesta missão.</li>";
+  
+    relatorio.innerHTML = `
+      <div class="relatorio-bloco">
+        <span class="label">Relatório operacional</span>
+        <h2>${escaparHtml(tituloRelatorio)}</h2>
+        <p>${escaparHtml(textoRelatorio)}</p>
+      </div>
+  
+      <div class="relatorio-bloco">
+        <span class="label">Promoção</span>
+        <strong>${escaparHtml(proximaPromocao)}</strong>
+      </div>
+  
+      <div class="relatorio-bloco">
+        <span class="label">Conquistas desbloqueadas</span>
+        <ul>${listaConquistas}</ul>
+      </div>
+    `;
+  }
+
+  function tentar(idConquista) {
+    const desbloqueou = desbloquearConquista(idConquista);
+    if (desbloqueou) novas.push(idConquista);
+  }
+
+  tentar("primeiro_sinal");
 
   if (resultado.aproveitamento === 100) {
-    desbloquearConquista("transmissao_limpa");
+    tentar("transmissao_limpa");
   }
 
   if (resultado.tempoSegundos <= 60) {
-    desbloquearConquista("sinal_rapido");
+    tentar("sinal_rapido");
   }
 
   if (resultado.wpm >= META_WPM) {
-    desbloquearConquista("operador_12wpm");
+    tentar("operador_12wpm");
   }
 
   if (campanhaFinalizada && resultado.modo === "Iniciante") {
-    desbloquearConquista("rede_restabelecida");
+    tentar("rede_restabelecida");
   }
-}
 
+  return novas;
+}
 function proximaPatenteTexto() {
   const niveis = getNiveisModo(modoAtual);
 
