@@ -19,6 +19,7 @@ const btnBibNumeros = document.getElementById("btnBibNumeros");
 const btnBibCodigoQ = document.getElementById("btnBibCodigoQ");
 const btnBibSinaisServico = document.getElementById("btnBibSinaisServico");
 const btnBibAbreviacoes = document.getElementById("btnBibAbreviacoes");
+const btnBibCaracteresEspeciais = document.getElementById("btnBibCaracteresEspeciais");
 const btnBibTreinoAuditivo = document.getElementById("btnBibTreinoAuditivo");
 const btnAbrirRanking = document.getElementById("btnAbrirRanking");const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
 const btnContinuarNivel = document.getElementById("btnContinuarNivel");
@@ -101,7 +102,14 @@ const TABELA_MORSE = {
   S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
   Y: "-.--", Z: "--..",
   0: "-----", 1: ".----", 2: "..---", 3: "...--", 4: "....-",
-  5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----."
+  5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----.",
+  ".": ".-.-.-",
+  ",": "--..--",
+  "?": "..--..",
+  "/": "-..-.",
+  "=": "-...-",
+  "+": ".-.-.",
+  "@": ".--.-."
 };
 
 function textoParaMorse(texto) {
@@ -283,7 +291,7 @@ const NIVEIS_INICIANTE = [
     patente: "Pro",
     titulo: "Missão 14 – Centro de Comunicações",
     descricao: "Você já opera uma estação importante da rede de sobreviventes.",
-    missoes: ["MISSÃO", "COMANDO", "ANTENA", "ESTAÇÃO", "OPERADOR"]
+    missoes: ["MISSAO", "COMANDO", "ANTENA", "ESTACAO", "OPERADOR"]
   },
   {
     numero: 15,
@@ -427,6 +435,8 @@ btnBibCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
 btnBibSinaisServico.addEventListener("click", abrirBibliotecaSinaisServico);
 
 btnBibAbreviacoes.addEventListener("click", abrirBibliotecaAbreviacoes);
+
+btnBibCaracteresEspeciais.addEventListener("click", abrirBibliotecaCaracteresEspeciais);
 
 btnBibTreinoAuditivo.addEventListener("click", abrirBibliotecaTreinoAuditivo);
 btnAbrirRanking.addEventListener("click", abrirRanking);
@@ -798,6 +808,15 @@ const ABREVIACOES_MORSE = [
   { codigo: "73", significado: "Saudações / cordial abraço." },
   { codigo: "88", significado: "Abraços e beijos." }
 ];
+const CARACTERES_ESPECIAIS_MORSE = [
+  { codigo: ".", significado: "Ponto final." },
+  { codigo: ",", significado: "Vírgula." },
+  { codigo: "?", significado: "Interrogação." },
+  { codigo: "/", significado: "Barra." },
+  { codigo: "=", significado: "Igual / separação." },
+  { codigo: "+", significado: "Mais." },
+  { codigo: "@", significado: "Arroba." }
+];
 const PALAVRAS_COMUNS_MORSE = [
   "SOL", "MAR", "RIO", "LUZ", "SOM", "FIO", "RUA", "AR", "REDE", "BASE",
   "RADIO", "MORSE", "SINAL", "TORRE", "POSTO", "ANTENA", "CANAL", "CHAVE", "FONIA", "CABO",
@@ -978,6 +997,40 @@ function abrirBibliotecaAbreviacoes() {
     behavior: "smooth"
   });
 }
+function abrirBibliotecaCaracteresEspeciais() {
+  tituloBiblioteca.textContent = "🔣 Caracteres Especiais";
+  descricaoBiblioteca.textContent = "";
+
+  btnVoltarMenuBiblioteca.style.display = "inline-block";
+  btnVoltarCodigoQ.style.display = "none";
+  menuBiblioteca.style.display = "none";
+
+  gridBibliotecaMorse.innerHTML = CARACTERES_ESPECIAIS_MORSE
+    .map((item) => {
+      const morse = textoParaMorse(item.codigo);
+
+      return `
+        <button class="cartao-caractere cartao-clicavel" data-morse="${escaparHtml(morse)}">
+          <span class="letra">🔣 ${escaparHtml(item.codigo)}</span>
+          <span class="morse">${escaparHtml(morse)}</span>
+          <span class="fonico">${escaparHtml(item.significado)}</span>
+          <span class="ouvir">Toque para ouvir</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll("#gridBibliotecaMorse .cartao-clicavel").forEach((card) => {
+    card.addEventListener("click", () => {
+      tocarSequenciaMorse(card.dataset.morse);
+    });
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 function abrirBibliotecaTreinoAuditivo() {
   tituloBiblioteca.textContent = "";
   descricaoBiblioteca.textContent = "";
@@ -1008,6 +1061,7 @@ function montarMenuTreinoAuditivo() {
         ${criarLinhaCategoriaTreino("codigoQ", "Código Q")}
         ${criarLinhaCategoriaTreino("sinais", "Sinais de Serviço")}
         ${criarLinhaCategoriaTreino("abreviacoes", "Abreviações")}
+        ${criarLinhaCategoriaTreino("caracteres", "Caracteres Especiais")}
         ${criarLinhaCategoriaTreino("palavras", "Palavras Comuns")}
       </div>
 
@@ -1096,6 +1150,9 @@ function obterItensTreinoAuditivo(categoria) {
   const abreviacoes = ABREVIACOES_MORSE
     .map((item) => criarItemTreino(item.codigo, "Abreviação", item.significado));
 
+  const caracteres = CARACTERES_ESPECIAIS_MORSE
+    .map((item) => criarItemTreino(item.codigo, "Caractere especial", item.significado));
+
   const palavras = PALAVRAS_COMUNS_MORSE
     .map((item) => criarItemTreino(item, "Palavra comum", "Palavra do banco de treino auditivo."));
 
@@ -1107,6 +1164,7 @@ function obterItensTreinoAuditivo(categoria) {
   if (categoria === "codigoQ") return codigoQ;
   if (categoria === "sinais") return sinais;
   if (categoria === "abreviacoes") return abreviacoes;
+  if (categoria === "caracteres") return caracteres;
   if (categoria === "palavras") return palavras;
   if (categoria === "frases") return frases;
 
@@ -1116,6 +1174,7 @@ function obterItensTreinoAuditivo(categoria) {
     ...codigoQ,
     ...sinais,
     ...abreviacoes,
+    ...caracteres,
     ...palavras,
     ...frases
   ];
