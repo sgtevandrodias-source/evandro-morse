@@ -243,12 +243,22 @@ mostrarAvisoConquista(idConquista);
 
 return true;
 }
+let filaAvisosConquista = [];
+let exibindoAvisoConquista = false;
+
 function mostrarAvisoConquista(idConquista) {
   const conquista = CONQUISTAS[idConquista];
   if (!conquista) return;
 
-  const avisoAntigo = document.querySelector(".aviso-conquista");
-  if (avisoAntigo) avisoAntigo.remove();
+  filaAvisosConquista.push(conquista);
+  processarFilaAvisosConquista();
+}
+
+function processarFilaAvisosConquista() {
+  if (exibindoAvisoConquista || !filaAvisosConquista.length) return;
+
+  exibindoAvisoConquista = true;
+  const conquista = filaAvisosConquista.shift();
 
   const aviso = document.createElement("div");
   aviso.className = "aviso-conquista";
@@ -266,8 +276,13 @@ function mostrarAvisoConquista(idConquista) {
 
   setTimeout(() => {
     aviso.classList.remove("visivel");
-    setTimeout(() => aviso.remove(), 400);
-  }, 3500);
+
+    setTimeout(() => {
+      aviso.remove();
+      exibindoAvisoConquista = false;
+      processarFilaAvisosConquista();
+    }, 400);
+  }, 3000);
 }
 const MODO_INTERMEDIARIO = "intermediario";
 
