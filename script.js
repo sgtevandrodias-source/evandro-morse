@@ -2139,6 +2139,12 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   mostrarTela(telaFinal);
 
   verificarConquistasDoNivel(resultado, campanhaFinalizada);
+  if (resultado.aprovado) {
+    mostrarAvisoRapido(
+      "📡 Nível concluído",
+      `A rede avançou para a próxima etapa: ${resultado.titulo}`
+    );
+  }
 
   resultadoAproveitamento.textContent = `${resultado.aproveitamento}%`;
   resultadoTempo.textContent = formatarTempo(resultado.tempoSegundos);

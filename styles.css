@@ -1932,8 +1932,8 @@ p {
 .aviso-rapido {
   position: fixed;
   left: 50%;
-  bottom: 22px;
-  transform: translate(-50%, 120%);
+  top: 88px;
+transform: translate(-50%, -140%);
   width: min(380px, calc(100% - 24px));
   z-index: 9998;
   background: rgba(31, 41, 55, 0.96);
