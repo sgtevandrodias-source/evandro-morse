@@ -1511,6 +1511,7 @@ function nomeCategoriaTreino(categoria) {
     codigoQ: "Código Q",
     sinais: "Sinais de Serviço",
     abreviacoes: "Abreviações",
+    caracteres: "Caracteres Especiais",
     palavras: "Palavras comuns",
     frases: "Frases operacionais",
     misto: "Treino misto"
