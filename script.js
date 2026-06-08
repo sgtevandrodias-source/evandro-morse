@@ -239,7 +239,7 @@ function desbloquearConquista(idConquista) {
   conquistas.push(idConquista);
 salvarConquistasDesbloqueadas(conquistas);
 
-mostrarAvisoConquista(idConquista);
+// mostrarAvisoConquista(idConquista);
 
 return true;
 }
