@@ -1506,7 +1506,6 @@ function confirmarRespostaAuditiva() {
 
     tocarAcerto();
     renderizarTelaTreinoAuditivo(true, `Correto!`);
-    mostrarAvisoRapido("🎧 Sinal reconhecido", "Boa escuta. Continue treinando.");
     return;
   }
 
@@ -2016,8 +2015,7 @@ function confirmarEnvio() {
     tocarAcerto();
     feedback.textContent = `Correto! +${pontosGanhos} pontos.`;
     feedback.className = "feedback sucesso";
-    mostrarAvisoRapido("✅ Mensagem entregue", "A rede recebeu sua transmissão.");
-  } else {
+      } else {
     errosNivel += 1;
     sequenciaAcertos = 0;
     pontuacao = Math.max(0, pontuacao - 2);
