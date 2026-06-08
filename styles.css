@@ -1876,3 +1876,52 @@ p {
     min-height: 130px;
   }
 }
+/* =========================
+   AVISO DE CONQUISTA
+========================= */
+
+.aviso-conquista {
+  position: fixed;
+  left: 50%;
+  top: 18px;
+  transform: translate(-50%, -120%);
+  width: min(420px, calc(100% - 24px));
+  z-index: 9999;
+  background:
+    linear-gradient(135deg, rgba(250, 204, 21, 0.96), rgba(251, 146, 60, 0.96));
+  color: #1f1300;
+  border-radius: 22px;
+  padding: 16px 18px;
+  box-shadow: 0 22px 54px rgba(250, 204, 21, 0.28);
+  text-align: center;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+}
+
+.aviso-conquista.visivel {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+.aviso-conquista span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.aviso-conquista strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 1.15rem;
+  font-weight: 1000;
+}
+
+.aviso-conquista small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.86rem;
+  font-weight: 800;
+}

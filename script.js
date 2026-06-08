@@ -175,6 +175,100 @@ function getDicaFonico(alvo) {
 }
 
 const MODO_INICIANTE = "iniciante";
+const CONQUISTAS = {
+  primeiro_sinal: {
+    nome: "📡 Primeiro Sinal",
+    descricao: "Envie sua primeira transmissão após o colapso."
+  },
+
+  transmissao_limpa: {
+    nome: "🎯 Transmissão Limpa",
+    descricao: "Conclua uma missão com 100%."
+  },
+
+  sinal_rapido: {
+    nome: "⚡ Sinal Rápido",
+    descricao: "Conclua uma missão em menos de 60 segundos."
+  },
+
+  escuta_ativa: {
+    nome: "🎧 Escuta Ativa",
+    descricao: "Conclua um desafio auditivo."
+  },
+
+  canal_estavel: {
+    nome: "🔥 Canal Estável",
+    descricao: "Alcance 10 acertos consecutivos."
+  },
+
+  operador_12wpm: {
+    nome: "📻 Operador 12 WPM",
+    descricao: "Alcance a meta operacional de 12 WPM."
+  },
+
+  rede_restabelecida: {
+    nome: "🚨 Rede Restabelecida",
+    descricao: "Conclua o modo Iniciante."
+  }
+};
+function getChaveConquistas() {
+  return `operadorMorseConquistas_${getChaveOperador()}`;
+}
+
+function obterConquistasDesbloqueadas() {
+  try {
+    return JSON.parse(localStorage.getItem(getChaveConquistas())) || [];
+  } catch (erro) {
+    return [];
+  }
+}
+
+function salvarConquistasDesbloqueadas(lista) {
+  localStorage.setItem(getChaveConquistas(), JSON.stringify(lista));
+}
+
+function desbloquearConquista(idConquista) {
+  if (!CONQUISTAS[idConquista]) return false;
+
+  const conquistas = obterConquistasDesbloqueadas();
+
+  if (conquistas.includes(idConquista)) {
+    return false;
+  }
+
+  conquistas.push(idConquista);
+salvarConquistasDesbloqueadas(conquistas);
+
+mostrarAvisoConquista(idConquista);
+
+return true;
+}
+function mostrarAvisoConquista(idConquista) {
+  const conquista = CONQUISTAS[idConquista];
+  if (!conquista) return;
+
+  const avisoAntigo = document.querySelector(".aviso-conquista");
+  if (avisoAntigo) avisoAntigo.remove();
+
+  const aviso = document.createElement("div");
+  aviso.className = "aviso-conquista";
+  aviso.innerHTML = `
+    <span>Conquista desbloqueada</span>
+    <strong>${escaparHtml(conquista.nome)}</strong>
+    <small>${escaparHtml(conquista.descricao)}</small>
+  `;
+
+  document.body.appendChild(aviso);
+
+  setTimeout(() => {
+    aviso.classList.add("visivel");
+  }, 50);
+
+  setTimeout(() => {
+    aviso.classList.remove("visivel");
+    setTimeout(() => aviso.remove(), 400);
+  }, 3500);
+}
 const MODO_INTERMEDIARIO = "intermediario";
 
 const APROVEITAMENTO_MINIMO = 80;
@@ -1407,6 +1501,7 @@ function finalizarDesafioAuditivo() {
   else if (aproveitamento >= 70) estrelas = "⭐";
 
   salvarResultadoTreinoAuditivo(aproveitamento);
+  desbloquearConquista("escuta_ativa");
 
   gridBibliotecaMorse.innerHTML = `
     <div class="painel-treino-auditivo treino-finalizado">
@@ -1872,6 +1967,10 @@ function confirmarEnvio() {
     acertosNivel += 1;
     sequenciaAcertos += 1;
 
+    if (sequenciaAcertos >= 10) {
+      desbloquearConquista("canal_estavel");
+    }
+
     const pontosGanhos = calcularPontosAcerto();
     pontuacao += pontosGanhos;
 
@@ -1999,6 +2098,8 @@ function liberarProximoNivel(campanhaFinalizada) {
 function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   mostrarTela(telaFinal);
 
+  verificarConquistasDoNivel(resultado, campanhaFinalizada);
+
   resultadoAproveitamento.textContent = `${resultado.aproveitamento}%`;
   resultadoTempo.textContent = formatarTempo(resultado.tempoSegundos);
   resultadoWpm.textContent = resultado.wpm.toFixed(1);
@@ -2038,6 +2139,28 @@ function mostrarResultadoNivel(resultado, campanhaFinalizada) {
   resultadoFinal.textContent = mensagem;
   btnProximoNivel.style.display = "inline-block";
   btnJogarNovamente.textContent = "Repetir nível";
+}
+
+function verificarConquistasDoNivel(resultado, campanhaFinalizada) {
+  if (!resultado || !resultado.aprovado) return;
+
+  desbloquearConquista("primeiro_sinal");
+
+  if (resultado.aproveitamento === 100) {
+    desbloquearConquista("transmissao_limpa");
+  }
+
+  if (resultado.tempoSegundos <= 60) {
+    desbloquearConquista("sinal_rapido");
+  }
+
+  if (resultado.wpm >= META_WPM) {
+    desbloquearConquista("operador_12wpm");
+  }
+
+  if (campanhaFinalizada && resultado.modo === "Iniciante") {
+    desbloquearConquista("rede_restabelecida");
+  }
 }
 
 function proximaPatenteTexto() {
