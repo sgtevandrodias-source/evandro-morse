@@ -1104,29 +1104,69 @@ const MENSAGENS_OPERACIONAIS_MORSE = [
   "REDE OPERACIONAL"
 ];
 
-const ESCUTA_OPERACIONAL_MISSOES = [
-  {
-    mensagem: "QSL RECEBIDO",
-    opcoes: ["QSL RECEBIDO", "QRV RECEBIDO", "QTH RECEBIDO", "QAP RECEBIDO"]
-  },
-  {
-    mensagem: "QTH BRASILIA",
-    opcoes: ["QSL BRASILIA", "QTH BRASILIA", "QRV BRASILIA", "QAP BRASILIA"]
-  },
-  {
-    mensagem: "QRV PARA TRANSMITIR",
-    opcoes: ["QSL PARA TRANSMITIR", "QAP PARA TRANSMITIR", "QRV PARA TRANSMITIR", "QTH PARA TRANSMITIR"]
-  },
-  {
-    mensagem: "SOS NECESSITO APOIO",
-    opcoes: ["SOS NECESSITO APOIO", "QSL NECESSITO APOIO", "SOS AGUARDE APOIO", "BASE NECESSITO APOIO"]
-  },
-  {
-    mensagem: "REDE OPERACIONAL",
-    opcoes: ["ROTA OPERACIONAL", "REDE OPERACIONAL", "BASE OPERACIONAL", "RADIO OPERACIONAL"]
-  }
+const ESCUTA_OPERACIONAL_BIBLIOTECA = [
+  "QSL RECEBIDO",
+  "QTH BRASILIA",
+  "QRV PARA TRANSMITIR",
+  "QAP NA ESCUTA",
+  "SOS NECESSITO APOIO",
+  "REDE OPERACIONAL",
+  "ESTACAO ALFA",
+  "ESTACAO BRAVO",
+  "ESTACAO CHARLIE",
+  "ESTACAO DELTA",
+  "COMUNICACAO ESTABELECIDA",
+  "TRANSMISSAO FINALIZADA",
+  "AGUARDANDO INSTRUCOES",
+  "MENSAGEM RECEBIDA",
+  "MENSAGEM CONFIRMADA",
+  "OPERADOR PRONTO",
+  "FREQUENCIA LIVRE",
+  "FREQUENCIA OCUPADA",
+  "INICIAR TRANSMISSAO",
+  "FINALIZAR TRANSMISSAO",
+  "QSL COPIADO",
+  "QAP PERMANENTE",
+  "QTH CONFIRMADO",
+  "QRV IMEDIATO",
+  "APOIO A CAMINHO",
+  "EQUIPE EM DESLOCAMENTO",
+  "ROTA SEGURA",
+  "BASE OPERACIONAL",
+  "PONTO DE CONTROLE",
+  "POSTO DE OBSERVACAO",
+  "ALVO LOCALIZADO",
+  "BUSCA INICIADA",
+  "BUSCA FINALIZADA",
+  "MATERIAL RECEBIDO",
+  "MATERIAL ENTREGUE",
+  "COMBUSTIVEL OK",
+  "VIATURA PRONTA",
+  "OPERACAO INICIADA",
+  "OPERACAO CONCLUIDA",
+  "SOLICITO APOIO",
+  "SOLICITO INFORMACOES",
+  "MANTER ESCUTA",
+  "MANTER POSICAO",
+  "PROSSEGUIR MISSAO",
+  "RETORNAR BASE",
+  "CHEGADA CONFIRMADA",
+  "SAIDA CONFIRMADA",
+  "TESTE DE COMUNICACAO",
+  "CONTATO ESTABELECIDO",
+  "CONTATO PERDIDO"
 ];
+function embaralharArray(array) {
+  const copia = [...array];
 
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+
+  return copia;
+}
 let escutaOperacional = {
   indice: 0,
   acertos: 0,
@@ -1330,22 +1370,37 @@ function abrirBibliotecaTreinoAuditivo() {
   });
 }
 function iniciarEscutaOperacional() {
+
+  const sorteadas = embaralharArray(
+    ESCUTA_OPERACIONAL_BIBLIOTECA
+  ).slice(0, 5);
+
   escutaOperacional = {
     indice: 0,
     acertos: 0,
     erros: 0,
-    pontos: 0
+    pontos: 0,
+    missoes: sorteadas
   };
 
   renderizarEscutaOperacional();
 }
 function renderizarEscutaOperacional() {
-  const missao = ESCUTA_OPERACIONAL_MISSOES[escutaOperacional.indice];
+  const mensagemCorreta = escutaOperacional.missoes[escutaOperacional.indice];
 
-  if (!missao) {
+  if (!mensagemCorreta) {
     finalizarEscutaOperacional();
     return;
   }
+
+  const distratores = embaralharArray(
+    ESCUTA_OPERACIONAL_BIBLIOTECA.filter((item) => item !== mensagemCorreta)
+  ).slice(0, 3);
+
+  const opcoes = embaralharArray([
+    mensagemCorreta,
+    ...distratores
+  ]);
 
   gridBibliotecaMorse.innerHTML = `
     <div class="painel-treino-auditivo tela-escuta-clean">
@@ -1362,7 +1417,7 @@ function renderizarEscutaOperacional() {
       </div>
 
       <div class="lista-treino-auditivo">
-        ${missao.opcoes
+        ${opcoes
           .map((opcao) => `
             <button class="btn secundario btn-opcao-escuta" data-resposta="${escaparHtml(opcao)}">
               ${escaparHtml(opcao)}
@@ -1384,7 +1439,7 @@ function renderizarEscutaOperacional() {
   document
     .getElementById("btnOuvirEscutaOperacional")
     .addEventListener("click", () => {
-      tocarSequenciaMorse(textoParaMorse(missao.mensagem));
+      tocarSequenciaMorse(textoParaMorse(mensagemCorreta));
     });
 
   document.querySelectorAll(".btn-opcao-escuta").forEach((botao) => {
@@ -1397,13 +1452,16 @@ function renderizarEscutaOperacional() {
     .getElementById("btnVoltarMenuEscutaOperacional")
     .addEventListener("click", montarMenuTreinoAuditivo);
 }
+
 function responderEscutaOperacional(respostaSelecionada) {
-  const missao = ESCUTA_OPERACIONAL_MISSOES[escutaOperacional.indice];
+  const mensagemCorreta = escutaOperacional.missoes[escutaOperacional.indice];
   const feedback = document.getElementById("feedbackEscutaOperacional");
 
-  if (!missao || !feedback) return;
+  if (!mensagemCorreta || !feedback) return;
 
-  const acertou = normalizarRespostaAuditiva(respostaSelecionada) === normalizarRespostaAuditiva(missao.mensagem);
+  const acertou =
+    normalizarRespostaAuditiva(respostaSelecionada) ===
+    normalizarRespostaAuditiva(mensagemCorreta);
 
   if (acertou) {
     escutaOperacional.acertos += 1;
@@ -1414,7 +1472,7 @@ function responderEscutaOperacional(respostaSelecionada) {
   } else {
     escutaOperacional.erros += 1;
     tocarErro();
-    feedback.textContent = `Incorreto. A mensagem era: ${missao.mensagem}`;
+    feedback.textContent = `Incorreto. A mensagem era: ${mensagemCorreta}`;
     feedback.className = "feedback erro";
   }
 
@@ -1429,7 +1487,7 @@ function responderEscutaOperacional(respostaSelecionada) {
 }
 function finalizarEscutaOperacional() {
   const aproveitamento = Math.round(
-    (escutaOperacional.acertos / ESCUTA_OPERACIONAL_MISSOES.length) * 100
+    (escutaOperacional.acertos / escutaOperacional.missoes.length) * 100
   );
 
   const novaConquista = desbloquearConquista("operador_escuta");
