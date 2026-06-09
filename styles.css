@@ -2034,3 +2034,25 @@ transform: translate(-50%, -140%);
   font-size: 1.4rem;
   color: var(--amarelo);
 }
+/* ==========================
+   ESCUTA OPERACIONAL
+========================== */
+
+.card-escuta-operacional {
+  max-width: 720px;
+  margin: 18px auto;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(56, 189, 248, 0.08);
+  text-align: center;
+}
+
+.card-escuta-operacional h3 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.card-escuta-operacional p {
+  margin: 0 0 14px;
+}

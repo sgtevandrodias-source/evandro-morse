@@ -196,6 +196,11 @@ const CONQUISTAS = {
     descricao: "Conclua um desafio auditivo."
   },
 
+  operador_escuta: {
+    nome: "🎖️ Operador de Escuta",
+    descricao: "Conclua a Escuta Operacional."
+  },
+
   canal_estavel: {
     nome: "🔥 Canal Estável",
     descricao: "Alcance 10 acertos consecutivos."
@@ -1099,7 +1104,35 @@ const MENSAGENS_OPERACIONAIS_MORSE = [
   "REDE OPERACIONAL"
 ];
 
+const ESCUTA_OPERACIONAL_MISSOES = [
+  {
+    mensagem: "QSL RECEBIDO",
+    opcoes: ["QSL RECEBIDO", "QRV RECEBIDO", "QTH RECEBIDO", "QAP RECEBIDO"]
+  },
+  {
+    mensagem: "QTH BRASILIA",
+    opcoes: ["QSL BRASILIA", "QTH BRASILIA", "QRV BRASILIA", "QAP BRASILIA"]
+  },
+  {
+    mensagem: "QRV PARA TRANSMITIR",
+    opcoes: ["QSL PARA TRANSMITIR", "QAP PARA TRANSMITIR", "QRV PARA TRANSMITIR", "QTH PARA TRANSMITIR"]
+  },
+  {
+    mensagem: "SOS NECESSITO APOIO",
+    opcoes: ["SOS NECESSITO APOIO", "QSL NECESSITO APOIO", "SOS AGUARDE APOIO", "BASE NECESSITO APOIO"]
+  },
+  {
+    mensagem: "REDE OPERACIONAL",
+    opcoes: ["ROTA OPERACIONAL", "REDE OPERACIONAL", "BASE OPERACIONAL", "RADIO OPERACIONAL"]
+  }
+];
 
+let escutaOperacional = {
+  indice: 0,
+  acertos: 0,
+  erros: 0,
+  pontos: 0
+};
 
 let treinoAuditivo = {
   modo: "livre",
@@ -1296,6 +1329,127 @@ function abrirBibliotecaTreinoAuditivo() {
     behavior: "smooth"
   });
 }
+function iniciarEscutaOperacional() {
+  escutaOperacional = {
+    indice: 0,
+    acertos: 0,
+    erros: 0,
+    pontos: 0
+  };
+
+  renderizarEscutaOperacional();
+}
+function responderEscutaOperacional(respostaSelecionada) {
+  const missao = ESCUTA_OPERACIONAL_MISSOES[escutaOperacional.indice];
+  const feedback = document.getElementById("feedbackEscutaOperacional");
+
+  if (!missao || !feedback) return;
+
+  const acertou = normalizarRespostaAuditiva(respostaSelecionada) === normalizarRespostaAuditiva(missao.mensagem);
+
+  if (acertou) {
+    escutaOperacional.acertos += 1;
+    escutaOperacional.pontos += 20;
+    tocarAcerto();
+    feedback.textContent = "Correto! Mensagem identificada.";
+    feedback.className = "feedback sucesso";
+  } else {
+    escutaOperacional.erros += 1;
+    tocarErro();
+    feedback.textContent = `Incorreto. A mensagem era: ${missao.mensagem}`;
+    feedback.className = "feedback erro";
+  }
+
+  document.querySelectorAll(".btn-opcao-escuta").forEach((botao) => {
+    botao.disabled = true;
+  });
+
+  setTimeout(() => {
+    escutaOperacional.indice += 1;
+    renderizarEscutaOperacional();
+  }, 1200);
+}
+function finalizarEscutaOperacional() {
+  const aproveitamento = Math.round(
+    (escutaOperacional.acertos / ESCUTA_OPERACIONAL_MISSOES.length) * 100
+  );
+
+  const novaConquista = desbloquearConquista("operador_escuta");
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo treino-finalizado">
+
+      <span class="badge">Escuta Operacional</span>
+
+      <h2>📡 Operação Concluída</h2>
+
+      <p>
+        Você concluiu todas as missões de escuta operacional.
+      </p>
+
+      <div class="quadro-treino-status">
+        <div>
+          <span class="label">Aproveitamento</span>
+          <strong>${aproveitamento}%</strong>
+        </div>
+
+        <div>
+          <span class="label">Acertos</span>
+          <strong>${escutaOperacional.acertos}</strong>
+        </div>
+
+        <div>
+          <span class="label">Erros</span>
+          <strong>${escutaOperacional.erros}</strong>
+        </div>
+
+        <div>
+          <span class="label">Pontos</span>
+          <strong>${escutaOperacional.pontos}</strong>
+        </div>
+      </div>
+
+      <div class="relatorio-operacional">
+        <div class="relatorio-bloco">
+          <span class="label">Situação</span>
+          <h2>🎧 Operador de Escuta</h2>
+          <p>
+            Você demonstrou capacidade de reconhecer mensagens completas em código Morse.
+          </p>
+        </div>
+
+        <div class="relatorio-bloco">
+          <span class="label">Conquistas</span>
+          <ul>
+            ${
+              novaConquista
+                ? "<li>🎖️ Operador de Escuta desbloqueado</li>"
+                : "<li>Nenhuma nova conquista nesta operação.</li>"
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="botoes-resultado">
+        <button id="btnRefazerEscutaOperacional" class="btn principal">
+          Refazer operação
+        </button>
+
+        <button id="btnVoltarTreinoEscutaFinal" class="btn secundario">
+          Voltar ao Treino Auditivo
+        </button>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById("btnRefazerEscutaOperacional")
+    .addEventListener("click", iniciarEscutaOperacional);
+
+  document
+    .getElementById("btnVoltarTreinoEscutaFinal")
+    .addEventListener("click", montarMenuTreinoAuditivo);
+}
 function montarMenuTreinoAuditivo() {
   const progressoAuditivo = obterProgressoAuditivo();
   gridBibliotecaMorse.innerHTML = `
@@ -1319,7 +1473,14 @@ function montarMenuTreinoAuditivo() {
   </div>
 </div>
       </div>
-
+      <div class="card-escuta-operacional">
+      <h3>📡 Escuta Operacional</h3>
+      <p>Ouça mensagens completas e escolha a alternativa correta.</p>
+    
+      <button id="btnIniciarEscutaOperacional" class="btn principal">
+        Iniciar Escuta Operacional
+      </button>
+    </div>
       <div class="lista-treino-auditivo">
         ${criarLinhaCategoriaTreino("letras", "ABC / Letras")}
         ${criarLinhaCategoriaTreino("numeros", "Números")}
@@ -1355,6 +1516,11 @@ function montarMenuTreinoAuditivo() {
   document
     .getElementById("btnVoltarBibliotecaTreinoMenu")
     .addEventListener("click", abrirBiblioteca);
+    const btnEscutaOperacional = document.getElementById("btnIniciarEscutaOperacional");
+
+if (btnEscutaOperacional) {
+  btnEscutaOperacional.addEventListener("click", iniciarEscutaOperacional);
+}
 }
 function criarLinhaCategoriaTreino(categoria, titulo) {
   return `
