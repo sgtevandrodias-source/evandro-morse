@@ -6,6 +6,7 @@ const telaLicao = document.getElementById("telaLicao");
 const telaJogo = document.getElementById("telaJogo");
 const telaFinal = document.getElementById("telaFinal");
 const telaRanking = document.getElementById("telaRanking");
+const telaManipulador = document.getElementById("telaManipulador");
 
 const inputNomeOperador = document.getElementById("inputNomeOperador");
 
@@ -21,7 +22,9 @@ const btnBibSinaisServico = document.getElementById("btnBibSinaisServico");
 const btnBibAbreviacoes = document.getElementById("btnBibAbreviacoes");
 const btnBibCaracteresEspeciais = document.getElementById("btnBibCaracteresEspeciais");
 const btnBibTreinoAuditivo = document.getElementById("btnBibTreinoAuditivo");
-const btnAbrirRanking = document.getElementById("btnAbrirRanking");const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
+const btnAbrirRanking = document.getElementById("btnAbrirRanking");
+const btnAbrirManipulador = document.getElementById("btnAbrirManipulador");
+const btnVoltarInicioCampanha = document.getElementById("btnVoltarInicioCampanha");
 const btnContinuarNivel = document.getElementById("btnContinuarNivel");
 
 const btnMorse = document.getElementById("btnMorse");
@@ -94,6 +97,15 @@ const btnMenosLetra = document.getElementById("btnMenosLetra");
 const btnMaisLetra = document.getElementById("btnMaisLetra");
 const btnMenosPalavra = document.getElementById("btnMenosPalavra");
 const btnMaisPalavra = document.getElementById("btnMaisPalavra");
+const btnMorseManipulador = document.getElementById("btnMorseManipulador");
+const btnEspacoLetraManipulador = document.getElementById("btnEspacoLetraManipulador");
+const btnEspacoPalavraManipulador = document.getElementById("btnEspacoPalavraManipulador");
+const btnLimparManipulador = document.getElementById("btnLimparManipulador");
+const btnVoltarInicioManipulador = document.getElementById("btnVoltarInicioManipulador");
+
+const codigoManipulador = document.getElementById("codigoManipulador");
+const textoManipulador = document.getElementById("textoManipulador");
+const feedbackManipulador = document.getElementById("feedbackManipulador");
 
 const TABELA_MORSE = {
   A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
@@ -669,6 +681,11 @@ btnBibCaracteresEspeciais.addEventListener("click", abrirBibliotecaCaracteresEsp
 
 btnBibTreinoAuditivo.addEventListener("click", abrirBibliotecaTreinoAuditivo);
 btnAbrirRanking.addEventListener("click", abrirRanking);
+
+btnAbrirManipulador.addEventListener("click", () => {
+  mostrarTela(telaManipulador);
+});
+
 btnVoltarInicioBiblioteca.addEventListener("click", voltarInicio);
 btnVoltarMenuBiblioteca.addEventListener("click", abrirBiblioteca);
 btnVoltarCodigoQ.addEventListener("click", abrirBibliotecaCodigoQ);
@@ -734,9 +751,34 @@ btnMorse.addEventListener("pointerdown", iniciarPressionamento);
 btnMorse.addEventListener("pointerup", finalizarPressionamento);
 btnMorse.addEventListener("pointerleave", finalizarPressionamento);
 btnMorse.addEventListener("pointercancel", cancelarPressionamento);
+btnMorseManipulador.addEventListener("pointerdown", iniciarPressionamentoManipulador);
+btnMorseManipulador.addEventListener("pointerup", finalizarPressionamentoManipulador);
+btnMorseManipulador.addEventListener("pointerleave", finalizarPressionamentoManipulador);
+btnMorseManipulador.addEventListener("pointercancel", cancelarPressionamentoManipulador);
+
+btnLimparManipulador.addEventListener("click", limparManipuladorLivre);
+btnVoltarInicioManipulador.addEventListener("click", voltarInicio);
 
 document.addEventListener("keydown", (evento) => {
-  if (!telaJogo.classList.contains("ativa")) return;
+  const estaNoJogo = telaJogo.classList.contains("ativa");
+  const estaNoManipulador = telaManipulador.classList.contains("ativa");
+
+  if (!estaNoJogo && !estaNoManipulador) return;
+
+  if (estaNoManipulador) {
+    if (evento.code === "Space") {
+      if (pressionandoManipulador) return;
+      evento.preventDefault();
+      iniciarPressionamentoManipulador();
+    }
+
+    if (evento.code === "Backspace") {
+      evento.preventDefault();
+      limparManipuladorLivre();
+    }
+
+    return;
+  }
 
   if (evento.code === "Space") {
     if (pressionando) return;
@@ -756,7 +798,19 @@ document.addEventListener("keydown", (evento) => {
 });
 
 document.addEventListener("keyup", (evento) => {
-  if (!telaJogo.classList.contains("ativa")) return;
+  const estaNoJogo = telaJogo.classList.contains("ativa");
+  const estaNoManipulador = telaManipulador.classList.contains("ativa");
+
+  if (!estaNoJogo && !estaNoManipulador) return;
+
+  if (estaNoManipulador) {
+    if (evento.code === "Space") {
+      evento.preventDefault();
+      finalizarPressionamentoManipulador();
+    }
+
+    return;
+  }
 
   if (evento.code === "Space") {
     evento.preventDefault();
@@ -789,10 +843,10 @@ function mostrarTela(tela) {
   telaJogo.classList.remove("ativa");
   telaFinal.classList.remove("ativa");
   telaRanking.classList.remove("ativa");
+  telaManipulador.classList.remove("ativa");
 
   tela.classList.add("ativa");
 }
-
 function voltarInicio() {
   mostrarTela(telaInicial);
 }
@@ -3440,3 +3494,157 @@ function iniciarBootEstacao() {
 }
 
 window.addEventListener("load", iniciarBootEstacao);
+/* =========================
+   MANIPULADOR LIVRE
+========================= */
+
+let codigoLivre = "";
+let pressionandoManipulador = false;
+let inicioPressionamentoManipulador = 0;
+let temporizadorLetraManipulador = null;
+let temporizadorPalavraManipulador = null;
+
+function iniciarPressionamentoManipulador() {
+  prepararAudio();
+
+  if (pressionandoManipulador) return;
+
+  limparTemporizadoresManipulador();
+
+  pressionandoManipulador = true;
+    inicioPressionamentoManipulador = performance.now();
+
+  btnMorseManipulador.classList.add("pressionado");
+  iniciarTomMorse();
+}
+
+function finalizarPressionamentoManipulador() {
+  if (!pressionandoManipulador) return;
+
+  const fim = performance.now();
+  const duracao = fim - inicioPressionamentoManipulador;
+
+  pressionandoManipulador = false;
+  btnMorseManipulador.classList.remove("pressionado");
+
+  pararTomMorse();
+
+  const simbolo = duracao < limitePontoTracoMs ? "." : "-";
+
+  codigoLivre += simbolo;
+
+  feedbackManipulador.textContent =
+    simbolo === "."
+      ? `Ponto transmitido (${Math.round(duracao)} ms).`
+      : `Traço transmitido (${Math.round(duracao)} ms).`;
+
+  feedbackManipulador.className = "feedback";
+
+  atualizarManipuladorLivre();
+  agendarPausasManipulador();
+}
+
+function cancelarPressionamentoManipulador() {
+  if (!pressionandoManipulador) return;
+
+  pressionandoManipulador = false;
+  btnMorseManipulador.classList.remove("pressionado");
+  pararTomMorse();
+}
+function limparTemporizadoresManipulador() {
+  if (temporizadorLetraManipulador) clearTimeout(temporizadorLetraManipulador);
+  if (temporizadorPalavraManipulador) clearTimeout(temporizadorPalavraManipulador);
+
+  temporizadorLetraManipulador = null;
+  temporizadorPalavraManipulador = null;
+}
+
+function agendarPausasManipulador() {
+  limparTemporizadoresManipulador();
+
+  temporizadorLetraManipulador = setTimeout(() => {
+    if (!codigoLivre.trim()) return;
+
+    if (!codigoLivre.endsWith(" ") && !codigoLivre.endsWith("/")) {
+      codigoLivre += " ";
+      feedbackManipulador.textContent = "Letra fechada automaticamente.";
+      feedbackManipulador.className = "feedback sucesso";
+      atualizarManipuladorLivre();
+    }
+  }, pausaAutoLetraMs);
+
+  temporizadorPalavraManipulador = setTimeout(() => {
+    if (!codigoLivre.trim()) return;
+
+    codigoLivre = codigoLivre.trim();
+
+    if (!codigoLivre.endsWith("/")) {
+      codigoLivre += " / ";
+      feedbackManipulador.textContent = "Palavra fechada automaticamente.";
+      feedbackManipulador.className = "feedback sucesso";
+      atualizarManipuladorLivre();
+    }
+  }, pausaAutoPalavraMs);
+}
+function inserirEspacoLetraManipulador() {
+  if (!codigoLivre.trim()) return;
+
+  if (!codigoLivre.endsWith(" ")) {
+    codigoLivre += " ";
+  }
+
+  feedbackManipulador.textContent = "Letra separada.";
+  feedbackManipulador.className = "feedback sucesso";
+
+  atualizarManipuladorLivre();
+}
+
+function inserirEspacoPalavraManipulador() {
+  if (!codigoLivre.trim()) return;
+
+  codigoLivre = codigoLivre.trim();
+
+  if (!codigoLivre.endsWith("/")) {
+    codigoLivre += " / ";
+  }
+
+  feedbackManipulador.textContent = "Palavra separada.";
+  feedbackManipulador.className = "feedback sucesso";
+
+  atualizarManipuladorLivre();
+}
+
+function limparManipuladorLivre() {
+  codigoLivre = "";
+
+  feedbackManipulador.textContent = "Manipulador limpo.";
+  feedbackManipulador.className = "feedback";
+
+  atualizarManipuladorLivre();
+}
+
+function atualizarManipuladorLivre() {
+  codigoManipulador.textContent = codigoLivre.trim() || "—";
+  textoManipulador.textContent = decodificarMorseLivre(codigoLivre) || "—";
+}
+
+function decodificarMorseLivre(codigo) {
+  const reverso = {};
+
+  Object.keys(TABELA_MORSE).forEach((chave) => {
+    reverso[TABELA_MORSE[chave]] = chave;
+  });
+
+  return String(codigo || "")
+    .trim()
+    .split(" / ")
+    .map((palavra) => {
+      return palavra
+        .trim()
+        .split(/\s+/)
+        .map((letra) => reverso[letra] || "?")
+        .join("");
+    })
+    .join(" ")
+    .trim();
+}

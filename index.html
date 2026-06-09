@@ -49,15 +49,19 @@
       <button id="btnAbrirMissao" class="btn secundario">
         📡 Missão
       </button>
-
+    
       <button id="btnEntrarCampanha" class="btn principal">
         🚀 Iniciar Missão
       </button>
-
+    
       <button id="btnAbrirBiblioteca" class="btn secundario">
         📖 Biblioteca
       </button>
-
+    
+      <button id="btnAbrirManipulador" class="btn secundario">
+        🎙️ Manipulador Livre
+      </button>
+    
       <button id="btnAbrirRanking" class="btn secundario">
         🏆 Ranking
       </button>
@@ -459,9 +463,47 @@
     </div>
   </div>
 </section>
+<!-- TELA MANIPULADOR LIVRE -->
+<section id="telaManipulador" class="tela">
+  <div class="card licao-card manipulador-card">
+    <div class="badge">Treino Livre</div>
 
+    <h1>🎙️ Manipulador Livre</h1>
+
+    <p>
+      Pratique ponto, traço e pausas sem missão, sem erro e sem pressão.
+    </p>
+
+    <div class="painel-codigo painel-manipulador">
+      <span>Código transmitido</span>
+      <strong id="codigoManipulador">—</strong>
+    </div>
+
+    <div class="painel-decodificado">
+      <span class="label">Decodificação aproximada</span>
+      <strong id="textoManipulador">—</strong>
+    </div>
+
+    <button id="btnMorseManipulador" class="botao-morse">
+      TRANSMITIR
+    </button>
+
+    <div class="acoes acoes-manipulador">
+    
+      <button id="btnLimparManipulador" class="btn secundario">
+        Limpar
+      </button>
+
+      <button id="btnVoltarInicioManipulador" class="btn principal">
+        Início
+      </button>
+    </div>
+
+    <div id="feedbackManipulador" class="feedback"></div>
+  </div>
+</section>
     <!-- TELA RANKING -->
-    <section id="telaRanking" class="tela">
+        <section id="telaRanking" class="tela">
       <div class="card resultado-card">
         <div class="badge">Competição local</div>
 
