@@ -3414,107 +3414,14 @@ function tocarSequenciaMorse(codigoMorse) {
   });
 }
 /* =========================
-   BOOT DA ESTAÇÃO MORSE COM SOM
+   BOOT DA ESTAÇÃO MORSE - SEM SOM
 ========================= */
-
-let audioBootContext = null;
-
-function getAudioBootContext() {
-  if (!audioBootContext) {
-    audioBootContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
-  return audioBootContext;
-}
-
-function tocarBeepBoot(frequencia, duracaoMs, atrasoMs = 0, volume = 0.08) {
-  const ctx = getAudioBootContext();
-
-  const inicio = ctx.currentTime + atrasoMs / 1000;
-  const fim = inicio + duracaoMs / 1000;
-
-  const osc = ctx.createOscillator();
-  const ganho = ctx.createGain();
-
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(frequencia, inicio);
-
-  ganho.gain.setValueAtTime(0.0001, inicio);
-  ganho.gain.exponentialRampToValueAtTime(volume, inicio + 0.015);
-  ganho.gain.exponentialRampToValueAtTime(0.0001, fim);
-
-  osc.connect(ganho);
-  ganho.connect(ctx.destination);
-
-  osc.start(inicio);
-  osc.stop(fim + 0.03);
-}
-
-function tocarClickRadioBoot() {
-  tocarBeepBoot(120, 40, 0, 0.12);
-  tocarBeepBoot(80, 60, 45, 0.08);
-}
-
-function tocarRuidoCurtoBoot() {
-  tocarBeepBoot(260, 60, 0, 0.04);
-  tocarBeepBoot(420, 45, 50, 0.035);
-  tocarBeepBoot(180, 70, 95, 0.035);
-  tocarBeepBoot(520, 45, 150, 0.03);
-}
-
-function tocarMorseBoot(codigo, atrasoInicialMs = 0) {
-  const unidade = 85;
-  let tempo = atrasoInicialMs;
-
-  codigo.split("").forEach((sinal) => {
-    if (sinal === ".") {
-      tocarBeepBoot(650, unidade, tempo, 0.075);
-      tempo += unidade * 2;
-    } else if (sinal === "-") {
-      tocarBeepBoot(650, unidade * 3, tempo, 0.075);
-      tempo += unidade * 4;
-    } else if (sinal === " ") {
-      tempo += unidade * 3;
-    } else if (sinal === "/") {
-      tempo += unidade * 7;
-    }
-  });
-}
-
-function iniciarSomBootEstacao() {
-  const ctx = getAudioBootContext();
-
-  if (ctx.state === "suspended") {
-    ctx.resume();
-  }
-
-  tocarClickRadioBoot();
-
-  setTimeout(tocarRuidoCurtoBoot, 350);
-
-  // QAP?
-  setTimeout(() => {
-    tocarMorseBoot("--.- .- .--. ..--..");
-  }, 2150);
-
-  // QSL
-  setTimeout(() => {
-    tocarMorseBoot("--.- ... .-..");
-  }, 2850);
-}
 
 function iniciarBootEstacao() {
   const telaBoot = document.getElementById("telaBoot");
   if (!telaBoot) return;
 
-  let somIniciado = false;
   let bootFechado = false;
-
-  const iniciarSomUmaVez = () => {
-    if (somIniciado) return;
-    somIniciado = true;
-    iniciarSomBootEstacao();
-  };
 
   const fecharBoot = () => {
     if (bootFechado) return;
@@ -3527,13 +3434,9 @@ function iniciarBootEstacao() {
     }, 800);
   };
 
-  telaBoot.addEventListener("pointerdown", iniciarSomUmaVez, { once: true });
+  setTimeout(fecharBoot, 5200);
 
-  telaBoot.addEventListener("click", () => {
-    iniciarSomUmaVez();
-  });
-
-  setTimeout(fecharBoot, 5400);
+  telaBoot.addEventListener("click", fecharBoot);
 }
 
 window.addEventListener("load", iniciarBootEstacao);
