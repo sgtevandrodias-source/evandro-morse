@@ -325,6 +325,38 @@ function mostrarAvisoRapido(titulo, texto) {
 }
 
 const MODO_INTERMEDIARIO = "intermediario";
+const MODO_AVANCADO = "avancado";
+
+function gerarGruposAvancados(qtd = 200, tamanho = 5) {
+  const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const grupos = [];
+
+  while (grupos.length < qtd) {
+    let grupo = "";
+
+    for (let i = 0; i < tamanho; i++) {
+      const indice = Math.floor(Math.random() * caracteres.length);
+      grupo += caracteres[indice];
+    }
+
+    if (!grupos.includes(grupo)) {
+      grupos.push(grupo);
+    }
+  }
+
+  return grupos;
+}
+
+const BANCO_GRUPOS_AVANCADOS = gerarGruposAvancados(200, 5);
+const NIVEIS_AVANCADO = [
+  {
+    numero: 1,
+    patente: "Operador Avançado",
+    titulo: "Missão Avançada 01 – Grupos de 5",
+    descricao: "Transmita grupos aleatórios de cinco letras e números usando manipulação natural.",
+    missoes: BANCO_GRUPOS_AVANCADOS.slice(0, 10)
+  }
+];
 
 const APROVEITAMENTO_MINIMO = 80;
 const APROVEITAMENTO_BONUS = 90;
@@ -2481,11 +2513,13 @@ function entrarCampanha() {
 }
 
 function getNiveisModo(modo = modoAtual) {
+  if (modo === MODO_AVANCADO) return NIVEIS_AVANCADO;
   if (modo === MODO_INTERMEDIARIO) return NIVEIS_INTERMEDIARIO;
   return NIVEIS_INICIANTE;
 }
 
 function getNomeModo(modo = modoAtual) {
+  if (modo === MODO_AVANCADO) return "Avançado";
   if (modo === MODO_INTERMEDIARIO) return "Intermediário";
   return "Iniciante";
 }
@@ -2530,13 +2564,10 @@ function abrirModoIntermediario() {
 function abrirModoAvancado() {
   salvarNomeOperador();
 
-  if (!modoIntermediarioConcluido()) {
-    alert("Conclua o modo Intermediário para liberar o Avançado.");
-    return;
-  }
+  modoAtual = MODO_AVANCADO;
+  renderizarCampanha();
 
-  alert("Modo Avançado será a próxima grande missão: tempo limite, menos dicas e mensagens operacionais.");
-setTimeout(rolarParaMapaCampanha, 100);
+  setTimeout(rolarParaMapaCampanha, 100);
 }
 
 function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
@@ -2558,13 +2589,14 @@ function atualizarCardModo(idCard, liberado, textoBadge, textoStatus) {
 }
 
 function aplicarModoVisualJogo() {
-  const intermediario = modoAtual === MODO_INTERMEDIARIO;
+  const manipulacaoNatural =
+    modoAtual === MODO_INTERMEDIARIO || modoAtual === MODO_AVANCADO;
 
-  btnEspacoLetra.style.display = intermediario ? "none" : "inline-block";
-  btnEspacoPalavra.style.display = intermediario ? "none" : "inline-block";
+  btnEspacoLetra.style.display = manipulacaoNatural ? "none" : "inline-block";
+  btnEspacoPalavra.style.display = manipulacaoNatural ? "none" : "inline-block";
 
   if (painelRitmo) {
-    painelRitmo.classList.toggle("ativo", intermediario);
+    painelRitmo.classList.toggle("ativo", manipulacaoNatural);
   }
 
   atualizarPainelRitmo();
@@ -3105,7 +3137,7 @@ function finalizarPressionamento() {
   adicionarSimbolo(simbolo);
   mostrarFeedbackManipulacao(simbolo, duracao);
 
-  if (modoAtual === MODO_INTERMEDIARIO) {
+  if (modoAtual === MODO_INTERMEDIARIO || modoAtual === MODO_AVANCADO) {
     agendarSeparacaoAutomatica();
   }
 }
@@ -3642,7 +3674,7 @@ function decodificarMorseLivre(codigo) {
       return palavra
         .trim()
         .split(/\s+/)
-        .map((letra) => reverso[letra] || "?")
+        .map((letra) => reverso[letra] || "...")
         .join("");
     })
     .join(" ")
