@@ -1173,7 +1173,13 @@ let escutaOperacional = {
   erros: 0,
   pontos: 0
 };
-
+let ouvirDigitar = {
+  indice: 0,
+  acertos: 0,
+  erros: 0,
+  pontos: 0,
+  missoes: []
+};
 let treinoAuditivo = {
   modo: "livre",
   categoria: "letras",
@@ -1368,6 +1374,228 @@ function abrirBibliotecaTreinoAuditivo() {
     top: 0,
     behavior: "smooth"
   });
+}
+function iniciarOuvirDigitar() {
+  const sorteadas = embaralharArray(
+    ESCUTA_OPERACIONAL_BIBLIOTECA
+  ).slice(0, 5);
+
+  ouvirDigitar = {
+    indice: 0,
+    acertos: 0,
+    erros: 0,
+    pontos: 0,
+    missoes: sorteadas
+  };
+
+  renderizarOuvirDigitar();
+}
+function renderizarOuvirDigitar(mostrarResposta = false, mensagem = "") {
+  const mensagemCorreta = ouvirDigitar.missoes[ouvirDigitar.indice];
+
+  if (!mensagemCorreta) {
+    finalizarOuvirDigitar();
+    return;
+  }
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo tela-escuta-clean">
+      <div class="treino-auditivo-topo">
+        <span class="badge">Ouvir e Digitar</span>
+        <h2>⌨️ Missão ${ouvirDigitar.indice + 1}/5</h2>
+        <p>Ouça a mensagem e digite exatamente o que recebeu.</p>
+      </div>
+
+      <div class="botoes-escuta-clean">
+        <button id="btnOuvirMensagemDigitada" class="btn principal">
+          Ouvir mensagem
+        </button>
+      </div>
+
+      <div class="campo-resposta-auditiva campo-clean">
+        <label for="inputOuvirDigitar">Digite a mensagem recebida</label>
+
+        <input
+          id="inputOuvirDigitar"
+          type="text"
+          autocomplete="off"
+          placeholder="Ex: QSL RECEBIDO"
+        />
+
+        <button id="btnConfirmarOuvirDigitar" class="btn principal">
+          Confirmar
+        </button>
+      </div>
+
+      <div id="areaRespostaOuvirDigitar" class="resposta-treino resposta-clean">
+        ${
+          mostrarResposta
+            ? `
+              <span class="label">Mensagem correta</span>
+              <strong>${escaparHtml(mensagemCorreta)}</strong>
+              <div class="morse-resposta">${escaparHtml(textoParaMorse(mensagemCorreta))}</div>
+            `
+            : `
+              <span class="label">Mensagem correta</span>
+              <strong>—</strong>
+            `
+        }
+      </div>
+
+      <div id="feedbackOuvirDigitar" class="feedback ${mensagem ? "alerta" : ""}">
+        ${escaparHtml(mensagem)}
+      </div>
+
+      <div class="botoes-resultado">
+        ${
+          mostrarResposta
+            ? `
+              <button id="btnProximaOuvirDigitar" class="btn principal">
+                Próxima
+              </button>
+            `
+            : ""
+        }
+
+        <button id="btnVoltarMenuOuvirDigitar" class="btn secundario">
+          Voltar ao Treino Auditivo
+        </button>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById("btnOuvirMensagemDigitada")
+    .addEventListener("click", () => {
+      tocarSequenciaMorse(textoParaMorse(mensagemCorreta));
+    });
+
+  document
+    .getElementById("btnConfirmarOuvirDigitar")
+    .addEventListener("click", confirmarOuvirDigitar);
+
+  const input = document.getElementById("inputOuvirDigitar");
+  if (input) {
+    input.focus();
+
+    input.addEventListener("keydown", (evento) => {
+      if (evento.code === "Enter") {
+        evento.preventDefault();
+        confirmarOuvirDigitar();
+      }
+    });
+  }
+
+  const btnProxima = document.getElementById("btnProximaOuvirDigitar");
+  if (btnProxima) {
+    btnProxima.addEventListener("click", proximaOuvirDigitar);
+  }
+
+  document
+    .getElementById("btnVoltarMenuOuvirDigitar")
+    .addEventListener("click", montarMenuTreinoAuditivo);
+}
+function confirmarOuvirDigitar() {
+  const input = document.getElementById("inputOuvirDigitar");
+  if (!input) return;
+
+  const mensagemCorreta = ouvirDigitar.missoes[ouvirDigitar.indice];
+  const respostaUsuario = normalizarRespostaAuditiva(input.value);
+  const respostaCorreta = normalizarRespostaAuditiva(mensagemCorreta);
+
+  input.blur();
+
+  if (!respostaUsuario) {
+    renderizarOuvirDigitar(false, "Digite uma resposta antes de confirmar.");
+    return;
+  }
+
+  if (respostaUsuario === respostaCorreta) {
+    ouvirDigitar.acertos += 1;
+    ouvirDigitar.pontos += 25;
+
+    tocarAcerto();
+    renderizarOuvirDigitar(true, "Correto! Mensagem recebida com precisão.");
+    return;
+  }
+
+  ouvirDigitar.erros += 1;
+
+  tocarErro();
+  renderizarOuvirDigitar(true, "Incorreto. Confira a mensagem correta.");
+}
+function proximaOuvirDigitar() {
+  ouvirDigitar.indice += 1;
+  renderizarOuvirDigitar(false);
+}
+function finalizarOuvirDigitar() {
+  const total = ouvirDigitar.missoes.length || 1;
+
+  const aproveitamento = Math.round(
+    (ouvirDigitar.acertos / total) * 100
+  );
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo treino-finalizado">
+      <span class="badge">Ouvir e Digitar</span>
+
+      <h2>⌨️ Treino concluído</h2>
+
+      <p>
+        Você concluiu o modo Ouvir e Digitar, treinando recepção real de mensagens Morse.
+      </p>
+
+      <div class="quadro-treino-status">
+        <div>
+          <span class="label">Aproveitamento</span>
+          <strong>${aproveitamento}%</strong>
+        </div>
+
+        <div>
+          <span class="label">Acertos</span>
+          <strong>${ouvirDigitar.acertos}</strong>
+        </div>
+
+        <div>
+          <span class="label">Erros</span>
+          <strong>${ouvirDigitar.erros}</strong>
+        </div>
+
+        <div>
+          <span class="label">Pontos</span>
+          <strong>${ouvirDigitar.pontos}</strong>
+        </div>
+      </div>
+
+      <div class="relatorio-operacional">
+        <div class="relatorio-bloco">
+          <span class="label">Situação da escuta</span>
+          <h2>🎧 Recepção por digitação</h2>
+          <p>
+            Você treinou a habilidade de ouvir uma transmissão Morse e registrar a mensagem recebida.
+          </p>
+        </div>
+      </div>
+
+      <div class="botoes-resultado">
+        <button id="btnRefazerOuvirDigitar" class="btn principal">
+          Refazer treino
+        </button>
+
+        <button id="btnVoltarTreinoOuvirDigitarFinal" class="btn secundario">
+          Voltar ao Treino Auditivo
+        </button>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById("btnRefazerOuvirDigitar")
+    .addEventListener("click", iniciarOuvirDigitar);
+
+  document
+    .getElementById("btnVoltarTreinoOuvirDigitarFinal")
+    .addEventListener("click", montarMenuTreinoAuditivo);
 }
 function iniciarEscutaOperacional() {
 
@@ -1597,6 +1825,17 @@ function montarMenuTreinoAuditivo() {
         Iniciar Escuta Operacional
       </button>
     </div>
+    <div class="card-escuta-operacional">
+  <h3>⌨️ Ouvir e Digitar</h3>
+
+  <p>
+    Escute a mensagem em Morse e digite exatamente o que ouviu.
+  </p>
+
+  <button id="btnOuvirDigitar" class="btn principal">
+    Iniciar Ouvir e Digitar
+  </button>
+</div>
       <div class="lista-treino-auditivo">
         ${criarLinhaCategoriaTreino("letras", "ABC / Letras")}
         ${criarLinhaCategoriaTreino("numeros", "Números")}
@@ -1636,6 +1875,11 @@ function montarMenuTreinoAuditivo() {
 
 if (btnEscutaOperacional) {
   btnEscutaOperacional.addEventListener("click", iniciarEscutaOperacional);
+}
+const btnOuvirDigitar = document.getElementById("btnOuvirDigitar");
+
+if (btnOuvirDigitar) {
+  btnOuvirDigitar.addEventListener("click", iniciarOuvirDigitar);
 }
 }
 function criarLinhaCategoriaTreino(categoria, titulo) {
