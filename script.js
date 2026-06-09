@@ -1339,6 +1339,64 @@ function iniciarEscutaOperacional() {
 
   renderizarEscutaOperacional();
 }
+function renderizarEscutaOperacional() {
+  const missao = ESCUTA_OPERACIONAL_MISSOES[escutaOperacional.indice];
+
+  if (!missao) {
+    finalizarEscutaOperacional();
+    return;
+  }
+
+  gridBibliotecaMorse.innerHTML = `
+    <div class="painel-treino-auditivo tela-escuta-clean">
+      <div class="treino-auditivo-topo">
+        <span class="badge">Escuta Operacional</span>
+        <h2>📡 Missão ${escutaOperacional.indice + 1}/5</h2>
+        <p>Ouça a mensagem e escolha a alternativa correta.</p>
+      </div>
+
+      <div class="botoes-escuta-clean">
+        <button id="btnOuvirEscutaOperacional" class="btn principal">
+          Ouvir mensagem
+        </button>
+      </div>
+
+      <div class="lista-treino-auditivo">
+        ${missao.opcoes
+          .map((opcao) => `
+            <button class="btn secundario btn-opcao-escuta" data-resposta="${escaparHtml(opcao)}">
+              ${escaparHtml(opcao)}
+            </button>
+          `)
+          .join("")}
+      </div>
+
+      <div id="feedbackEscutaOperacional" class="feedback"></div>
+
+      <div class="botoes-resultado">
+        <button id="btnVoltarMenuEscutaOperacional" class="btn discreto">
+          Voltar ao Treino Auditivo
+        </button>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById("btnOuvirEscutaOperacional")
+    .addEventListener("click", () => {
+      tocarSequenciaMorse(textoParaMorse(missao.mensagem));
+    });
+
+  document.querySelectorAll(".btn-opcao-escuta").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      responderEscutaOperacional(botao.dataset.resposta);
+    });
+  });
+
+  document
+    .getElementById("btnVoltarMenuEscutaOperacional")
+    .addEventListener("click", montarMenuTreinoAuditivo);
+}
 function responderEscutaOperacional(respostaSelecionada) {
   const missao = ESCUTA_OPERACIONAL_MISSOES[escutaOperacional.indice];
   const feedback = document.getElementById("feedbackEscutaOperacional");
