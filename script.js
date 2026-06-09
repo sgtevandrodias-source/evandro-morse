@@ -3413,3 +3413,25 @@ function tocarSequenciaMorse(codigoMorse) {
     }
   });
 }
+/* =========================
+   BOOT DA ESTAÇÃO MORSE
+========================= */
+
+function iniciarBootEstacao() {
+  const telaBoot = document.getElementById("telaBoot");
+  if (!telaBoot) return;
+
+  const fecharBoot = () => {
+    telaBoot.classList.add("sair");
+
+    setTimeout(() => {
+      telaBoot.remove();
+    }, 800);
+  };
+
+  setTimeout(fecharBoot, 5200);
+
+  telaBoot.addEventListener("click", fecharBoot);
+}
+
+window.addEventListener("load", iniciarBootEstacao);
