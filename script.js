@@ -86,6 +86,7 @@ const cardModoIntermediario = document.getElementById("cardModoIntermediario");
 const cardModoAvancado = document.getElementById("cardModoAvancado");
 
 const painelRitmo = document.getElementById("painelRitmo");
+const cardProgresso = document.querySelector(".card.progresso");
 const valorWpm = document.getElementById("valorWpm");
 const valorPausaLetra = document.getElementById("valorPausaLetra");
 const valorPausaPalavra = document.getElementById("valorPausaPalavra");
@@ -2616,7 +2617,10 @@ function aplicarModoVisualJogo() {
       modoAtual === MODO_INTERMEDIARIO
     );
   }
-
+  if (cardProgresso) {
+    cardProgresso.style.display =
+      modoAtual === MODO_AVANCADO ? "none" : "";
+  }
   atualizarPainelRitmo();
 }
 
