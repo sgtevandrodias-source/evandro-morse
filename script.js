@@ -3224,24 +3224,26 @@ function agendarSeparacaoAutomatica() {
   }, pausaAutoLetraMs);
 
   temporizadorPalavra = setTimeout(() => {
+    if (modoAtual === MODO_AVANCADO) return;
+  
     if (!codigoAtual.trim()) return;
-
+  
     const missao = getMissaoAtual();
     const enviado = normalizarCodigo(codigoAtual);
     const correto = normalizarCodigo(missao.codigo);
-
+  
     if (enviado === correto) {
       return;
     }
-
+  
     const codigoComBarra = normalizarCodigo(`${codigoAtual.trim()} /`);
-
+  
     if (!correto.startsWith(codigoComBarra)) {
       return;
     }
-
+  
     codigoAtual = codigoAtual.trim();
-
+  
     if (!codigoAtual.endsWith("/")) {
       codigoAtual += " / ";
       atualizarCodigoNaTela();
