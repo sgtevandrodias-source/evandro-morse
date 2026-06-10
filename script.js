@@ -55,6 +55,7 @@ const faseAtualEl = document.getElementById("faseAtual");
 const dicaMissaoEl = document.getElementById("dicaMissao");
 const badgeNivel = document.getElementById("badgeNivel");
 const badgePatente = document.getElementById("badgePatente");
+const timerMissaoEl = document.getElementById("timerMissao");
 
 const resultadoBadge = document.getElementById("resultadoBadge");
 const tituloResultado = document.getElementById("tituloResultado");
@@ -661,6 +662,7 @@ let filtroMorse = null;
 let ultimoResultado = null;
 let temporizadorLetra = null;
 let temporizadorPalavra = null;
+let intervaloTimerMissao = null;
 
 function recalcularTemposPorWpm() {
   unidadeMorseMs = 1200 / wpmAtual;
@@ -2621,6 +2623,14 @@ function aplicarModoVisualJogo() {
     cardProgresso.style.display =
       modoAtual === MODO_AVANCADO ? "none" : "";
   }
+  document.body.classList.toggle(
+    "modo-avancado",
+    modoAtual === MODO_AVANCADO
+  );
+  if (timerMissaoEl) {
+    timerMissaoEl.style.display =
+      modoAtual === MODO_AVANCADO ? "inline-flex" : "none";
+  }
   atualizarPainelRitmo();
 }
 
@@ -2855,10 +2865,20 @@ badgeNivel.textContent =
   atualizarCodigoNaTela();
 
   feedback.textContent = "";
-  feedback.className = "feedback";
-  inicioMissaoMs = performance.now();
+feedback.className = "feedback";
+inicioMissaoMs = performance.now();
 
-  aplicarModoVisualJogo();
+if (modoAtual === MODO_AVANCADO) {
+  iniciarTimerMissao();
+} else {
+  pararTimerMissao();
+
+  if (timerMissaoEl) {
+    timerMissaoEl.style.display = "none";
+  }
+}
+
+aplicarModoVisualJogo();
 }
 
 function confirmarEnvio() {
@@ -3355,7 +3375,30 @@ function calcularWpmNivel(tempoSegundos) {
 
   return Number.isFinite(wpm) ? wpm : 0;
 }
+function iniciarTimerMissao() {
+  pararTimerMissao();
 
+  if (!timerMissaoEl) return;
+
+  timerMissaoEl.textContent = "⏱ 00s";
+
+  intervaloTimerMissao = setInterval(() => {
+    const segundos = Math.max(
+      0,
+      Math.floor((performance.now() - inicioMissaoMs) / 1000)
+    );
+
+    timerMissaoEl.textContent =
+      `⏱ ${String(segundos).padStart(2, "0")}s`;
+  }, 250);
+}
+
+function pararTimerMissao() {
+  if (intervaloTimerMissao) {
+    clearInterval(intervaloTimerMissao);
+    intervaloTimerMissao = null;
+  }
+}
 function formatarTempo(segundos) {
   const min = Math.floor(segundos / 60);
   const seg = segundos % 60;

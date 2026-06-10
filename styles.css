@@ -2255,3 +2255,16 @@ transform: translate(-50%, -140%);
     font-size: 0.78rem;
   }
 }
+/* Rodapé mais compacto no modo avançado */
+body.modo-avancado .barra-rodape-jogo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+body.modo-avancado .barra-rodape-jogo .btn {
+  min-height: 48px;
+  padding: 12px;
+  font-size: 0.9rem;
+}
