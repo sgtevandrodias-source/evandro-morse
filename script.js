@@ -2832,8 +2832,8 @@ function carregarMissao() {
 badgeNivel.textContent =
   `Missão ${missaoAtualIndex + 1}/${nivel.missoes.length}`;
 
-badgePatente.textContent =
-  `${pontuacao} pts`;
+  badgePatente.textContent =
+  `Acertos ${acertosNivel}/${nivel.missoes.length}`;
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
 
@@ -2950,6 +2950,13 @@ function proximaMissao() {
 function atualizarPlacar() {
   pontuacaoEl.textContent = pontuacao;
   acertosEl.textContent = acertosNivel;
+
+  const nivel = getNivelAtual();
+
+  if (badgePatente && nivel) {
+    badgePatente.textContent =
+      `Acertos ${acertosNivel}/${nivel.missoes.length}`;
+  }
 }
 
 function finalizarNivel() {
