@@ -1,3 +1,5 @@
-# stackblitz-starters-ihgufc9u
+# Evandro Morse
 
-[Edit in StackBlitz next generation editor ⚡️](https://stackblitz.com/~/github.com/sgtevandrodias-source/stackblitz-starters-ihgufc9u)
+Projeto do jogo Evandro Morse.
+
+[Abrir no StackBlitz](https://stackblitz.com/~/github.com/sgtevandrodias-source/evandro-morse)
