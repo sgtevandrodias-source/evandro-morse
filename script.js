@@ -357,6 +357,12 @@ const NIVEIS_AVANCADO = [
     missoes: BANCO_GRUPOS_AVANCADOS.slice(0, 10)
   }
 ];
+const MENSAGENS_NARRATIVAS_AVANCADO = {
+  1: {
+    titulo: "📡 Canal avançado estabelecido",
+    texto: "A Rede ADR entrou em operação avançada. Grupos de cinco caracteres serão usados para autenticação, rotas e mensagens críticas."
+  }
+};
 
 const APROVEITAMENTO_MINIMO = 80;
 const APROVEITAMENTO_BONUS = 90;
@@ -364,6 +370,7 @@ const META_WPM = 12;
 
 const PATENTE_FINAL_INICIANTE = "Mestre Morse";
 const PATENTE_FINAL_INTERMEDIARIO = "Operador Intermediário";
+const PATENTE_FINAL_AVANCADO = "Operador de Estação";
 
 let frequenciaSidetone = Number(localStorage.getItem("operadorMorseTomHz") || "650");
 const VOLUME_MORSE = 0.22;
@@ -607,6 +614,10 @@ function getMensagemNarrativaNivel(resultado) {
     return MENSAGENS_NARRATIVAS_INICIANTE[resultado.nivel] || null;
   }
 
+  if (resultado.modo === "Avançado") {
+    return MENSAGENS_NARRATIVAS_AVANCADO[resultado.nivel] || null;
+  }
+
   return null;
 }
 
@@ -694,6 +705,9 @@ function chaveInicianteConcluido() {
 
 function chaveIntermediarioConcluido() {
   return `operadorMorseIntermediarioConcluido_${getChaveOperador()}`;
+}
+function chaveAvancadoConcluido() {
+  return `operadorMorseAvancadoConcluido_${getChaveOperador()}`;
 }
 btnAbrirMissao.addEventListener("click", abrirMissao);
 btnVoltarInicioMissao.addEventListener("click", voltarInicio);
@@ -2926,9 +2940,14 @@ function finalizarNivel() {
 
   if (aprovado && nivelAtualIndex === niveis.length - 1) {
     campanhaFinalizada = true;
-    patenteResultado = modoAtual === MODO_INTERMEDIARIO
-      ? PATENTE_FINAL_INTERMEDIARIO
-      : PATENTE_FINAL_INICIANTE;
+  
+    if (modoAtual === MODO_AVANCADO) {
+      patenteResultado = PATENTE_FINAL_AVANCADO;
+    } else if (modoAtual === MODO_INTERMEDIARIO) {
+      patenteResultado = PATENTE_FINAL_INTERMEDIARIO;
+    } else {
+      patenteResultado = PATENTE_FINAL_INICIANTE;
+    }
   }
 
   ultimoResultado = {
@@ -2969,6 +2988,9 @@ function liberarProximoNivel(campanhaFinalizada) {
 
     if (modoAtual === MODO_INTERMEDIARIO) {
       localStorage.setItem(chaveIntermediarioConcluido(), "sim");
+    }
+    if (modoAtual === MODO_AVANCADO) {
+      localStorage.setItem(chaveAvancadoConcluido(), "sim");
     }
 
     return;
