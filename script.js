@@ -351,7 +351,7 @@ const BANCO_GRUPOS_AVANCADOS = gerarGruposAvancados(200, 5);
 const NIVEIS_AVANCADO = [
   {
     numero: 1,
-    patente: "Operador Avançado",
+    patente: "Operador de Estação",
     titulo: "Missão Avançada 01 – Grupos de 5",
     descricao: "Transmita grupos aleatórios de cinco letras e números usando manipulação natural.",
     missoes: BANCO_GRUPOS_AVANCADOS.slice(0, 10)
@@ -2611,7 +2611,10 @@ function aplicarModoVisualJogo() {
   btnEspacoPalavra.style.display = manipulacaoNatural ? "none" : "inline-block";
 
   if (painelRitmo) {
-    painelRitmo.classList.toggle("ativo", manipulacaoNatural);
+    painelRitmo.classList.toggle(
+      "ativo",
+      modoAtual === MODO_INTERMEDIARIO
+    );
   }
 
   atualizarPainelRitmo();
@@ -2820,9 +2823,13 @@ function carregarMissao() {
   const nivel = getNivelAtual();
   const missao = getMissaoAtual();
 
-  nomeOperadorEl.textContent = nivel.patente;
-  badgeNivel.textContent = `${getNomeModo(modoAtual)} ${nivel.numero}`;
-  badgePatente.textContent = nivel.patente;
+  nomeOperadorEl.textContent = nivel.titulo;
+
+badgeNivel.textContent =
+  `Missão ${missaoAtualIndex + 1}/${nivel.missoes.length}`;
+
+badgePatente.textContent =
+  `${pontuacao} pts`;
 
   textoMissao.textContent = `Envie: ${missao.alvo}`;
 
