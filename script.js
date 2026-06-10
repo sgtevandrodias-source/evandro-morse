@@ -3784,7 +3784,7 @@ function decodificarMorseLivre(codigo) {
       return palavra
         .trim()
         .split(/\s+/)
-        .map((letra) => reverso[letra] || "...")
+        .map((letra) => reverso[letra] || "")
         .join("");
     })
     .join(" ")
