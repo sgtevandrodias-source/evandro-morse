@@ -647,6 +647,7 @@ let sequenciaAcertos = 0;
 
 let inicioNivelMs = 0;
 let fimNivelMs = 0;
+let inicioMissaoMs = 0;
 
 let pressionando = false;
 let inicioPressionamento = 0;
@@ -2844,6 +2845,7 @@ function carregarMissao() {
 
   feedback.textContent = "";
   feedback.className = "feedback";
+  inicioMissaoMs = performance.now();
 
   aplicarModoVisualJogo();
 }
@@ -2892,6 +2894,29 @@ function confirmarEnvio() {
 }
 
 function calcularPontosAcerto() {
+  if (modoAtual === MODO_AVANCADO) {
+    const tempoMissaoSegundos = Math.max(
+      1,
+      Math.round((performance.now() - inicioMissaoMs) / 1000)
+    );
+
+    let pontos = 100;
+
+    if (tempoMissaoSegundos <= 10) {
+      pontos += 50;
+    } else if (tempoMissaoSegundos <= 20) {
+      pontos += 25;
+    }
+
+    if (sequenciaAcertos >= 5) {
+      pontos += 50;
+    } else if (sequenciaAcertos >= 3) {
+      pontos += 25;
+    }
+
+    return pontos;
+  }
+
   if (sequenciaAcertos >= 5) return 15;
   if (sequenciaAcertos >= 3) return 13;
   if (sequenciaAcertos >= 2) return 12;
